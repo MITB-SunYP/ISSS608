@@ -8,7 +8,7 @@
 
 <meta name="author" content="Sun Yiping">
 
-<title>ISSS608 - Hands-on_Ex01</title>
+<title>ISSS608 - A Layered Grammar of Graphics: ggplot2 methods</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -149,14 +149,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#learning-outcome" id="toc-learning-outcome" class="nav-link active" data-scroll-target="#learning-outcome">1. Learning Outcome</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">2. Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#installing-and-loading-the-required-libraries" id="toc-installing-and-loading-the-required-libraries" class="nav-link" data-scroll-target="#installing-and-loading-the-required-libraries">2.1 Installing and loading the required libraries</a></li>
+  <li><a href="#importing-the-data" id="toc-importing-the-data" class="nav-link" data-scroll-target="#importing-the-data">2.2 Importing the data</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Hands-on_Ex01</h1>
+<h1 class="title">A Layered Grammar of Graphics: ggplot2 methods</h1>
 </div>
 
 
@@ -177,82 +188,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Getting Started</p>
-<p>Install and launching R packages</p>
+<section id="learning-outcome" class="level2">
+<h2 class="anchored" data-anchor-id="learning-outcome">1. Learning Outcome</h2>
+<p>In this chapter, we will learn the basic principles and essential components of ggplot2. At the same time, we will gain hands-on experience on using these components to plot statistical graphics based on the principle of Layered Grammar of Graphics.</p>
+<p>At the end of this chapter, we will be able to apply the essential graphical elements provided by ggplot2 to create elegant and yet functional statistical graphics.</p>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">2. Getting Started</h2>
+<section id="installing-and-loading-the-required-libraries" class="level3">
+<h3 class="anchored" data-anchor-id="installing-and-loading-the-required-libraries">2.1 Installing and loading the required libraries</h3>
+<p>Let’s first install the required packages for this hands-on exercise.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>also installing the dependencies 'colorspace', 'bit', 'farver', 'labeling', 'munsell', 'RColorBrewer', 'viridisLite', 'rematch', 'bit64', 'backports', 'generics', 'blob', 'DBI', 'tidyselect', 'data.table', 'gtable', 'isoband', 'scales', 'gargle', 'uuid', 'cellranger', 'ids', 'timechange', 'vroom', 'tzdb', 'progress', 'selectr', 'broom', 'conflicted', 'dbplyr', 'dplyr', 'dtplyr', 'forcats', 'ggplot2', 'googledrive', 'googlesheets4', 'haven', 'hms', 'lubridate', 'modelr', 'readr', 'readxl', 'reprex', 'rvest', 'tidyr'</code></pre>
 </div>
+</section>
+<section id="importing-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="importing-the-data">2.2 Importing the data</h3>
+<p>The data that would be used for this hands-on exercise is called “Exam_data”, which contains the year end examination grades of a cohort of primary 3 students from a local school.</p>
+<p>Let’s import the data using read_csv() function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>exam_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"D:/MITB_SunYP/ISSS608/Data/Exam_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: unable to access index for repository http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.3:
-  cannot open URL 'http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.3/PACKAGES'</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-  There is a binary version available but the source version is later:
-       binary source needs_compilation
-reprex  2.0.2  2.1.0             FALSE
+<pre><code>Rows: 322 Columns: 7
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (4): ID, CLASS, GENDER, RACE
+dbl (3): ENGLISH, MATHS, SCIENCE
 
-package 'colorspace' successfully unpacked and MD5 sums checked
-package 'bit' successfully unpacked and MD5 sums checked
-package 'farver' successfully unpacked and MD5 sums checked
-package 'labeling' successfully unpacked and MD5 sums checked
-package 'munsell' successfully unpacked and MD5 sums checked
-package 'RColorBrewer' successfully unpacked and MD5 sums checked
-package 'viridisLite' successfully unpacked and MD5 sums checked
-package 'rematch' successfully unpacked and MD5 sums checked
-package 'bit64' successfully unpacked and MD5 sums checked
-package 'backports' successfully unpacked and MD5 sums checked
-package 'generics' successfully unpacked and MD5 sums checked
-package 'blob' successfully unpacked and MD5 sums checked
-package 'DBI' successfully unpacked and MD5 sums checked
-package 'tidyselect' successfully unpacked and MD5 sums checked
-package 'data.table' successfully unpacked and MD5 sums checked
-package 'gtable' successfully unpacked and MD5 sums checked
-package 'isoband' successfully unpacked and MD5 sums checked
-package 'scales' successfully unpacked and MD5 sums checked
-package 'gargle' successfully unpacked and MD5 sums checked
-package 'uuid' successfully unpacked and MD5 sums checked
-package 'cellranger' successfully unpacked and MD5 sums checked
-package 'ids' successfully unpacked and MD5 sums checked
-package 'timechange' successfully unpacked and MD5 sums checked
-package 'vroom' successfully unpacked and MD5 sums checked
-package 'tzdb' successfully unpacked and MD5 sums checked
-package 'progress' successfully unpacked and MD5 sums checked
-package 'selectr' successfully unpacked and MD5 sums checked
-package 'broom' successfully unpacked and MD5 sums checked
-package 'conflicted' successfully unpacked and MD5 sums checked
-package 'dbplyr' successfully unpacked and MD5 sums checked
-package 'dplyr' successfully unpacked and MD5 sums checked
-package 'dtplyr' successfully unpacked and MD5 sums checked
-package 'forcats' successfully unpacked and MD5 sums checked
-package 'ggplot2' successfully unpacked and MD5 sums checked
-package 'googledrive' successfully unpacked and MD5 sums checked
-package 'googlesheets4' successfully unpacked and MD5 sums checked
-package 'haven' successfully unpacked and MD5 sums checked
-package 'hms' successfully unpacked and MD5 sums checked
-package 'lubridate' successfully unpacked and MD5 sums checked
-package 'modelr' successfully unpacked and MD5 sums checked
-package 'readr' successfully unpacked and MD5 sums checked
-package 'readxl' successfully unpacked and MD5 sums checked
-package 'rvest' successfully unpacked and MD5 sums checked
-package 'tidyr' successfully unpacked and MD5 sums checked
-package 'tidyverse' successfully unpacked and MD5 sums checked
-
-The downloaded binary packages are in
-    C:\Users\yipin\AppData\Local\Temp\Rtmp2jIqmJ\downloaded_packages</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>installing the source package 'reprex'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-tidyverse installed</code></pre>
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

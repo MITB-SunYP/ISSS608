@@ -1,12 +1,43 @@
 ---
-title: "Hands-on_Ex01"
+title: "A Layered Grammar of Graphics: ggplot2 methods"
 author: "Sun Yiping"
 ---
 
-Getting Started
+## 1. Learning Outcome
 
-Install and launching R packages
+In this chapter, we will learn the basic principles and essential components of ggplot2. At the same time, we will gain hands-on experience on using these components to plot statistical graphics based on the principle of Layered Grammar of Graphics.
+
+At the end of this chapter, we will be able to apply the essential graphical elements provided by ggplot2 to create elegant and yet functional statistical graphics.
+
+## 2. Getting Started
+
+### 2.1 Installing and loading the required libraries
+
+Let's first install the required packages for this hands-on exercise.
 
 ```{r}
 pacman::p_load(tidyverse)
 ```
+
+### 2.2 Importing the data
+
+The data that would be used for this hands-on exercise is called "Exam_data", which contains the year end examination grades of a cohort of primary 3 students from a local school.
+
+Let's import the data using read_csv() function.
+
+```{r}
+exam_data <- read_csv("D:/MITB_SunYP/ISSS608/Data/Exam_data.csv")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
