@@ -1,0 +1,12 @@
+---
+title: "Hands-on_Ex01"
+author: "Sun Yiping"
+---
+
+Getting Started
+
+Install and launching R packages
+
+```{r}
+pacman::p_load(tidyverse)
+```
