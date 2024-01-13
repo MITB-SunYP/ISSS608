@@ -1,0 +1,59 @@
+---
+title: "In-class Exercise 1"
+author: "Sun Yiping"
+date: "January 13, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---
+
+## Loading R packages
+
+In this in-class exercise, two R packages will be used. They are:
+
+-   [tidyverse](https://www.tidyverse.org/)
+
+-   [haven](https://haven.tidyverse.org/index.html)
+
+The code chunk used is as follows: 
+
+```{r}
+pacman::p_load(tidyverse, haven)
+```
+
+## Importing PISA data
+
+The code chunk below uses [`read_sas()`](https://haven.tidyverse.org/reference/read_sas.html) of [haven](https://haven.tidyverse.org/index.html) to import PISA data into R environment.
+
+```{r}
+#| eval: false
+stu_qqq <- read_sas("../../Data/cy08msp_stu_qqq.sas7bdat")
+```
+
+The dataset contains 1279 variables, and 613744 records from respondents all over the world. However, we are only interested in the responses from the respondents from Singapore. Therefore, we use the code chunk below to filter the data using CNT (country code) variable.
+
+```{r}
+#| eval: false
+stu_qqq_sg <- stu_qqq %>% 
+  filter(CNT == "SGP")
+```
+
+Now, the filtered data only contains 6606 records from Singapore, and the number of variables remains at 1279.
+
+The code chunk below is used to save the filtered data in rds format.
+
+```{r}
+#| eval: false
+write_rds(stu_qqq_sg, "../../Data/stu_qqq_sg.rds")
+```
+
+The code chunk below is used to import the rds data.
+
+```{r}
+stu_qqq_sg <- read_rds("../../Data/stu_qqq_sg.rds")
+```
+
+

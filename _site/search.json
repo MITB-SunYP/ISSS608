@@ -96,5 +96,19 @@
     "title": "A Layered Grammar of Graphics: ggplot2 methods",
     "section": "11 Essential Grammatical Elements in ggplot2: themes",
     "text": "11 Essential Grammatical Elements in ggplot2: themes\nThemes control elements of the graph not related to the data. For example:\n\nbackground colour\nsize of fonts\ngridlines\ncolour of labels\n\nBuilt-in themes include: - theme_gray() (default) - theme_bw() - theme_classic()\n\n11.1 Working with theme\nThe code chunk below plot a horizontal bar chart using theme_gray().\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_gray()\n\n\n\n\nA horizontal bar chart plotted using theme_classic().\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_classic()\n\n\n\n\nA horizontal bar chart plotted using theme_minimal().\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_minimal()"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex01/In-class_Ex01.html",
+    "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html",
+    "title": "In-class Exercise 1",
+    "section": "",
+    "text": "In this in-class exercise, two R packages will be used. They are:\n\ntidyverse\nhaven\n\nThe code chunk used is as follows:\n\npacman::p_load(tidyverse, haven)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#loading-r-packages",
+    "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#loading-r-packages",
+    "title": "In-class Exercise 1",
+    "section": "",
+    "text": "In this in-class exercise, two R packages will be used. They are:\n\ntidyverse\nhaven\n\nThe code chunk used is as follows:\n\npacman::p_load(tidyverse, haven)"
   }
 ]
