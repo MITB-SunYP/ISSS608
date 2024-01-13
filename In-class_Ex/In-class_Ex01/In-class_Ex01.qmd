@@ -50,7 +50,7 @@ The code chunk below is used to save the filtered data in rds format.
 write_rds(stu_qqq_sg, "../../Data/stu_qqq_sg.rds")
 ```
 
-The code chunk below is used to import the rds data.
+The code chunk below is used to import the rds data.i
 
 ```{r}
 stu_qqq_sg <- read_rds("../../Data/stu_qqq_sg.rds")
