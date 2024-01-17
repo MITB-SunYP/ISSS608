@@ -117,5 +117,54 @@
     "title": "In-class Exercise 1",
     "section": "Importing PISA data",
     "text": "Importing PISA data\nThe code chunk below uses read_sas() of haven to import PISA data into R environment.\n\nstu_qqq &lt;- read_sas(\"../../Data/cy08msp_stu_qqq.sas7bdat\")\n\nThe dataset contains 1279 variables, and 613744 records from respondents all over the world. However, we are only interested in the responses from the respondents from Singapore. Therefore, we use the code chunk below to filter the data using CNT (country code) variable.\n\nstu_qqq_sg &lt;- stu_qqq %&gt;% \n  filter(CNT == \"SGP\")\n\nNow, the filtered data only contains 6606 records from Singapore, and the number of variables remains at 1279.\nThe code chunk below is used to save the filtered data in rds format.\n\nwrite_rds(stu_qqq_sg, \"../../Data/stu_qqq_sg.rds\")\n\nThe code chunk below is used to import the rds data.\n\nstu_qqq_sg &lt;- read_rds(\"../../Data/stu_qqq_sg.rds\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html",
+    "title": "Beyond ggplot2 Fundamentals",
+    "section": "",
+    "text": "In this chapter, we will learn to create more elegant and effective statistical graphics using ggplot2 extensions. By the end of this exercise, we will be able to:\n\ncontrol the placement of annotation on a graph by using functions provided in ggrepel package\ncreate professional publication quality figures by using functions provided in ggthemes and hrbrthemes packages\nplot composite figure by combining ggplot2 graphs using pachwork package"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#learning-outcome",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#learning-outcome",
+    "title": "Beyond ggplot2 Fundamentals",
+    "section": "",
+    "text": "In this chapter, we will learn to create more elegant and effective statistical graphics using ggplot2 extensions. By the end of this exercise, we will be able to:\n\ncontrol the placement of annotation on a graph by using functions provided in ggrepel package\ncreate professional publication quality figures by using functions provided in ggthemes and hrbrthemes packages\nplot composite figure by combining ggplot2 graphs using pachwork package"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#getting-started",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#getting-started",
+    "title": "Beyond ggplot2 Fundamentals",
+    "section": "2. Getting Started",
+    "text": "2. Getting Started\n\n2.1 Installing and loading the required libraries\nIn this exercise, other than tidyverse, we’ll learn to use a few new R packages:\n\nggrepel: an R package provides geoms for ggplot2 to repel overlapping text labels\nggthemes: an R package provides some extra themes, geoms, and scales for ggplot2\nhrbrthemes: an R package provides typography-centric themes and theme components for ggplot2\npatchwork: an R package for preparing composite figure created using ggplot2\n\nNow, let’s start the exercise by installing these packages\n\npacman::p_load(tidyverse, ggrepel, ggthemes, hrbrthemes, patchwork)\n\n\n\n2.2 Importing the data\nWe’ll continue to use Exam_data throughout this exercise. To recap, this data set contains year end examination grades of a cohort of primary 3 students from a local school. The data file is in csv format.\nLet’s import the data by using read_csv() function of readr package.\n\nexam_data &lt;- read_csv(\"../../Data/Exam_data.csv\")\n\nThe data set consists of 322 rows, and 7 variables.\n\n4 categorical variables: ID, CLASS, GENDER, RACE\n3 numerical variables: ENGLISH, MATHS, SCIENCE"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#beyond-ggplot2-annotation-ggrepel",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#beyond-ggplot2-annotation-ggrepel",
+    "title": "Beyond ggplot2 Fundamentals",
+    "section": "3. Beyond ggplot2 Annotation: ggrepel",
+    "text": "3. Beyond ggplot2 Annotation: ggrepel\nAnnotation is a common challenge we face while plotting statistical graphs, especial for the data with large number of data points. For example, let’s take a look at the graph below:\n\n\n\n\n\nIn the plot, we want to label the data points with the student ID so it’s easy for data interpretation. However, the labels are clustered together due to the large number of data points in the graph. The student ID becomes non-identifiable in this case.\nWith the help of ggrepel package, we are able to repel the overlapping text labels. What we need to do are:\n\nreplace geom_text() with geom_text_repel()\nreplace geom_label() with geom_label_repel()\n\n\nThe plotThe code\n\n\n\n\n\n\n\n\n\n\nggplot(data = exam_data,\n       aes(x = MATHS,\n           y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(method = lm,\n              size = 0.5) +\n  geom_label_repel(aes(label = ID),\n                   fontface = \"bold\") +\n  coord_cartesian(xlim = c(0, 100),\n                  ylim = c(0,100)) +\n  ggtitle(\"English scores vs. Maths scores for Primary 3\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#beyond-ggplot2-themes",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#beyond-ggplot2-themes",
+    "title": "Beyond ggplot2 Fundamentals",
+    "section": "4. Beyond ggplot2 Themes",
+    "text": "4. Beyond ggplot2 Themes\nIn addition to the data labels, we can also customize the theme of a ggplot. ggplot2 provides 8 built-in themes for us to choose from. The graph below illustrates the 8 built-in themes.\n\n\n\nsource: https://ggplot2.tidyverse.org/reference/ggtheme.html\n\n\nLet’s now plot the histogram of Maths scores with theme_gray().\n\nThe plotThe code\n\n\n\n\n\n\n\n\n\n\nggplot(data = exam_data,\n       aes(x = MATHS)) +\n  geom_histogram(bins = 20,\n                 boundary = 100,\n                 color = \"gray25\",\n                 fill = \"gray90\") +\n  theme_gray() +\n  ggtitle(\"Distribution of Maths scores\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#the-plot-1",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#the-plot-1",
+    "title": "Beyond ggplot2 Fundamentals",
+    "section": "The plot",
+    "text": "The plot"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#the-code-1",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#the-code-1",
+    "title": "Beyond ggplot2 Fundamentals",
+    "section": "The code",
+    "text": "The code\n\nggplot(data = exam_data,\n       aes(x = MATHS)) +\n  geom_histogram(bins = 20,\n                 boundary = 100,\n                 color = \"gray25\",\n                 fill = \"gray90\") +\n  theme_gray() +\n  ggtitle(\"Distribution of Maths scores\")"
   }
 ]
