@@ -300,6 +300,7 @@ Graph1: let's plot the histogram of Maths scores, and assign it to a variable ca
 
 ```{r}
 #| echo: false
+#| results: false
 P1 <- ggplot(data = exam_data,
              aes(x = MATHS)) +
   geom_histogram(bins = 20,
@@ -334,6 +335,7 @@ Graph2: let's plot the histogram of English scores, and assign it to a variable 
 
 ```{r}
 #| echo: false
+#| results: false
 P2 <- ggplot(data = exam_data,
              aes(x = ENGLISH)) +
   geom_histogram(bins = 20,
@@ -368,6 +370,7 @@ Graph3: let's plot a scatterplot for English scores vs. Maths scores, and assign
 
 ```{r}
 #| echo: false
+#| results: false
 P3 <- ggplot(data = exam_data,
              aes(x = MATHS,
                  y = ENGLISH)) +
