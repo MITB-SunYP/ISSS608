@@ -2,7 +2,7 @@
 title: "Creating data visualisation beyond default"
 author: "Sun Yiping"
 date: "January 21, 2024"
-date-modified: "last-modified"
+date-modified: "January 21, 2024"
 ---
 
 ## 1. Setting the Scene
@@ -83,6 +83,84 @@ stu_qqq_sg <- read_rds("../../Data/stu_qqq_sg.rds")
 ```
 
 ### 2.3 Understanding the data
+
+#### 2.3.1 Students' performance
+
+In PISA data, students' performance was estimated through a set of plausible values. Starting from 2015, PISA provides 10 plausible values for each subject (mathematics, reading and science) instead of 5 in the earlier years. To understand more about plausible values, you may refer to Chapter 6 of [PISA Data Analysis Manual](https://www.oecd-ilibrary.org/docserver/9789264056275-en.pdf?expires=1705834565&id=id&accname=guest&checksum=849F56A0D688D1192E30FC8F38D292FD).
+
+Below lists the 10 plausible variables for each subject:
+
+-   mathematics: PV1MATH, ..., PV10MATH
+-   reading: PV1READ, ..., PV10READ
+-   science: PV1SCIE, ..., PV10SCIE
+
+There have been discussions about how to estimate the students' performance using the plausible values. Although PISA Data Analysis Manual has provided a logic to create estimates, it also mentioned that the imputation error is relatively small with one plausible value if the sample size is large.
+
+According to the table provided in the manual, the imputation error reduces as the sample size grows. The imputation error is 0.23 with a sample size being 6,400.
+
+![source: PISA Data Analysis Manual](Plausible Values.png){fig-align="center"}
+
+Since our Singapore dataset has 6,606 data records, we'll use the first plausible value of each subject to estimate the students' proficiency. Hence, the variables that will be used as an estimate of the students' performance are:
+
+-   mathematics: PV1MATH
+-   reading: PV1READ
+-   science: PV1SCIE
+
+The code chunk below provides the summary statistics of the chosen plausible values.
+
+```{r}
+stu_qqq_sg %>%
+  select(PV1MATH, PV1READ, PV1SCIE) %>%
+  summary()
+
+```
+
+#### 2.3.2 students' school
+
+PISA data provides a variable called CNTSCHID to indicate the school that the students are from. 
+
+The code chunk below displays the frequency of each school ID in the variable CNTSCHID.
+
+```{r}
+table(stu_qqq_sg$CNTSCHID)
+
+```
+
+There are a total of 165 schools participated in 2022 assessment, and they are represented by a unique school ID. However, I couldn't find the data dictionary of school ID in PISA's website. Hence, we're unable to identify the schools for more in-depth analysis. For example, understand the differences in students' performance from elite schools and neighborhood schools.
+
+#### 2.3.3 Students' gender
+
+The students' gender is provided in the variable called ST004D01T, where 1 represent females and 2 represent males.
+
+The code chunk below displays the frequency of female students and male students.
+
+```{r}
+# frequency
+table(stu_qqq_sg$ST004D01T)
+
+# proportion
+table(stu_qqq_sg$ST004D01T) %>% prop.table() %>% round(2)
+
+```
+
+There are 3,248 female students which accounts for 49% of the total sample size, and 3,358 male students which accounts for 51% of the total sample size.
+
+#### 2.3.4 Students' socioeconomic status
+
+The students' socioeconomic status in PISA data is represented by an index of economic, social and cultural status (ESCS). It's a composite score derived from a few aspects of the students' family background
+
+-   parents’ highest education
+-   parents’ highest occupational status
+-   home possessions
+
+The code chunk below shows the summary statistics of the variable ESCS:
+
+```{r}
+stu_qqq_sg %>%
+  select(ESCS) %>%
+  summary()
+
+```
 
 ## 3. Exploratory Data Analysis
 

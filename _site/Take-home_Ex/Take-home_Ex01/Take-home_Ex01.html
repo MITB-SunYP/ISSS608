@@ -340,6 +340,146 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="understanding-the-data-1" class="level3">
 <h3 class="anchored" data-anchor-id="understanding-the-data-1">2.3 Understanding the data</h3>
+<section id="students-performance" class="level4">
+<h4 class="anchored" data-anchor-id="students-performance">2.3.1 Students’ performance</h4>
+<p>In PISA data, students’ performance was estimated through a set of plausible values. Starting from 2015, PISA provides 10 plausible values for each subject (mathematics, reading and science) instead of 5 in the earlier years. To understand more about plausible values, you may refer to Chapter 6 of <a href="https://www.oecd-ilibrary.org/docserver/9789264056275-en.pdf?expires=1705834565&amp;id=id&amp;accname=guest&amp;checksum=849F56A0D688D1192E30FC8F38D292FD">PISA Data Analysis Manual</a>.</p>
+<p>Below lists the 10 plausible variables for each subject:</p>
+<ul>
+<li>mathematics: PV1MATH, …, PV10MATH</li>
+<li>reading: PV1READ, …, PV10READ</li>
+<li>science: PV1SCIE, …, PV10SCIE</li>
+</ul>
+<p>There have been discussions about how to estimate the students’ performance using the plausible values. Although PISA Data Analysis Manual has provided a logic to create estimates, it also mentioned that the imputation error is relatively small with one plausible value if the sample size is large.</p>
+<p>According to the table provided in the manual, the imputation error reduces as the sample size grows. The imputation error is 0.23 with a sample size being 6,400.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Plausible Values.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">source: PISA Data Analysis Manual</figcaption>
+</figure>
+</div>
+<p>Since our Singapore dataset has 6,606 data records, we’ll use the first plausible value of each subject to estimate the students’ proficiency. Hence, the variables that will be used as an estimate of the students’ performance are:</p>
+<ul>
+<li>mathematics: PV1MATH</li>
+<li>reading: PV1READ</li>
+<li>science: PV1SCIE</li>
+</ul>
+<p>The code chunk below provides the summary statistics of the chosen plausible values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>stu_qqq_sg <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PV1MATH, PV1READ, PV1SCIE) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    PV1MATH         PV1READ         PV1SCIE     
+ Min.   :218.6   Min.   :135.9   Min.   :187.5  
+ 1st Qu.:503.1   1st Qu.:476.9   1st Qu.:495.7  
+ Median :582.5   Median :552.9   Median :568.7  
+ Mean   :574.2   Mean   :544.4   Mean   :560.8  
+ 3rd Qu.:648.2   3rd Qu.:619.6   3rd Qu.:631.1  
+ Max.   :943.0   Max.   :859.5   Max.   :873.3  </code></pre>
+</div>
+</div>
+</section>
+<section id="students-school" class="level4">
+<h4 class="anchored" data-anchor-id="students-school">2.3.2 students’ school</h4>
+<p>PISA data provides a variable called CNTSCHID to indicate the school that the students are from.</p>
+<p>The code chunk below displays the frequency of each school ID in the variable CNTSCHID.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(stu_qqq_sg<span class="sc">$</span>CNTSCHID)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+70200001 70200002 70200003 70200004 70200005 70200006 70200007 70200008 
+      55       38       36       56       38       36       38       38 
+70200009 70200010 70200011 70200012 70200013 70200014 70200015 70200016 
+      36       36       56       57       58       36       34       37 
+70200017 70200018 70200019 70200020 70200021 70200022 70200023 70200024 
+      39       52       39       60       37       37       35       36 
+70200025 70200026 70200027 70200028 70200029 70200030 70200031 70200032 
+      38       56       54       22       39       30       56       37 
+70200033 70200034 70200035 70200036 70200037 70200038 70200039 70200040 
+      33       36       56       38       36       40       37       57 
+70200041 70200042 70200043 70200044 70200045 70200046 70200047 70200048 
+       5       37       54       55       58       37       37       36 
+70200049 70200050 70200051 70200052 70200053 70200054 70200055 70200056 
+      56       30       36       55       39       36       35       33 
+70200057 70200058 70200059 70200060 70200061 70200062 70200063 70200064 
+      28       36       39       29       39       57       39       38 
+70200065 70200066 70200067 70200068 70200069 70200070 70200071 70200072 
+      39       58       56       39       33       36       56       34 
+70200073 70200074 70200075 70200076 70200077 70200078 70200079 70200080 
+      38       37       60       37       35       22       31       37 
+70200081 70200082 70200083 70200084 70200085 70200086 70200087 70200088 
+      36       56       36       39       37       37       37       36 
+70200089 70200090 70200091 70200092 70200093 70200094 70200095 70200096 
+      36       40       35       38       38       56       28       36 
+70200097 70200098 70200099 70200100 70200101 70200102 70200103 70200104 
+      35       34       36       34       35       36       36       39 
+70200105 70200106 70200107 70200108 70200109 70200110 70200111 70200112 
+      57       39       35       37       36       57       55       40 
+70200113 70200114 70200115 70200116 70200117 70200118 70200119 70200120 
+      34       51       33       38       37       57       54       37 
+70200121 70200122 70200123 70200124 70200125 70200126 70200127 70200128 
+      37       36       32       32       36       38       37       40 
+70200129 70200130 70200131 70200132 70200133 70200134 70200135 70200136 
+      36       56       39       57       35       38       37       37 
+70200137 70200138 70200139 70200140 70200141 70200142 70200143 70200144 
+      39       15       54       38       58       55       36       37 
+70200145 70200146 70200147 70200148 70200149 70200151 70200152 70200153 
+      55       38       30       31       28       40       38       37 
+70200154 70200155 70200156 70200157 70200158 70200159 70200160 70200161 
+      35       55       37       34       29       59       36       36 
+70200162 70200163 70200164 70200165 
+      40       37       37       39 </code></pre>
+</div>
+</div>
+<p>There are a total of 165 schools participated in 2022 assessment, and they are represented by a unique school ID. However, I couldn’t find the data dictionary of school ID in PISA’s website. Hence, we’re unable to identify the schools for more in-depth analysis. For example, understand the differences in students’ performance from elite schools and neighborhood schools.</p>
+</section>
+<section id="students-gender" class="level4">
+<h4 class="anchored" data-anchor-id="students-gender">2.3.3 Students’ gender</h4>
+<p>The students’ gender is provided in the variable called ST004D01T, where 1 represent females and 2 represent males.</p>
+<p>The code chunk below displays the frequency of female students and male students.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># frequency</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(stu_qqq_sg<span class="sc">$</span>ST004D01T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   1    2 
+3248 3358 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># proportion</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(stu_qqq_sg<span class="sc">$</span>ST004D01T) <span class="sc">%&gt;%</span> <span class="fu">prop.table</span>() <span class="sc">%&gt;%</span> <span class="fu">round</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   1    2 
+0.49 0.51 </code></pre>
+</div>
+</div>
+<p>There are 3,248 female students which accounts for 49% of the total sample size, and 3,358 male students which accounts for 51% of the total sample size.</p>
+</section>
+<section id="students-socioeconomic-status" class="level4">
+<h4 class="anchored" data-anchor-id="students-socioeconomic-status">2.3.4 Students’ socioeconomic status</h4>
+<p>The students’ socioeconomic status in PISA data is represented by an index of economic, social and cultural status (ESCS). It’s a composite score derived from a few aspects of the students’ family background</p>
+<ul>
+<li>parents’ highest education</li>
+<li>parents’ highest occupational status</li>
+<li>home possessions</li>
+</ul>
+<p>The code chunk below shows the summary statistics of the variable ESCS:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>stu_qqq_sg <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ESCS) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      ESCS        
+ Min.   :-3.5488  
+ 1st Qu.:-0.2327  
+ Median : 0.4817  
+ Mean   : 0.2904  
+ 3rd Qu.: 0.9036  
+ Max.   : 3.2780  
+ NA's   :47       </code></pre>
+</div>
+</div>
+</section>
 </section>
 </section>
 <section id="exploratory-data-analysis" class="level2">
