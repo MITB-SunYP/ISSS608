@@ -1,0 +1,91 @@
+---
+title: "Creating data visualisation beyond default"
+author: "Sun Yiping"
+date: "January 21, 2024"
+date-modified: "last-modified"
+---
+
+## 1. Setting the Scene
+
+### 1.1 Background
+
+This is the **take home exercise 1 of ISSS608 Visual Analytics and Applications**. In this exercise, we are instructed to analyze a survey data to understand:
+
+-   the distribution of Singapore students' performance in mathematics, reading and science
+
+-   the relationship between these performance with schools, gender and socioeconomic status of the students
+
+Despite the continuous effort from Ministry of Education in Singapore to promote the concept of "Every school a good school", and all the student should be treated the same regardless of their background. People are still not convinced that the neighborhood schools are comparable with the elite schools.
+
+Therefore, we'd use the **survey data from 2022 Programme for International Student Assessment** ([PISA](https://www.oecd.org/pisa/)) to get some insights into what differentiate the students' academic performance.
+
+### 1.2 Data
+
+[**PISA**](https://www.oecd.org/pisa/) is a programme from **Organization for Economic Co-operation and Development ([OECD](https://www.oecd.org/))**. It measures 15-year-olds' ability to use their reading, mathematics and science knowledge and skills to meet real-life challenges, and it's conducted every three years. The last assessment was conducted in 2022, and the data was made publicly available on PISA's website.
+
+In this exercise, we'd focus on the **Student Questionnaire** data, and analyze the responses from the participants from Singapore. The full questionnaire could be found with this [link](https://www.oecd.org/pisa/data/2022database/CY8_202111_QST_MS_STQ_CBA_NoNotes.pdf).
+
+### 1.3 Objective
+
+Analyze the responses from Singapore participants, and understand:
+
+-   the distribution of Singapore students' performance in mathematics, reading and science
+
+-   the relationship between these performance with schools, gender and socioeconomic status of the students
+
+## 2. Understanding the Data
+
+### 2.1 Installing and loading the required libraries
+
+In this exercise, we'll make use the following R packages:
+
+-   [tidyverse](https://www.tidyverse.org/): an opinionated collection of R packages designed for data import, data wrangling and data exploration
+-   [haven](https://haven.tidyverse.org/index.html): to import data in SPSS, Stata and SAS data format
+
+Let's use the code chunk below to load the required R packages.
+
+```{r}
+pacman::p_load(tidyverse, haven)
+```
+
+### 2.2 Importing the data
+
+PISA provides the survey data in two formats, [SPSS and SAS](https://www.oecd.org/pisa/data/2022database/). In this exercise, we've downloaded the data in SAS data format (.sas7bdat).
+
+The code chunk below uses [`read_sas()`](https://haven.tidyverse.org/reference/read_sas.html) function of [haven](https://haven.tidyverse.org/index.html) package to import PISA data into R environment.
+
+```{r}
+#| eval: false
+stu_qqq <- read_sas("../../Data/cy08msp_stu_qqq.sas7bdat")
+```
+
+The dataset contains *1,279 variables*, and *613,744 records* from respondents all over the world. However, we are only interested in the responses from the participants from Singapore. Therefore, we use the code chunk below to filter the data using *CNT (country code)* variable.
+
+```{r}
+#| eval: false
+stu_qqq_sg <- stu_qqq %>% 
+  filter(CNT == "SGP")
+```
+
+Now, the filtered data only contains *6,606 records* from Singapore, and the number of variables remains at 1,279.
+
+The code chunk below is used to save the filtered data in *rds* format which is easier to be used in R environment.
+
+```{r}
+#| eval: false
+write_rds(stu_qqq_sg, "../../Data/stu_qqq_sg.rds")
+```
+
+Next, we use the code chunk below to import the *rds* data for the subsequent analyses.
+
+```{r}
+stu_qqq_sg <- read_rds("../../Data/stu_qqq_sg.rds")
+```
+
+### 2.3 Understanding the data
+
+## 3. Exploratory Data Analysis
+
+## 4. Summary
+
+## 5. Reference
