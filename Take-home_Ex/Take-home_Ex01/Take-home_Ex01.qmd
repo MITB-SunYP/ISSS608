@@ -51,10 +51,12 @@ In this exercise, we'll make use the following R packages:
 
 -   [heatmaply](https://talgalili.github.io/heatmaply/): to build interactive heatmap
 
+-   [ggstatsplot](https://indrajeetpatil.github.io/ggstatsplot/): an extension of ggplot2 for creating graphics with detials from statistical tests included in the information-rich plots themselves
+
 Let's use the code chunk below to load the required R packages.
 
 ```{r}
-pacman::p_load(tidyverse, haven, patchwork, ggdist, heatmaply)
+pacman::p_load(tidyverse, haven, patchwork, ggdist, heatmaply, ggstatsplot)
 ```
 
 ### 2.2 Importing the data
@@ -705,6 +707,139 @@ Nevertheless, most of the schools performed better in mathematics and science th
 :::
 
 ### 3.4 Differences among socioeconomic status
+
+Next, let's take a look at the relationship between the students' performance and their families' socioeconomic status.
+
+The code chunk below plots the scatter plots between the plausible values and ESCS index.
+
+::: panel-tabset
+
+## The plot
+
+```{r fig.height = 12}
+#| echo: false
+
+# Create scatter plot between mathematics and socioeconomic status
+scatter_maths <- ggscatterstats(data = stu_qqq_sg,
+               x = ESCS,
+               y = PV1MATH,
+               marginal = FALSE,
+               point.args = list(size = 0.5, 
+                                 alpha = 0.4, 
+                                 color = "chartreuse3"),
+               smooth.line.args = list(linewidth = 0.5, 
+                                       color = "gray15", 
+                                       method = "lm", 
+                                       formula = y ~ x),
+               title = "Correlation between Mathematics Performance and Socioeconomic Status") +
+  ggplot2::coord_cartesian(xlim = c(-4, 4),
+                           ylim = c(100, 1000))
+
+# Create scatter plot between reading and socioeconomic status
+scatter_reading <- ggscatterstats(data = stu_qqq_sg,
+               x = ESCS,
+               y = PV1READ,
+               marginal = FALSE,
+               point.args = list(size = 0.5, 
+                                 alpha = 0.4, 
+                                 color = "blue"),
+               smooth.line.args = list(linewidth = 0.5, 
+                                       color = "gray15", 
+                                       method = "lm", 
+                                       formula = y ~ x),
+               title = "Correlation between Reading Performance and Socioeconomic Status") +
+  ggplot2::coord_cartesian(xlim = c(-4, 4),
+                           ylim = c(100, 1000))
+
+# Create scatter plot between science and socioeconomic status
+scatter_science <- ggscatterstats(data = stu_qqq_sg,
+               x = ESCS,
+               y = PV1SCIE,
+               marginal = FALSE,
+               point.args = list(size = 0.5, 
+                                 alpha = 0.4, 
+                                 color = "red"),
+               smooth.line.args = list(linewidth = 0.5, 
+                                       color = "gray15", 
+                                       method = "lm", 
+                                       formula = y ~ x),
+               title = "Correlation between Science Performance and Socioeconomic Status") +
+  ggplot2::coord_cartesian(xlim = c(-4, 4),
+                           ylim = c(100, 1000))
+
+scatter_maths / scatter_reading / scatter_science
+
+```
+## The code
+
+```{r fig.height = 12}
+#| eval: false
+
+# Create scatter plot between mathematics and socioeconomic status
+scatter_maths <- ggscatterstats(data = stu_qqq_sg,
+               x = ESCS,
+               y = PV1MATH,
+               marginal = FALSE,
+               point.args = list(size = 0.5, 
+                                 alpha = 0.4, 
+                                 color = "chartreuse3"),
+               smooth.line.args = list(linewidth = 0.5, 
+                                       color = "gray15", 
+                                       method = "lm", 
+                                       formula = y ~ x),
+               title = "Correlation between Mathematics Performance and Socioeconomic Status") +
+  ggplot2::coord_cartesian(xlim = c(-4, 4),
+                           ylim = c(100, 1000))
+
+# Create scatter plot between reading and socioeconomic status
+scatter_reading <- ggscatterstats(data = stu_qqq_sg,
+               x = ESCS,
+               y = PV1READ,
+               marginal = FALSE,
+               point.args = list(size = 0.5, 
+                                 alpha = 0.4, 
+                                 color = "blue"),
+               smooth.line.args = list(linewidth = 0.5, 
+                                       color = "gray15", 
+                                       method = "lm", 
+                                       formula = y ~ x),
+               title = "Correlation between Reading Performance and Socioeconomic Status") +
+  ggplot2::coord_cartesian(xlim = c(-4, 4),
+                           ylim = c(100, 1000))
+
+# Create scatter plot between science and socioeconomic status
+scatter_science <- ggscatterstats(data = stu_qqq_sg,
+               x = ESCS,
+               y = PV1SCIE,
+               marginal = FALSE,
+               point.args = list(size = 0.5, 
+                                 alpha = 0.4, 
+                                 color = "red"),
+               smooth.line.args = list(linewidth = 0.5, 
+                                       color = "gray15", 
+                                       method = "lm", 
+                                       formula = y ~ x),
+               title = "Correlation between Science Performance and Socioeconomic Status") +
+  ggplot2::coord_cartesian(xlim = c(-4, 4),
+                           ylim = c(100, 1000))
+
+scatter_maths / scatter_reading / scatter_science
+
+```
+
+:::
+
+::: callout-tip
+
+## Interpretation
+
+The scatter plot above shows that all the three subjects display marginal positive correlation with the students' families' socioeconomic status. The pearson R^2 stays around 0.41 to 0.42 for all the three subjects.
+
+Since the socioeconomic status is represented by ESCS index which is derived from the parents’ highest education, the parents’ highest occupational status and their home possessions, it suggests the financial stability and the well-being of the families. 
+
+The students from families with higher ESCS index are more likely to receive high quality of education from their parents which would shape their study behaviors and interests. Their parents can also afford high quality tuition for them, such 1-on-1 home tuition for all the subjects.
+
+:::
 
 ## 4. Summary
 
