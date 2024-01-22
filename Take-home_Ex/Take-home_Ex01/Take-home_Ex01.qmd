@@ -3,6 +3,8 @@ title: "Creating data visualisation beyond default"
 author: "Sun Yiping"
 date: "January 21, 2024"
 date-modified: "January 21, 2024"
+execute: 
+  warning: false
 ---
 
 ## 1. Setting the Scene
@@ -47,10 +49,12 @@ In this exercise, we'll make use the following R packages:
 
 -   [ggdist](https://mjskay.github.io/ggdist/index.html): to visualize distribution and uncertainty
 
+-   [heatmaply](https://talgalili.github.io/heatmaply/): to build interactive heatmap
+
 Let's use the code chunk below to load the required R packages.
 
 ```{r}
-pacman::p_load(tidyverse, haven, patchwork, ggdist)
+pacman::p_load(tidyverse, haven, patchwork, ggdist, heatmaply)
 ```
 
 ### 2.2 Importing the data
@@ -120,18 +124,22 @@ stu_qqq_sg %>%
 
 ```
 
-#### 2.3.2 students' school
+#### 2.3.2 Students' school
 
 PISA data provides a variable called CNTSCHID to indicate the school that the students are from.
 
 The code chunk below displays the frequency of each school ID in the variable CNTSCHID.
 
 ```{r}
+# Count number of distinct values in School ID variable
+n_distinct(stu_qqq_sg$CNTSCHID)
+
+# Count the number of respondents from each school
 table(stu_qqq_sg$CNTSCHID)
 
 ```
 
-There are a total of 165 schools participated in 2022 assessment, and they are represented by a unique school ID. However, I couldn't find the data dictionary of school ID in PISA's website. Hence, we're unable to identify the schools for more in-depth analysis. For example, understand the differences in students' performance from elite schools and neighborhood schools.
+There are a total of 164 schools participated in 2022 assessment, and they are represented by a unique school ID. However, I couldn't find the data dictionary of school ID in PISA's website. Hence, we're unable to identify the schools for more in-depth analysis. For example, understand the differences in students' performance from elite schools and neighborhood schools.
 
 #### 2.3.3 Students' gender
 
@@ -612,6 +620,89 @@ Female students did better in reading, while male students did slightly better i
 :::
 
 ### 3.3 Differences among schools
+
+Next, let's compare the students performance among different schools. Since there are 164 schools participated in PISA 2022 assessment and there isn't any information to identify which schools they are, we are unable to group them in any ways but have to compare the mean performance by individual schools. 
+
+In view of the large number of schools, I'll use a heat map to see if there is any differences in performance across schools for each subject.
+
+The code chunk below prepares the data for plotting the heat map.
+
+```{r}
+# Create a dataframe with the means by each school
+stu_qqq_sg_heat <- stu_qqq_sg %>%
+  group_by(CNTSCHID) %>%
+  summarise_at(vars(PV1MATH, PV1READ, PV1SCIE),
+               funs(mean(.,na.rm = TRUE)))
+
+# Create a new variable for simplified School ID for ease of calculation and display later
+stu_qqq_sg_heat$SCHID_3D <- stu_qqq_sg_heat$CNTSCHID - 70200000
+
+# Change the row names to simplified school ID
+row.names(stu_qqq_sg_heat) <- stu_qqq_sg_heat$SCHID_3D
+
+# Only keep the variables that are needed for the heat map
+stu_qqq_sg_heat <- stu_qqq_sg_heat %>%
+  dplyr::select(-CNTSCHID, -SCHID_3D)
+
+# Convert the dataframe into a matrix
+stu_qqq_sg_heat_matrix <- data.matrix(stu_qqq_sg_heat)
+
+```
+Let's now create the heat map.
+
+::: panel-tabset
+
+## The plot
+
+```{r fig.height=12}
+#| echo: false
+
+heatmaply(stu_qqq_sg_heat_matrix,
+          dendrogram = "none",
+          xlab = "School ID",
+          ylab = "Plausible Values",
+          main = "Difference in Performance across Schools",
+          grid_color = "white",
+          grid_width = 0.00001,
+          label_names = c("School ID: ", "Subject: ", "Value"),
+          fontsize_row = 5,
+          fontsize_col = 5)
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+heatmaply(stu_qqq_sg_heat_matrix,
+          dendrogram = "none",
+          xlab = "School ID",
+          ylab = "Plausible Values",
+          main = "Difference in Performance across Schools",
+          grid_color = "white",
+          grid_width = 0.00001,
+          label_names = c("School ID: ", "Subject: ", "Value"),
+          fontsize_row = 5,
+          fontsize_col = 5)
+
+```
+
+:::
+
+::: callout-tip
+
+## Interpretation
+
+The heat map above shows that there are indeed differences in schools.
+
+Some schools performed equally badly among all the three subjects, such as School ID 149 (mathematics: 392.8, reading: 328.2, science: 378.7) and School ID 115 (mathematics: 410.5, reading: 390.1, science: 397.7).
+
+On the other hand, there are schools performed well in all the three subjects. For example, School ID 154 (mathematics: 689.1, reading: 680.3, science: 678.0) and School ID 62 (mathematics: 690.2, reading: 676.1, science: 666.3).
+
+Nevertheless, most of the schools performed better in mathematics and science than reading in general.
+
+:::
 
 ### 3.4 Differences among socioeconomic status
 
