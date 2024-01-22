@@ -40,14 +40,17 @@ Analyze the responses from Singapore participants, and understand:
 In this exercise, we'll make use the following R packages:
 
 -   [tidyverse](https://www.tidyverse.org/): an opinionated collection of R packages designed for data import, data wrangling and data exploration
+
 -   [haven](https://haven.tidyverse.org/index.html): to import data in SPSS, Stata and SAS data format
 
 -   [patchwork](https://patchwork.data-imaginist.com/): specially designed for combining separate ggplot2 graphs into a single figure
 
+-   [ggdist](https://mjskay.github.io/ggdist/index.html): to visualize distribution and uncertainty
+
 Let's use the code chunk below to load the required R packages.
 
 ```{r}
-pacman::p_load(tidyverse, haven, patchwork)
+pacman::p_load(tidyverse, haven, patchwork, ggdist)
 ```
 
 ### 2.2 Importing the data
@@ -100,7 +103,7 @@ There have been discussions about how to estimate the students' performance usin
 
 According to the table provided in the manual, the imputation error reduces as the sample size grows. The imputation error is 0.23 with a sample size being 6,400.
 
-![source: PISA Data Analysis Manual](Plausible Values.png){fig-align="center"}
+![source: PISA Data Analysis Manual](Plausible%20Values.png){fig-align="center"}
 
 Since our Singapore dataset has 6,606 data records, we'll use the first plausible value of each subject to estimate the students' proficiency. Hence, the variables that will be used as an estimate of the students' performance are:
 
@@ -119,7 +122,7 @@ stu_qqq_sg %>%
 
 #### 2.3.2 students' school
 
-PISA data provides a variable called CNTSCHID to indicate the school that the students are from. 
+PISA data provides a variable called CNTSCHID to indicate the school that the students are from.
 
 The code chunk below displays the frequency of each school ID in the variable CNTSCHID.
 
@@ -173,7 +176,6 @@ In this section, we'll use visual graphics to understand the distribution of the
 The code chunk below plots the distribution of the plausible values of mathematics, reading and science.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -204,7 +206,10 @@ hist_maths <- ggplot(data = stu_qqq_sg,
   annotate("text", x = maths_min, y = 1000,label = paste("Min=", round(maths_min, 1)), size = 3, color = "darkgreen") +
   annotate("text", x = maths_max - 50, y = 1000,label = paste("Max=", round(maths_max, 1)), size = 3, color = "darkgreen") +
   coord_cartesian(xlim = c(0, 1100),
-                  ylim = c(0, 1100))
+                  ylim = c(0, 1100)) +
+  ggtitle("Mathematics") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8))
   
 # Calculate mean, max and min of the plausible values for reading
 read_mean <- mean(stu_qqq_sg$PV1READ)
@@ -231,7 +236,10 @@ hist_read <- ggplot(data = stu_qqq_sg,
   annotate("text", x = read_min + 50, y = 1000,label = paste("Min=", round(read_min, 1)), size = 3, color = "darkblue") +
   annotate("text", x = read_max - 50, y = 1000,label = paste("Max=", round(read_max, 1)), size = 3, color = "darkblue") +
   coord_cartesian(xlim = c(0, 1100),
-                  ylim = c(0, 1100))
+                  ylim = c(0, 1100)) +
+  ggtitle("Reading") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8))
 
 # Calculate mean, max and min of the plausible values for science
 science_mean <- mean(stu_qqq_sg$PV1SCIE)
@@ -258,7 +266,10 @@ hist_science <- ggplot(data = stu_qqq_sg,
   annotate("text", x = science_min + 50, y = 1000,label = paste("Min=", round(science_min, 1)), size = 3, color = "darkred") +
   annotate("text", x = science_max - 50, y = 1000,label = paste("Max=", round(science_max, 1)), size = 3, color = "darkred") +
   coord_cartesian(xlim = c(0, 1100),
-                  ylim = c(0, 1100))
+                  ylim = c(0, 1100)) +
+  ggtitle("Science") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8))
 
 hist_maths + hist_read + hist_science +
   plot_annotation("Distribution of Plausible Values for Each Subject",
@@ -296,7 +307,10 @@ hist_maths <- ggplot(data = stu_qqq_sg,
   annotate("text", x = maths_min, y = 1000,label = paste("Min=", round(maths_min, 1)), size = 3, color = "darkgreen") +
   annotate("text", x = maths_max - 50, y = 1000,label = paste("Max=", round(maths_max, 1)), size = 3, color = "darkgreen") +
   coord_cartesian(xlim = c(0, 1100),
-                  ylim = c(0, 1100))
+                  ylim = c(0, 1100)) +
+  ggtitle("Mathematics") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8))
   
 # Calculate mean, max and min of the plausible values for reading
 read_mean <- mean(stu_qqq_sg$PV1READ)
@@ -323,7 +337,10 @@ hist_read <- ggplot(data = stu_qqq_sg,
   annotate("text", x = read_min + 50, y = 1000,label = paste("Min=", round(read_min, 1)), size = 3, color = "darkblue") +
   annotate("text", x = read_max - 50, y = 1000,label = paste("Max=", round(read_max, 1)), size = 3, color = "darkblue") +
   coord_cartesian(xlim = c(0, 1100),
-                  ylim = c(0, 1100))
+                  ylim = c(0, 1100)) +
+  ggtitle("Reading") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8))
 
 # Calculate mean, max and min of the plausible values for science
 science_mean <- mean(stu_qqq_sg$PV1SCIE)
@@ -350,21 +367,249 @@ hist_science <- ggplot(data = stu_qqq_sg,
   annotate("text", x = science_min + 50, y = 1000,label = paste("Min=", round(science_min, 1)), size = 3, color = "darkred") +
   annotate("text", x = science_max - 50, y = 1000,label = paste("Max=", round(science_max, 1)), size = 3, color = "darkred") +
   coord_cartesian(xlim = c(0, 1100),
-                  ylim = c(0, 1100))
+                  ylim = c(0, 1100)) +
+  ggtitle("Science") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8))
 
 hist_maths + hist_read + hist_science +
   plot_annotation("Distribution of Plausible Values for Each Subject",
                   theme = theme(plot.title = element_text(hjust = 0.5)))
 
 ```
-
 :::
+
+::: callout-tip
+## Interpretation
 
 The plausible values of mathematics, reading and science all follow normal distribution. The students in Singapore performed the best in mathematics, with a mean plausible value of 574.2. The mean plausible value for science is 560.8, and reading registered the lowest plausible value with a mean being 544.4.
 
 The results are inline with the common perception of Singapore's education where students are good at mathematics and science subjects. A similar result was also obtained in a [2019 study](https://www.moe.gov.sg/news/press-releases/20201208-timss-2019-singapore-students-continue-to-excel-in-mathematics-and-science) of Trends in International Mathematics and Science Study (TIMSS), according to a press release from Ministry of Education Singapore.
+:::
 
 ### 3.2 Differences between female students and male students
+
+Next, let's compare the plausible values between female students and male students.
+
+::: panel-tabset
+## The plot
+
+```{r}
+#| echo: false
+
+# Recode Gender variable to a new string variable
+stu_qqq_sg <- stu_qqq_sg %>% 
+  mutate(Gender = case_when(ST004D01T == 1 ~ 'Female',
+                            ST004D01T == 2 ~ 'Male'))
+
+# Raincloud plot of mathematics, and assign it to a variable
+rain_maths <- ggplot(stu_qqq_sg,
+       aes(x = Gender,
+           y = PV1MATH)) +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "chartreuse3",
+               slab_fill = "lightgreen") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkgreen") +
+  stat_dots(side = "left",
+            justification = 1.2,
+            binwidth = 0.5,
+            dotsize = 6,
+            color = "darkgreen") +
+  geom_hline(aes(yintercept = maths_mean),
+             color = "darkgreen",
+             linetype = "dashed") +
+  annotate("text", x = 0, y = maths_mean,label = paste("Overall Mean"), size = 3, color = "darkgreen") +
+  coord_flip() +
+  ggtitle("Mathematics") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8),
+        legend.key = element_blank())
+
+rain_read <- ggplot(stu_qqq_sg,
+       aes(x = Gender,
+           y = PV1READ)) +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "blue",
+               slab_fill = "lightblue") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkblue") +
+  stat_dots(side = "left",
+            justification = 1.2,
+            binwidth = 0.5,
+            dotsize = 6,
+            color = "darkblue") +
+  geom_hline(aes(yintercept = read_mean),
+             color = "darkblue",
+             linetype = "dashed") +
+  annotate("text", x = 0, y = read_mean,label = paste("Overall Mean"), size = 3, color = "darkblue") +
+  coord_flip() +
+  ggtitle("Reading") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+rain_science <- ggplot(stu_qqq_sg,
+       aes(x = Gender,
+           y = PV1SCIE)) +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "red",
+               slab_fill = "pink") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkred") +
+  stat_dots(side = "left",
+            justification = 1.2,
+            binwidth = 0.5,
+            dotsize = 6,
+            color = "darkred") +
+  geom_hline(aes(yintercept = science_mean),
+             color = "darkred",
+             linetype = "dashed") +
+  annotate("text", x = 0, y = science_mean,label = paste("Overall Mean"), size = 3, color = "darkred") +
+  coord_flip() +
+  ggtitle("Science") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+rain_maths + rain_read + rain_science +
+  plot_annotation("Distribution of Plausible Values for Each Subject by Gender",
+                  theme = theme(plot.title = element_text(hjust = 0.5)))
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+# Recode Gender variable to a new string variable
+stu_qqq_sg <- stu_qqq_sg %>% 
+  mutate(Gender = case_when(ST004D01T == 1 ~ 'Female',
+                            ST004D01T == 2 ~ 'Male'))
+
+# Raincloud plot of mathematics, and assign it to a variable
+rain_maths <- ggplot(stu_qqq_sg,
+       aes(x = Gender,
+           y = PV1MATH)) +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "chartreuse3",
+               slab_fill = "lightgreen") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkgreen") +
+  stat_dots(side = "left",
+            justification = 1.2,
+            binwidth = 0.5,
+            dotsize = 6,
+            color = "darkgreen") +
+  geom_hline(aes(yintercept = maths_mean),
+             color = "darkgreen",
+             linetype = "dashed") +
+  annotate("text", x = 0, y = maths_mean,label = paste("Overall Mean"), size = 3, color = "darkgreen") +
+  coord_flip() +
+  ggtitle("Mathematics") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8),
+        legend.key = element_blank())
+
+rain_read <- ggplot(stu_qqq_sg,
+       aes(x = Gender,
+           y = PV1READ)) +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "blue",
+               slab_fill = "lightblue") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkblue") +
+  stat_dots(side = "left",
+            justification = 1.2,
+            binwidth = 0.5,
+            dotsize = 6,
+            color = "darkblue") +
+  geom_hline(aes(yintercept = read_mean),
+             color = "darkblue",
+             linetype = "dashed") +
+  annotate("text", x = 0, y = read_mean,label = paste("Overall Mean"), size = 3, color = "darkblue") +
+  coord_flip() +
+  ggtitle("Reading") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+rain_science <- ggplot(stu_qqq_sg,
+       aes(x = Gender,
+           y = PV1SCIE)) +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "red",
+               slab_fill = "pink") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkred") +
+  stat_dots(side = "left",
+            justification = 1.2,
+            binwidth = 0.5,
+            dotsize = 6,
+            color = "darkred") +
+  geom_hline(aes(yintercept = science_mean),
+             color = "darkred",
+             linetype = "dashed") +
+  annotate("text", x = 0, y = science_mean,label = paste("Overall Mean"), size = 3, color = "darkred") +
+  coord_flip() +
+  ggtitle("Science") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+rain_maths + rain_read + rain_science +
+  plot_annotation("Distribution of Plausible Values for Each Subject by Gender",
+                  theme = theme(plot.title = element_text(hjust = 0.5)))
+
+```
+:::
+
+::: callout-tip
+## Interpretation
+
+In general, female students and male students perform similarly in all the three subjects. However, there are still slight difference.
+
+Female students did better in reading, while male students did slightly better in mathematics and science. A previous study (Halpern, D.F., Benbow, C.P., etc. 2007) discussed that the differences in the performance between female students and male students in mathematics and science could be indirectly related to the differences in interests and specific brain and cognitive systems.
+:::
 
 ### 3.3 Differences among schools
 
@@ -372,4 +617,8 @@ The results are inline with the common perception of Singapore's education where
 
 ## 4. Summary
 
+### 4.1 Limitation
+
 ## 5. Reference
+
+Halpern, D.F., Benbow, C.P., Geary, D.C., Gur, R.C., Hyde, J.S., & Gernsbacher, M.A. (2007). The Science of Sex Differences in Science and Mathematics. *Psychological Science in the Public Interest*, 8(1), 1-51. https://doi.org/10.1111/j.1529-1006.2007.00032.x
