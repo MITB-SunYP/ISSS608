@@ -623,7 +623,7 @@ Female students did better in reading, while male students did slightly better i
 
 ### 3.3 Differences among schools
 
-Next, let's compare the students performance among different schools. Since there are 164 schools participated in PISA 2022 assessment and there isn't any information to identify which schools they are, we are unable to group them in any ways but have to compare the mean performance by individual schools. 
+Next, let's compare the students performance among different schools. Since there are 164 schools participated in PISA 2022 assessment and there isn't any information to identify which schools they are, we are unable to group them in any ways but have to compare the mean performance by individual schools.
 
 In view of the large number of schools, I'll use a heat map to see if there is any differences in performance across schools for each subject.
 
@@ -650,10 +650,10 @@ stu_qqq_sg_heat <- stu_qqq_sg_heat %>%
 stu_qqq_sg_heat_matrix <- data.matrix(stu_qqq_sg_heat)
 
 ```
+
 Let's now create the heat map.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r fig.height=12}
@@ -689,11 +689,9 @@ heatmaply(stu_qqq_sg_heat_matrix,
           fontsize_col = 5)
 
 ```
-
 :::
 
 ::: callout-tip
-
 ## Interpretation
 
 The heat map above shows that there are indeed differences in schools.
@@ -703,7 +701,6 @@ Some schools performed equally badly among all the three subjects, such as Schoo
 On the other hand, there are schools performed well in all the three subjects. For example, School ID 154 (mathematics: 689.1, reading: 680.3, science: 678.0) and School ID 62 (mathematics: 690.2, reading: 676.1, science: 666.3).
 
 Nevertheless, most of the schools performed better in mathematics and science than reading in general.
-
 :::
 
 ### 3.4 Differences among socioeconomic status
@@ -713,7 +710,6 @@ Next, let's take a look at the relationship between the students' performance an
 The code chunk below plots the scatter plots between the plausible values and ESCS index.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r fig.height = 12}
@@ -770,6 +766,7 @@ scatter_science <- ggscatterstats(data = stu_qqq_sg,
 scatter_maths / scatter_reading / scatter_science
 
 ```
+
 ## The code
 
 ```{r fig.height = 12}
@@ -826,24 +823,41 @@ scatter_science <- ggscatterstats(data = stu_qqq_sg,
 scatter_maths / scatter_reading / scatter_science
 
 ```
-
 :::
 
 ::: callout-tip
-
 ## Interpretation
 
-The scatter plot above shows that all the three subjects display marginal positive correlation with the students' families' socioeconomic status. The pearson R^2 stays around 0.41 to 0.42 for all the three subjects.
+The scatter plot above shows that all the three subjects display marginal positive correlation with the students' families' socioeconomic status. The pearson R\^2 stays around 0.41 to 0.42 for all the three subjects.
 
-Since the socioeconomic status is represented by ESCS index which is derived from the parents’ highest education, the parents’ highest occupational status and their home possessions, it suggests the financial stability and the well-being of the families. 
+Since the socioeconomic status is represented by ESCS index which is derived from the parents’ highest education, the parents’ highest occupational status and their home possessions, it suggests the financial stability and the well-being of the families.
 
 The students from families with higher ESCS index are more likely to receive high quality of education from their parents which would shape their study behaviors and interests. Their parents can also afford high quality tuition for them, such 1-on-1 home tuition for all the subjects.
-
 :::
 
 ## 4. Summary
 
 ### 4.1 Limitation
+
+Although there are some interesting findings by exploring the differences between the students' performance in mathematics, reading and science with regards to their gender, school and socioeconomic status, there are some limitations in this take-home exercise.
+
+1.  Most of the insights in the earlier sections are drawn based on the visual graphics. Due to the time constraints, statistical tests are not conducted except the last section on the correlation studies. Therefore, the findings can't be backed by the statistical evidence. If time allows, I'll perform statistical tests to validate if those differences discussed are really significant.
+
+2.  It's a pity that PISA didn't provide a code book to identify the schools. They did that probably to protect the anonymity of the schools. However, this restricts our analysis to understand further about the performance in different types of schools. Although there is a variable to tell if the school is public or private, most of the schools in Singapore are public which makes this variable less useful in Singapore's context.
+
+### 4.2 Conclusion
+
+Through the visual checks discussed in this take-home exercise, there are indeed some interesting findings:
+
+-   The students in Singapore generally performed better in mathematics and science than reading.
+
+-   The students from different genders excelled in different subjects. Female students outperformed male students in reading, whereas male students generally do better in mathematics and science. This is probably due to their interests and brain systems.
+
+-   There are differences in the academic performance among schools. Some schools are weak in all the three subjects, and some are strong in all the three subjects. Hence, there is still a long way to go before we actually achieve "Every school a good school" in Singapore.
+
+-   Socioeconomic status does have some impact on the students' academic performance. Although the correlation is moderate, but the students from families with higher socioeconomic status generally achieve better results than those from families with lower socioeconomic status. This is probably due to the educational resources and the study environment that the parents could provide to their children.
+
+This comes to the end of my take-home exercise 1. Hope you enjoyed reading my explorations and findings. See you in the next take-home exercise 🥰
 
 ## 5. Reference
 
