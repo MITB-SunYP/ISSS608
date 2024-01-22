@@ -42,10 +42,12 @@ In this exercise, we'll make use the following R packages:
 -   [tidyverse](https://www.tidyverse.org/): an opinionated collection of R packages designed for data import, data wrangling and data exploration
 -   [haven](https://haven.tidyverse.org/index.html): to import data in SPSS, Stata and SAS data format
 
+-   [patchwork](https://patchwork.data-imaginist.com/): specially designed for combining separate ggplot2 graphs into a single figure
+
 Let's use the code chunk below to load the required R packages.
 
 ```{r}
-pacman::p_load(tidyverse, haven)
+pacman::p_load(tidyverse, haven, patchwork)
 ```
 
 ### 2.2 Importing the data
@@ -163,6 +165,210 @@ stu_qqq_sg %>%
 ```
 
 ## 3. Exploratory Data Analysis
+
+In this section, we'll use visual graphics to understand the distribution of the students' performance in mathematics, reading and science. We are also going to explore if there is any differences among schools, gender and socioeconomic status.
+
+### 3.1 Overall distribution
+
+The code chunk below plots the distribution of the plausible values of mathematics, reading and science.
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+# Calculate mean, max and min of the plausible values for mathematics
+maths_mean <- mean(stu_qqq_sg$PV1MATH)
+maths_min <- min(stu_qqq_sg$PV1MATH)
+maths_max <- max(stu_qqq_sg$PV1MATH)
+
+# Plot the histogram of mathematics, and assign it to a variable
+hist_maths <- ggplot(data = stu_qqq_sg,
+             aes(x = PV1MATH)) +
+  geom_histogram(bins = 20,
+                 boundary = 100,
+                 color = "chartreuse3",
+                 fill = "lightgreen") +
+  geom_vline(aes(xintercept = maths_mean),
+             color = "darkgreen",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = maths_min),
+             color = "darkgreen",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = maths_max),
+             color = "darkgreen",
+             linetype = "dashed") +
+  annotate("text", x = maths_mean, y = 1100,label = paste("Mean=", round(maths_mean, 1)), size = 3, color = "darkgreen") +
+  annotate("text", x = maths_min, y = 1000,label = paste("Min=", round(maths_min, 1)), size = 3, color = "darkgreen") +
+  annotate("text", x = maths_max - 50, y = 1000,label = paste("Max=", round(maths_max, 1)), size = 3, color = "darkgreen") +
+  coord_cartesian(xlim = c(0, 1100),
+                  ylim = c(0, 1100))
+  
+# Calculate mean, max and min of the plausible values for reading
+read_mean <- mean(stu_qqq_sg$PV1READ)
+read_min <- min(stu_qqq_sg$PV1READ)
+read_max <- max(stu_qqq_sg$PV1READ)
+
+# Plot the histogram of reading, and assign it to a variable
+hist_read <- ggplot(data = stu_qqq_sg,
+             aes(x = PV1READ)) +
+  geom_histogram(bins = 20,
+                 boundary = 100,
+                 color = "blue",
+                 fill = "lightblue") +
+  geom_vline(aes(xintercept = read_mean),
+             color = "darkblue",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = read_min),
+             color = "darkblue",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = read_max),
+             color = "darkblue",
+             linetype = "dashed") +
+  annotate("text", x = read_mean, y = 1100,label = paste("Mean=", round(read_mean, 1)), size = 3, color = "darkblue") +
+  annotate("text", x = read_min + 50, y = 1000,label = paste("Min=", round(read_min, 1)), size = 3, color = "darkblue") +
+  annotate("text", x = read_max - 50, y = 1000,label = paste("Max=", round(read_max, 1)), size = 3, color = "darkblue") +
+  coord_cartesian(xlim = c(0, 1100),
+                  ylim = c(0, 1100))
+
+# Calculate mean, max and min of the plausible values for science
+science_mean <- mean(stu_qqq_sg$PV1SCIE)
+science_min <- min(stu_qqq_sg$PV1SCIE)
+science_max <- max(stu_qqq_sg$PV1SCIE)
+
+# Plot the histogram of science, and assign it to a variable
+hist_science <- ggplot(data = stu_qqq_sg,
+             aes(x = PV1SCIE)) +
+  geom_histogram(bins = 20,
+                 boundary = 100,
+                 color = "red",
+                 fill = "pink") +
+  geom_vline(aes(xintercept = science_mean),
+             color = "darkred",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = science_min),
+             color = "darkred",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = science_max),
+             color = "darkred",
+             linetype = "dashed") +
+  annotate("text", x = science_mean, y = 1100,label = paste("Mean=", round(science_mean, 1)), size = 3, color = "darkred") +
+  annotate("text", x = science_min + 50, y = 1000,label = paste("Min=", round(science_min, 1)), size = 3, color = "darkred") +
+  annotate("text", x = science_max - 50, y = 1000,label = paste("Max=", round(science_max, 1)), size = 3, color = "darkred") +
+  coord_cartesian(xlim = c(0, 1100),
+                  ylim = c(0, 1100))
+
+hist_maths + hist_read + hist_science +
+  plot_annotation("Distribution of Plausible Values for Each Subject",
+                  theme = theme(plot.title = element_text(hjust = 0.5)))
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+# Calculate mean, max and min of the plausible values for mathematics
+maths_mean <- mean(stu_qqq_sg$PV1MATH)
+maths_min <- min(stu_qqq_sg$PV1MATH)
+maths_max <- max(stu_qqq_sg$PV1MATH)
+
+# Plot the histogram of mathematics, and assign it to a variable
+hist_maths <- ggplot(data = stu_qqq_sg,
+             aes(x = PV1MATH)) +
+  geom_histogram(bins = 20,
+                 boundary = 100,
+                 color = "chartreuse3",
+                 fill = "lightgreen") +
+  geom_vline(aes(xintercept = maths_mean),
+             color = "darkgreen",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = maths_min),
+             color = "darkgreen",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = maths_max),
+             color = "darkgreen",
+             linetype = "dashed") +
+  annotate("text", x = maths_mean, y = 1100,label = paste("Mean=", round(maths_mean, 1)), size = 3, color = "darkgreen") +
+  annotate("text", x = maths_min, y = 1000,label = paste("Min=", round(maths_min, 1)), size = 3, color = "darkgreen") +
+  annotate("text", x = maths_max - 50, y = 1000,label = paste("Max=", round(maths_max, 1)), size = 3, color = "darkgreen") +
+  coord_cartesian(xlim = c(0, 1100),
+                  ylim = c(0, 1100))
+  
+# Calculate mean, max and min of the plausible values for reading
+read_mean <- mean(stu_qqq_sg$PV1READ)
+read_min <- min(stu_qqq_sg$PV1READ)
+read_max <- max(stu_qqq_sg$PV1READ)
+
+# Plot the histogram of reading, and assign it to a variable
+hist_read <- ggplot(data = stu_qqq_sg,
+             aes(x = PV1READ)) +
+  geom_histogram(bins = 20,
+                 boundary = 100,
+                 color = "blue",
+                 fill = "lightblue") +
+  geom_vline(aes(xintercept = read_mean),
+             color = "darkblue",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = read_min),
+             color = "darkblue",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = read_max),
+             color = "darkblue",
+             linetype = "dashed") +
+  annotate("text", x = read_mean, y = 1100,label = paste("Mean=", round(read_mean, 1)), size = 3, color = "darkblue") +
+  annotate("text", x = read_min + 50, y = 1000,label = paste("Min=", round(read_min, 1)), size = 3, color = "darkblue") +
+  annotate("text", x = read_max - 50, y = 1000,label = paste("Max=", round(read_max, 1)), size = 3, color = "darkblue") +
+  coord_cartesian(xlim = c(0, 1100),
+                  ylim = c(0, 1100))
+
+# Calculate mean, max and min of the plausible values for science
+science_mean <- mean(stu_qqq_sg$PV1SCIE)
+science_min <- min(stu_qqq_sg$PV1SCIE)
+science_max <- max(stu_qqq_sg$PV1SCIE)
+
+# Plot the histogram of science, and assign it to a variable
+hist_science <- ggplot(data = stu_qqq_sg,
+             aes(x = PV1SCIE)) +
+  geom_histogram(bins = 20,
+                 boundary = 100,
+                 color = "red",
+                 fill = "pink") +
+  geom_vline(aes(xintercept = science_mean),
+             color = "darkred",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = science_min),
+             color = "darkred",
+             linetype = "dashed") +
+  geom_vline(aes(xintercept = science_max),
+             color = "darkred",
+             linetype = "dashed") +
+  annotate("text", x = science_mean, y = 1100,label = paste("Mean=", round(science_mean, 1)), size = 3, color = "darkred") +
+  annotate("text", x = science_min + 50, y = 1000,label = paste("Min=", round(science_min, 1)), size = 3, color = "darkred") +
+  annotate("text", x = science_max - 50, y = 1000,label = paste("Max=", round(science_max, 1)), size = 3, color = "darkred") +
+  coord_cartesian(xlim = c(0, 1100),
+                  ylim = c(0, 1100))
+
+hist_maths + hist_read + hist_science +
+  plot_annotation("Distribution of Plausible Values for Each Subject",
+                  theme = theme(plot.title = element_text(hjust = 0.5)))
+
+```
+
+:::
+
+The plausible values of mathematics, reading and science all follow normal distribution. The students in Singapore performed the best in mathematics, with a mean plausible value of 574.2. The mean plausible value for science is 560.8, and reading registered the lowest plausible value with a mean being 544.4.
+
+The results are inline with the common perception of Singapore's education where students are good at mathematics and science subjects. A similar result was also obtained in a [2019 study](https://www.moe.gov.sg/news/press-releases/20201208-timss-2019-singapore-students-continue-to-excel-in-mathematics-and-science) of Trends in International Mathematics and Science Study (TIMSS), according to a press release from Ministry of Education Singapore.
+
+### 3.2 Differences between female students and male students
+
+### 3.3 Differences among schools
+
+### 3.4 Differences among socioeconomic status
 
 ## 4. Summary
 
