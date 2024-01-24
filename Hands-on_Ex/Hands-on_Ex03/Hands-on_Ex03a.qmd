@@ -116,11 +116,9 @@ girafe(
 ```
 
 ::: callout-tip
-
 ## Try it out
 
 When we put our mouse over an dot on the graph above, the respective student ID will be displayed.
-
 :::
 
 #### 3.1.2 Create a graph with MULTIPLE tooltip
@@ -188,11 +186,9 @@ girafe(
 ```
 
 ::: callout-tip
-
 ## Try it out
 
 When we put our mouse over an dot on the graph above, the respective student ID and their classes will now be displayed.
-
 :::
 
 #### 3.1.3 Customising Tooltip style
@@ -254,11 +250,9 @@ girafe(
 ```
 
 ::: callout-tip
-
 ## Try it out
 
 When we put our mouse over an dot on the graph above, the tooltip is now displayed with a white background now.
-
 :::
 
 #### 3.1.4 Displaying statistics on tooltip
@@ -326,9 +320,3 @@ girafe(
 )
 
 ```
-
-
-
-
-
-
