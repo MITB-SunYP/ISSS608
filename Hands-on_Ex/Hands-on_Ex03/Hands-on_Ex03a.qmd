@@ -1,0 +1,334 @@
+---
+title: "Programming Interactive Data Visualization with R"
+author: "Sun Yiping"
+date: "January 24, 2024"
+date-modified: "last-modified"
+execute: 
+  warning: false
+---
+
+## 1. Learning Outcome
+
+In this hands-on exercise, we will learn to create interactive data visualization by using functions provided by **ggiraph** and **plotlyr** packages in R.
+
+## 2. Getting Started
+
+### 2.1 Installing and loading the required libraries
+
+Firstly, let's install and load the required packages:
+
+-   [tidyverse](https://www.tidyverse.org/): an opinionated collection of R packages designed for data import, data wrangling and data exploration
+
+-   [patchwork](https://patchwork.data-imaginist.com/): an R package for preparing composite figure created using ggplot2
+
+-   [ggiraph](https://davidgohel.github.io/ggiraph/): to make ggplot graphs interactive
+
+-   [plotly](https://plotly.com/r/): to plot interative statistical graphs
+
+-   [DT](https://rstudio.github.io/DT/): provides an R interface to JavaScript library [DataTables](https://datatables.net/) that create interactive tables on html page
+
+```{r}
+pacman::p_load(tidyverse, patchwork, ggiraph, plotly, DT)
+
+```
+
+### 2.2 Importing the data
+
+Similar to the previous two hands-on exercise, we'll still use Exam_data for this exercise. The data file contains year end examination grades of a cohort of primary 3 students from a local school, and it's in csv format.
+
+Let's start by importing the data.
+
+```{r}
+exam_data <- read_csv("../../Data/Exam_data.csv")
+
+```
+
+## 3. Interactive Data Visualisation - ggiraph methods
+
+In this section, we'll learn how to make the ggplot graphs interactive. It makes it easier to digest the graphs, especially when we want to use the graphs for story telling.
+
+The can be achieved by using [ggplot geometries](https://davidgohel.github.io/ggiraph/reference/#section-interactive-geometries), which has three arguments:
+
+-   **Tooltip**: a column of data-sets that contains tooltips to be displayed when we mouse over the elements
+
+-   **Onclick**: a column of data-sets that contain a JavaScript function to be executed when elements are clicked
+
+-   **Data_id**: a column of data-sets that contain an id to be associated with elements
+
+### 3.1 Tooltip effect with *tooltip* aesthetic
+
+#### 3.1.1 Create a graph with ONE tooltip
+
+It takes two steps to create an interactive ggplot graph:
+
+-   Step 1: create a graph using standard ggplot syntax. The only difference is to use the interactive version of ggplot2 geom. According to [ggiraph](https://davidgohel.github.io/ggiraph/index.html) website, almost all ggplot2 elements can be made interactive. Some of examples are:
+
+    -   [geom_point_interactive(...)](https://davidgohel.github.io/ggiraph/reference/geom_point_interactive.html)
+    -   [geom_bar_interactive(...)](https://davidgohel.github.io/ggiraph/reference/geom_bar_interactive.html)
+    -   [geom_col_interactive(...)](https://davidgohel.github.io/ggiraph/reference/geom_bar_interactive.html)
+    -   [geom_tile_interactive(...)](https://davidgohel.github.io/ggiraph/reference/geom_rect_interactive.html)
+
+```{r}
+#| eval: false
+
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(tooltip = ID), # to display ID when mouse over the dots in the graph
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+```
+
+-   Step 2: generate an [svg object](https://www.adobe.com/creativecloud/file-types/image/vector/svg-file.html) to be displayed on an html page
+
+```{r}
+#| eval: false
+
+girafe(
+  ggobj = p,
+  width_svg = 6,
+  height_svg = 6 * 0.618
+)
+
+```
+
+```{r}
+#| echo: false
+
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(tooltip = ID), # to display ID when mouse over the dots in the graph
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(
+  ggobj = p,
+  width_svg = 6,
+  height_svg = 6 * 0.618
+)
+
+```
+
+::: callout-tip
+
+## Try it out
+
+When we put our mouse over an dot on the graph above, the respective student ID will be displayed.
+
+:::
+
+#### 3.1.2 Create a graph with MULTIPLE tooltip
+
+The example above only displayed one information, student ID, when we mouse over the dots. We can actually display more information by specifying a list object as shown in the code chunk below.
+
+```{r}
+#| eval: false
+
+# Step 1: create a column in exam_data to store the information that we want to display, by concatenating the information from a few columns
+
+exam_data$tooltip <- c(paste0(
+  "Name = ", exam_data$ID,
+  "\n Class = ", exam_data$CLASS))
+
+# Step 2: create a standard ggplot2 object
+
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(tooltip = exam_data$tooltip), # supply the newly created tooltip column to tooltip argument
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+# Step 3: create an SVG object using girafe() function
+
+girafe(
+  ggobj = p,
+  width_svg = 8,
+  height_svg = 8*0.618
+)
+
+```
+
+```{r}
+#| echo: false
+
+# Step 1: create a column in exam_data to store the information that we want to display, by concatenating the information from a few columns
+
+exam_data$tooltip <- c(paste0(
+  "Name = ", exam_data$ID,
+  "\n Class = ", exam_data$CLASS))
+
+# Step 2: create a standard ggplot2 object
+
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(tooltip = exam_data$tooltip), # supply the newly created tooltip column to tooltip argument
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+# Step 3: create an SVG object using girafe() function
+
+girafe(
+  ggobj = p,
+  width_svg = 8,
+  height_svg = 8*0.618
+)
+
+```
+
+::: callout-tip
+
+## Try it out
+
+When we put our mouse over an dot on the graph above, the respective student ID and their classes will now be displayed.
+
+:::
+
+#### 3.1.3 Customising Tooltip style
+
+We can also customize tooltip using opts_tooltip() function by adding css declarations.
+
+```{r}
+#| eval: false
+
+tooltip_css <- "background-color:white; #<<
+font-style:bold; color:black;" #<<
+
+p <- ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(tooltip = ID),                   
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6*0.618,
+  options = list(    #<<
+    opts_tooltip(    #<<
+      css = tooltip_css)) #<<
+)  
+
+```
+
+```{r}
+#| echo: false
+
+tooltip_css <- "background-color:white; #<<
+font-style:bold; color:black;" #<<
+
+p <- ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(tooltip = ID),                   
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6*0.618,
+  options = list(    #<<
+    opts_tooltip(    #<<
+      css = tooltip_css)) #<<
+)  
+
+```
+
+::: callout-tip
+
+## Try it out
+
+When we put our mouse over an dot on the graph above, the tooltip is now displayed with a white background now.
+
+:::
+
+#### 3.1.4 Displaying statistics on tooltip
+
+We can also customize the tooltip to display statistical summary information. For example, we can create a function to compute 90% confident interval of the mean, and display it in the tooltip.
+
+```{r}
+#| eval: false
+
+tooltip <- function(y, ymax, accuracy = 0.01){
+  mean <- scales::number(y, accuracy = accuracy)
+  sem <- scales::number(ymax - y, accuracy = accuracy)
+  paste("Mean maths scores: ", mean, " +/- ", sem)
+}
+
+gg_point <- ggplot(data = exam_data,
+                   aes(x = RACE)) +
+  stat_summary(aes(y = MATHS,
+                   tooltip = after_stat(
+                     tooltip(y, ymax))), 
+               fun.data = "mean_se",
+               geom = GeomInteractiveCol,
+               fill = "lightblue") +
+  stat_summary(aes(y = MATHS),
+               fun.data = mean_se,
+               geom = "errorbar",
+               width = 0.2,
+               size = 0.2)
+
+girafe(
+  ggobj = gg_point,
+  width_svg = 8,
+  height_svg = 8 * 0.618
+)
+
+```
+
+```{r}
+#| echo: false
+
+tooltip <- function(y, ymax, accuracy = 0.01){
+  mean <- scales::number(y, accuracy = accuracy)
+  sem <- scales::number(ymax - y, accuracy = accuracy)
+  paste("Mean maths scores: ", mean, " +/- ", sem)
+}
+
+gg_point <- ggplot(data = exam_data,
+                   aes(x = RACE)) +
+  stat_summary(aes(y = MATHS,
+                   tooltip = after_stat(
+                     tooltip(y, ymax))), 
+               fun.data = "mean_se",
+               geom = GeomInteractiveCol,
+               fill = "lightblue") +
+  stat_summary(aes(y = MATHS),
+               fun.data = mean_se,
+               geom = "errorbar",
+               width = 0.2,
+               size = 0.2)
+
+girafe(
+  ggobj = gg_point,
+  width_svg = 8,
+  height_svg = 8 * 0.618
+)
+
+```
+
+
+
+
+
+
