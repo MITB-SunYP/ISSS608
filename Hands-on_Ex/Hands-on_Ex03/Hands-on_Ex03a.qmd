@@ -320,3 +320,591 @@ girafe(
 )
 
 ```
+
+::: callout-tip
+## Try it out
+
+When we put our mouse over a bar, the desired statistics is displayed. In our example above, the mean maths score is displayed with 90% confidence interval.
+:::
+
+### 3.2 Hover effect with *data_id* aesthetic
+
+In addition to display the tooltip when we mouse over a data point, we can also highlight a subset of the data points using another feature called data_id.
+
+```{r}
+#| eval: false
+
+p <- ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(           
+    aes(data_id = CLASS), # to highlight the data points from the same class when mouse over            
+    stackgroups = TRUE,               
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6 * 0.618                      
+)                                        
+
+```
+
+```{r}
+#| echo: false
+
+p <- ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(           
+    aes(data_id = CLASS), # to highlight the data points from the same class when mouse over            
+    stackgroups = TRUE,               
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6 * 0.618                      
+)                                        
+
+```
+
+::: callout-tip
+## Try it out
+
+When we mouse over a data point, the other data points which are from the same class are also highlighted. 
+
+Note that the default highlight color is orange, but it can be changed using hover_css = “fill:orange;”
+:::
+
+#### 3.2.1 Styling hover effect
+
+Let's now try change the highlighting effect in the graph.
+
+```{r}
+#| eval: false
+
+p <- ggplot(data = exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(data_id = CLASS),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6 * 0.618,
+  options = list(                        
+    opts_hover(css = "fill: #202020;"),  
+    opts_hover_inv(css = "opacity:0.2;") 
+  )                                        
+)                                        
+
+```
+
+```{r}
+#| echo: false
+
+p <- ggplot(data = exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(data_id = CLASS),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6 * 0.618,
+  options = list(                        
+    opts_hover(css = "fill: #202020;"),  
+    opts_hover_inv(css = "opacity:0.2;") 
+  )                                        
+)                                        
+
+```
+
+::: callout-tip
+## Try it out
+
+When we mouse over a data point, only the data points from the same class are highlighted in black and the rest of the points are dimmed. 
+:::
+
+#### 3.2.2 Combining tooltip and hover effect
+
+Now, let's combine tooltip and data_id features to make the graph more informative.
+
+```{r}
+#| eval: false
+
+p <- ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(tooltip = CLASS, # to display class information when hover over
+        data_id = CLASS), # to highlight the data from the same class when hover over             
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6 * 0.618,
+  options = list(                        
+    opts_hover(css = "fill: #202020;"),  
+    opts_hover_inv(css = "opacity: 0.2;") 
+  )                                        
+)                                        
+
+```
+
+```{r}
+#| echo: false
+
+p <- ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(tooltip = CLASS, # to display class information when hover over
+        data_id = CLASS), # to highlight the data from the same class when hover over             
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6 * 0.618,
+  options = list(                        
+    opts_hover(css = "fill: #202020;"),  
+    opts_hover_inv(css = "opacity: 0.2;") 
+  )                                        
+)                                        
+
+```
+
+::: callout-tip
+## Try it out
+
+When we mouse over a data point, only the data points from the same class are highlighted in black and the rest of the points are dimmed. At the same time, the class information is displayed as well.
+:::
+
+### 3.3 Click effect with *onclick*
+
+ggiraph also provides a feature to allow us to redirect the user to a webpage when they click on the graph.
+
+The code chunk below shows an example.
+
+```{r}
+#| eval: false
+
+# Create a column in exam_data to store the website address
+exam_data$onclick <- sprintf("window.open(\"%s%s\")",
+"https://www.moe.gov.sg/schoolfinder?journey=Primary%20school",
+as.character(exam_data$ID))
+
+p <- ggplot(data = exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(onclick = onclick),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6 * 0.618)                                        
+
+```
+
+```{r}
+#| echo: false
+
+# Create a column in exam_data to store the website address with javascript instructions
+exam_data$onclick <- sprintf("window.open(\"%s%s\")",
+"https://www.moe.gov.sg/schoolfinder?journey=Primary%20school",
+as.character(exam_data$ID))
+
+p <- ggplot(data = exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(onclick = onclick),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6 * 0.618)                                        
+
+```
+
+::: callout-tip
+## Try it out
+
+When we click on a data point, a webpage is opened automatically to look for the school with the respective school ID.
+:::
+
+### 3.4 Coordinated Multiple Views with ggiraph
+
+We can also plot coordinated multiple views to highlight the related information regarding the same data point.
+
+```{r}
+#| eval: false
+
+# Step 1: create the first interactive graph
+p1 <- ggplot(data = exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(data_id = ID),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +  
+  coord_cartesian(xlim = c(0, 100)) + 
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+
+# Step 2: create the second interactive graph
+p2 <- ggplot(data = exam_data, 
+       aes(x = ENGLISH)) +
+  geom_dotplot_interactive(              
+    aes(data_id = ID),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") + 
+  coord_cartesian(xlim = c(0, 100)) + 
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+
+# Combine the two graphs using patchwork package
+girafe(code = print(p1 + p2), 
+       width_svg = 6,
+       height_svg = 3,
+       options = list(
+         opts_hover(css = "fill: #202020;"),
+         opts_hover_inv(css = "opacity:0.2;")
+         )
+       ) 
+
+```
+
+```{r}
+#| echo: false
+
+# Step 1: create the first interactive graph
+p1 <- ggplot(data = exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(data_id = ID),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +  
+  coord_cartesian(xlim = c(0, 100)) + 
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+
+# Step 2: create the second interactive graph
+p2 <- ggplot(data = exam_data, 
+       aes(x = ENGLISH)) +
+  geom_dotplot_interactive(              
+    aes(data_id = ID),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") + 
+  coord_cartesian(xlim = c(0, 100)) + 
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+
+# Combine the two graphs using patchwork package
+girafe(code = print(p1 + p2), 
+       width_svg = 6,
+       height_svg = 3,
+       options = list(
+         opts_hover(css = "fill: #202020;"),
+         opts_hover_inv(css = "opacity:0.2;")
+         )
+       ) 
+
+```
+
+::: callout-tip
+## Try it out
+
+When we hover over a data point in any of the two graphs, the related data point is also highlighted in the other graph.
+:::
+
+## 4. Interactive Data Visualisation - plotly methods!
+
+There is another package available in R to create interactive graphs, that is plotly package. It can be done in two ways:
+
+-   using *plot_ly()*
+-   using *ggplotly()*
+
+### 4.1 Creating an interactive scatter plot: *plot_ly()* method
+
+The code chunk below shows an example.
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+plot_ly(data = exam_data, 
+             x = ~MATHS, 
+             y = ~ENGLISH)
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+plot_ly(data = exam_data, 
+             x = ~MATHS, 
+             y = ~ENGLISH)
+
+```
+
+:::
+
+### 4.2 Working with visual variable: *plot_ly()* method
+
+We can add another dimension to the plot by coloring the data points base on a categorical variable, for example, RACE.
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+plot_ly(data = exam_data, 
+        x = ~ENGLISH, 
+        y = ~MATHS, 
+        color = ~RACE)
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+plot_ly(data = exam_data, 
+        x = ~ENGLISH, 
+        y = ~MATHS, 
+        color = ~RACE)
+
+```
+
+:::
+
+::: callout-tip
+## Try it out
+
+The color did not just provide another piece of information, it can also act as filters to the plot. The data points are filtered when we click on the categories in the legend.
+:::
+
+### 4.3 Creating an interactive scatter plot: *ggplotly()* method
+
+Let's now create an interactive scatter plot.
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+p <- ggplot(data = exam_data, 
+            aes(x = MATHS,
+                y = ENGLISH)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100),
+                  ylim = c(0, 100))
+
+ggplotly(p)
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+p <- ggplot(data = exam_data, 
+            aes(x = MATHS,
+                y = ENGLISH)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100),
+                  ylim = c(0, 100))
+
+ggplotly(p)
+
+```
+
+:::
+
+::: callout-tip
+## Try it out
+
+The coordinates are now displayed when we hover over a data point.
+:::
+
+### 4.4 Coordinated Multiple Views with plotly
+
+Similar to ggiraph package, we can also create coordinated multiple views using plotly package.
+
+-   *highlight_key()* of plotly package is used as shared data
+-   two scatterplots will be created by using *ggplot2* functions
+-   *subplot()* of plotly package is used to place them next to each other side-by-side
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+d <- highlight_key(exam_data)
+
+p1 <- ggplot(data = d, 
+            aes(x = MATHS,
+                y = ENGLISH)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100),
+                  ylim = c(0, 100))
+
+p2 <- ggplot(data = d, 
+            aes(x = MATHS,
+                y = SCIENCE)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100),
+                  ylim = c(0, 100))
+subplot(ggplotly(p1),
+        ggplotly(p2))
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+d <- highlight_key(exam_data)
+
+p1 <- ggplot(data = d, 
+            aes(x = MATHS,
+                y = ENGLISH)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100),
+                  ylim = c(0, 100))
+
+p2 <- ggplot(data = d, 
+            aes(x = MATHS,
+                y = SCIENCE)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100),
+                  ylim = c(0, 100))
+subplot(ggplotly(p1),
+        ggplotly(p2))
+
+```
+
+:::
+
+## 5. Interactive Data Visualisation - *crosstalk* methods!
+
+Lastly, let's make more interactions in R.
+
+### 5.1 Interactive Data Table: *DT* package
+
+The data tables can also be interactive with the help of a DataTables wrapper from the JavaScript library.
+
+```{r}
+DT::datatable(exam_data, class = "compact")
+
+```
+
+::: callout-tip
+## Try it out
+
+Unlike the traditional way of displaying the data tables, there is a search box above the table to allow us type the texts and the table will be filtered accordingly.
+:::
+
+### 5.2 Linked brushing: *crosstalk* method
+
+We can even combine the plot and the data table, and make them interlinked.
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+d <- highlight_key(exam_data) 
+
+p <- ggplot(d, 
+            aes(ENGLISH, 
+                MATHS)) + 
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100),
+                  ylim = c(0, 100))
+
+gg <- highlight(ggplotly(p),        
+                "plotly_selected")  
+
+crosstalk::bscols(gg,               
+                  DT::datatable(d), 
+                  widths = 5)        
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+d <- highlight_key(exam_data) 
+
+p <- ggplot(d, 
+            aes(ENGLISH, 
+                MATHS)) + 
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100),
+                  ylim = c(0, 100))
+
+gg <- highlight(ggplotly(p),        
+                "plotly_selected")  
+
+crosstalk::bscols(gg,               
+                  DT::datatable(d), 
+                  widths = 5) 
+
+```
+
+:::
+
+This comes to the end of this hands-on exercise. I have learned many different methods to create interactive plots in R. Hope you enjoyed it, too!
+
+See you in the next hands-on exercise 🥰
+
+
+
+
