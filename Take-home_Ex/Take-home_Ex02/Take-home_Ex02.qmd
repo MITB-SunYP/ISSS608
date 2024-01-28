@@ -1,0 +1,227 @@
+---
+title: "Data Vis Makeover"
+author: "Sun Yiping"
+date: "January 28, 2024"
+date-modified: "January 28, 2024"
+execute: 
+  warning: false
+---
+
+## 1. Setting the Scene
+
+### 1.1 Background
+
+This is the **take home exercise 2 of ISSS608 Visual Analytics and Applications**. In this exercise, we are instructed to refer to the take home exercise 1 of one of our fellow classmates, and discuss his / her visualizations in terms of clarity and aesthetics.
+
+### 1.2 Choose the reference work
+
+The discussions in this take home exercise is based on [this work](https://isss608cjh.netlify.app/take-home_ex/take-home_ex01/take-home_ex01).
+
+## 2. Data Preparation
+
+### 2.1 Installing and loading the required libraries
+
+The chunk below is used to install and load the R packages that were used by the original author.
+
+```{r}
+pacman::p_load(tidyverse, haven, dplyr, plotly, ggrepel, patchwork, 
+               ggthemes, hrbrthemes, ggplot2)
+
+```
+
+### 2.2 Import the data
+
+The data used for our take home exercise 1 is a survey data from PISA, which measures 15-year-olds' ability to use their reading, mathematics and science knowledge and skills to meet real-life challenges. If you'd like to find out more about the dataset, you may refer to [my take home exercise 1](https://isss608-mitbsunyp.netlify.app/take-home_ex/take-home_ex01/take-home_ex01).
+
+Let's first import the dataset.
+
+```{r}
+stu_qqq_sg <- read_rds("../../Data/stu_qqq_sg.rds")
+
+```
+
+Next, we'll follow the code provided by the original author to make a subset of the data, and compute the average plausible values for mathematics, reading and science.
+
+```{r}
+# Create a new dataset PV by extracting relevant variables from stu_qqq_sg
+PV <- stu_qqq_sg %>%
+  mutate(
+    Math_Score = rowMeans(select(., starts_with("PV1MATH"), starts_with("PV2MATH"), starts_with("PV3MATH"), starts_with("PV4MATH"), starts_with("PV5MATH"), starts_with("PV6MATH"), starts_with("PV7MATH"), starts_with("PV8MATH"), starts_with("PV9MATH"), starts_with("PV10MATH")), na.rm = TRUE),
+    Reading_Score = rowMeans(select(., starts_with("PV1READ"), starts_with("PV2READ"), starts_with("PV3READ"), starts_with("PV4READ"), starts_with("PV5READ"), starts_with("PV6READ"), starts_with("PV7READ"), starts_with("PV8READ"), starts_with("PV9READ"), starts_with("PV10READ")), na.rm = TRUE),
+    Science_Score = rowMeans(select(., starts_with("PV1SCIE"), starts_with("PV2SCIE"), starts_with("PV3SCIE"), starts_with("PV4SCIE"), starts_with("PV5SCIE"), starts_with("PV6SCIE"), starts_with("PV7SCIE"), starts_with("PV8SCIE"), starts_with("PV9SCIE"), starts_with("PV10SCIE")), na.rm = TRUE),
+    Total_Score = Math_Score + Reading_Score + Science_Score,
+    Gender = ifelse(ST004D01T == 1,  "Female", "Male"),
+    Own_Room = ifelse(ST250Q01JA == 1, "Yes" , "No"),
+    mi_num = ST251Q06JA
+  ) %>%
+  select(CNTSCHID, CNTSTUID, Math_Score, Reading_Score, Science_Score, Total_Score, Gender, Own_Room, mi_num)
+
+```
+
+As described by the original author, we use the code chunk below to convert school ID and student ID to string variables. We'll also clear the missing values in the new dataset.
+
+```{r}
+# Convert numerical variables to string variables
+PV$CNTSCHID <- as.character(PV$CNTSCHID)
+PV$CNTSCHID <- as.character(PV$CNTSTUID)
+
+# Clear missing values
+PV <- na.omit(PV)
+
+```
+
+## 3. Visualization Discussion and Remake
+
+### 3.1 Distribution of Student Performance
+
+**Original plot**
+
+![](images/clipboard-2656178259.png)
+
+**What's good about this plot?**
+
+The original author chose the right type of graph to view the distribution of the subjects, which is the histograms. It is easy for us to see if the data exhibits any abnormal patterns, for example, skewness or multi-model distribution.
+
+**What can be improved?**
+
+-   It isn't very obvious to identify the plots for each subject as they are all in the same color. My suggestion is to use different colors to represent different subjects.
+
+-   The scales could be aligned across all the charts so to avoid mis-interpretation when comparing the mean scores among the three subjects.
+
+-   Density curves could be added to show the smoothness of the curves.
+
+-   The plots could be better arranged to show the relationship among individual subjects and the total scores.
+
+**A remake of the plot**
+
+::: panel-tabset
+## The plot
+
+```{r}
+#| echo: false
+
+plot1 <- ggplot(data = PV, aes(x = Math_Score, y = after_stat(density))) +
+  geom_histogram(bins = 10, boundary = 100, color = "chartreuse3", fill = "lightgreen") +
+  geom_density(lwd = 0.8, colour = "darkgreen") +
+  coord_cartesian(xlim = c(100, 900)) +
+  ggtitle("Distribution of Maths Scores")+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+  
+plot2 <- ggplot(data = PV, aes(x = Reading_Score, y = after_stat(density))) +
+  geom_histogram(bins = 10, boundary = 100, color = "blue", fill = "lightblue") +
+  geom_density(lwd = 0.8, colour = "darkblue") +
+  coord_cartesian(xlim = c(100, 900)) +
+  ggtitle("Distribution of Reading Scores")+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot3 <- ggplot(data = PV, aes(x = Science_Score, y = after_stat(density))) +
+  geom_histogram(bins = 10, boundary = 100, color = "red", fill = "pink") +
+  geom_density(lwd = 0.8, colour = "darkred") +
+  coord_cartesian(xlim = c(100, 900)) +
+  ggtitle("Distribution of Science Scores")+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot4 <- ggplot(data = PV, aes(x = Total_Score, y = after_stat(density))) +
+  geom_histogram(bins = 10, boundary = 100, color = "gray25", fill = "gray95") +
+  geom_density(lwd = 0.8, colour = "gray10") +
+  coord_cartesian(xlim = c(200, 2600)) +
+  ggtitle("Distribution of Total Scores")+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+(plot1 / plot2 / plot3) | plot4
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+plot1 <- ggplot(data = PV, aes(x = Math_Score, y = after_stat(density))) +
+  geom_histogram(bins = 10, boundary = 100, color = "chartreuse3", fill = "lightgreen") +
+  geom_density(lwd = 0.8, colour = "darkgreen") +
+  coord_cartesian(xlim = c(100, 900)) +
+  ggtitle("Distribution of Maths Scores")+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+  
+plot2 <- ggplot(data = PV, aes(x = Reading_Score, y = after_stat(density))) +
+  geom_histogram(bins = 10, boundary = 100, color = "blue", fill = "lightblue") +
+  geom_density(lwd = 0.8, colour = "darkblue") +
+  coord_cartesian(xlim = c(100, 900)) +
+  ggtitle("Distribution of Reading Scores")+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot3 <- ggplot(data = PV, aes(x = Science_Score, y = after_stat(density))) +
+  geom_histogram(bins = 10, boundary = 100, color = "red", fill = "pink") +
+  geom_density(lwd = 0.8, colour = "darkred") +
+  coord_cartesian(xlim = c(100, 900)) +
+  ggtitle("Distribution of Science Scores")+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot4 <- ggplot(data = PV, aes(x = Total_Score, y = after_stat(density))) +
+  geom_histogram(bins = 10, boundary = 100, color = "gray25", fill = "gray95") +
+  geom_density(lwd = 0.8, colour = "gray10") +
+  coord_cartesian(xlim = c(200, 2600)) +
+  ggtitle("Distribution of Total Scores")+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+(plot1 / plot2 / plot3) | plot4
+
+```
+:::
+
+### 3.2 Student Performance by Gender
+
+**Original plot**
+
+![](images/clipboard-4228929711.png)
+
+**What's good about this plot?**
+
+**What can be improved?**
+
+### 3.3 Student Performance by School
+
+**Original plot**
+
+![](images/clipboard-4209240081.png)
+
+**What's good about this plot?**
+
+**What can be improved?**
+
+### 3.4 Student Performance by Musical Instruments
+
+**Original plot**
+
+![](images/clipboard-630224302.png)
+
+**What's good about this plot?**
+
+**What can be improved?**
+
+### 3.5 Student Performance by Own room
+
+**Original plot**
+
+![](images/clipboard-594276490.png)
+
+**What's good about this plot?**
+
+**What can be improved?**
