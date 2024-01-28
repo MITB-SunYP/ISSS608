@@ -103,6 +103,7 @@ The original author chose the right type of graph to view the distribution of th
 plot1 <- ggplot(data = PV, aes(x = Math_Score, y = after_stat(density))) +
   geom_histogram(bins = 10, boundary = 100, color = "chartreuse3", fill = "lightgreen") +
   geom_density(lwd = 0.8, colour = "darkgreen") +
+  scale_y_continuous(labels = scales::percent) +
   coord_cartesian(xlim = c(100, 900)) +
   ggtitle("Distribution of Maths Scores")+
   theme_minimal() +
@@ -112,6 +113,7 @@ plot1 <- ggplot(data = PV, aes(x = Math_Score, y = after_stat(density))) +
 plot2 <- ggplot(data = PV, aes(x = Reading_Score, y = after_stat(density))) +
   geom_histogram(bins = 10, boundary = 100, color = "blue", fill = "lightblue") +
   geom_density(lwd = 0.8, colour = "darkblue") +
+  scale_y_continuous(labels = scales::percent) +
   coord_cartesian(xlim = c(100, 900)) +
   ggtitle("Distribution of Reading Scores")+
   theme_minimal() +
@@ -121,6 +123,7 @@ plot2 <- ggplot(data = PV, aes(x = Reading_Score, y = after_stat(density))) +
 plot3 <- ggplot(data = PV, aes(x = Science_Score, y = after_stat(density))) +
   geom_histogram(bins = 10, boundary = 100, color = "red", fill = "pink") +
   geom_density(lwd = 0.8, colour = "darkred") +
+  scale_y_continuous(labels = scales::percent) +
   coord_cartesian(xlim = c(100, 900)) +
   ggtitle("Distribution of Science Scores")+
   theme_minimal() +
@@ -130,6 +133,7 @@ plot3 <- ggplot(data = PV, aes(x = Science_Score, y = after_stat(density))) +
 plot4 <- ggplot(data = PV, aes(x = Total_Score, y = after_stat(density))) +
   geom_histogram(bins = 10, boundary = 100, color = "gray25", fill = "gray95") +
   geom_density(lwd = 0.8, colour = "gray10") +
+  scale_y_continuous(labels = scales::percent) +
   coord_cartesian(xlim = c(200, 2600)) +
   ggtitle("Distribution of Total Scores")+
   theme_minimal() +
@@ -148,6 +152,7 @@ plot4 <- ggplot(data = PV, aes(x = Total_Score, y = after_stat(density))) +
 plot1 <- ggplot(data = PV, aes(x = Math_Score, y = after_stat(density))) +
   geom_histogram(bins = 10, boundary = 100, color = "chartreuse3", fill = "lightgreen") +
   geom_density(lwd = 0.8, colour = "darkgreen") +
+  scale_y_continuous(labels = scales::percent) +
   coord_cartesian(xlim = c(100, 900)) +
   ggtitle("Distribution of Maths Scores")+
   theme_minimal() +
@@ -157,6 +162,7 @@ plot1 <- ggplot(data = PV, aes(x = Math_Score, y = after_stat(density))) +
 plot2 <- ggplot(data = PV, aes(x = Reading_Score, y = after_stat(density))) +
   geom_histogram(bins = 10, boundary = 100, color = "blue", fill = "lightblue") +
   geom_density(lwd = 0.8, colour = "darkblue") +
+  scale_y_continuous(labels = scales::percent) +
   coord_cartesian(xlim = c(100, 900)) +
   ggtitle("Distribution of Reading Scores")+
   theme_minimal() +
@@ -166,6 +172,7 @@ plot2 <- ggplot(data = PV, aes(x = Reading_Score, y = after_stat(density))) +
 plot3 <- ggplot(data = PV, aes(x = Science_Score, y = after_stat(density))) +
   geom_histogram(bins = 10, boundary = 100, color = "red", fill = "pink") +
   geom_density(lwd = 0.8, colour = "darkred") +
+  scale_y_continuous(labels = scales::percent) +
   coord_cartesian(xlim = c(100, 900)) +
   ggtitle("Distribution of Science Scores")+
   theme_minimal() +
@@ -175,6 +182,7 @@ plot3 <- ggplot(data = PV, aes(x = Science_Score, y = after_stat(density))) +
 plot4 <- ggplot(data = PV, aes(x = Total_Score, y = after_stat(density))) +
   geom_histogram(bins = 10, boundary = 100, color = "gray25", fill = "gray95") +
   geom_density(lwd = 0.8, colour = "gray10") +
+  scale_y_continuous(labels = scales::percent) +
   coord_cartesian(xlim = c(200, 2600)) +
   ggtitle("Distribution of Total Scores")+
   theme_minimal() +
@@ -194,7 +202,13 @@ plot4 <- ggplot(data = PV, aes(x = Total_Score, y = after_stat(density))) +
 
 **What's good about this plot?**
 
+While comparing the distribution between genders, the author used different colors so it's easy to differentiate the distributions for female students and male students.
+
 **What can be improved?**
+
+-   Although there are supposed to be two colors to represent female students and male students, it seems to be three categories when we first look at the graph because a third color is created at the area where the two distributions overlap. I'd suggest to use density curves without filling color.
+
+**A remake of the plot**
 
 ### 3.3 Student Performance by School
 
@@ -206,6 +220,8 @@ plot4 <- ggplot(data = PV, aes(x = Total_Score, y = after_stat(density))) +
 
 **What can be improved?**
 
+**A remake of the plot**
+
 ### 3.4 Student Performance by Musical Instruments
 
 **Original plot**
@@ -216,6 +232,8 @@ plot4 <- ggplot(data = PV, aes(x = Total_Score, y = after_stat(density))) +
 
 **What can be improved?**
 
+**A remake of the plot**
+
 ### 3.5 Student Performance by Own room
 
 **Original plot**
@@ -225,3 +243,5 @@ plot4 <- ggplot(data = PV, aes(x = Total_Score, y = after_stat(density))) +
 **What's good about this plot?**
 
 **What can be improved?**
+
+**A remake of the plot**
