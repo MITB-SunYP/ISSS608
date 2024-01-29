@@ -524,8 +524,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Original plot</strong></p>
 <p><img src="images/clipboard-4209240081.png" class="img-fluid"></p>
 <p><strong>What’s good about this plot?</strong></p>
+<p>Boxplot is one of the ways to view the distribution of the performance across schools. The author also showed school IDs of the outliers to help identify if any schools performed well or bad for each of the subjects.</p>
 <p><strong>What can be improved?</strong></p>
+<ul>
+<li><p>Static boxplot has its limitations when the audience try to draw a story across different subjects, for example, if there is any schools that performed consistently good or bad across all the subjects. Therefore, a coordinated interactive graph would allow the audience to easily see the performance of a selected school across subjects.</p></li>
+<li><p>I’d also suggest to use different color to represent different subjects for easy identification.</p></li>
+</ul>
 <p><strong>A remake of the plot</strong></p>
+<p>We’ll first follow the author’s code chunk to calculate the average scores for each school for each subject.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>School_Avg_Scores <span class="ot">&lt;-</span> PV <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(CNTSCHID) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Avg_Math_Score =</span> <span class="fu">mean</span>(Math_Score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Avg_Reading_Score =</span> <span class="fu">mean</span>(Reading_Score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Avg_Science_Score =</span> <span class="fu">mean</span>(Science_Score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Avg_Score =</span> <span class="fu">mean</span>(Total_Score<span class="sc">/</span><span class="dv">3</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>School_Avg_Scores_subjects <span class="ot">&lt;-</span> School_Avg_Scores <span class="sc">%&gt;%</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(CNTSCHID, <span class="fu">starts_with</span>(<span class="st">"Avg_Math"</span>), <span class="fu">starts_with</span>(<span class="st">"Avg_Reading"</span>), <span class="fu">starts_with</span>(<span class="st">"Avg_Science"</span>),<span class="fu">starts_with</span>(<span class="st">"Avg_Score"</span>))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>School_Avg_Scores_long <span class="ot">&lt;-</span> School_Avg_Scores_subjects <span class="sc">%&gt;%</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>CNTSCHID, <span class="at">names_to =</span> <span class="st">"Subject"</span>, <span class="at">values_to =</span> <span class="st">"Score"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now let’s remake the plot.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">The plot</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+
+</div>
+</div>
+</div>
 </section>
 <section id="student-performance-by-musical-instruments" class="level3">
 <h3 class="anchored" data-anchor-id="student-performance-by-musical-instruments">3.4 Student Performance by Musical Instruments</h3>

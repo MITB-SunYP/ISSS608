@@ -25,7 +25,7 @@ The chunk below is used to install and load the R packages that were used by the
 
 ```{r}
 pacman::p_load(tidyverse, haven, dplyr, plotly, ggrepel, patchwork, 
-               ggthemes, hrbrthemes, jpeg)
+               ggthemes, hrbrthemes, jpeg, ggiraph)
 
 ```
 
@@ -213,7 +213,6 @@ While comparing the distribution between genders, the author used different colo
 **A remake of the plot**
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -387,7 +386,6 @@ plot4_img <- plot4 +
 plot1_img + plot2_img + plot3_img + plot4_img
 
 ```
-
 :::
 
 ### 3.3 Student Performance by School
@@ -398,9 +396,54 @@ plot1_img + plot2_img + plot3_img + plot4_img
 
 **What's good about this plot?**
 
+Boxplot is one of the ways to view the distribution of the performance across schools. The author also showed school IDs of the outliers to help identify if any schools performed well or bad for each of the subjects.
+
 **What can be improved?**
 
+-   Static boxplot has its limitations when the audience try to draw a story across different subjects, for example, if there is any schools that performed consistently good or bad across all the subjects. Therefore, a coordinated interactive graph would allow the audience to easily see the performance of a selected school across subjects.
+
+-   I'd also suggest to use different color to represent different subjects for easy identification.
+
 **A remake of the plot**
+
+We'll first follow the author's code chunk to calculate the average scores for each school for each subject.
+
+```{r}
+School_Avg_Scores <- PV %>%
+  group_by(CNTSCHID) %>%
+  summarize(
+    Avg_Math_Score = mean(Math_Score, na.rm = TRUE),
+    Avg_Reading_Score = mean(Reading_Score, na.rm = TRUE),
+    Avg_Science_Score = mean(Science_Score, na.rm = TRUE),
+    Avg_Score = mean(Total_Score/3, na.rm = TRUE)
+  )
+
+School_Avg_Scores_subjects <- School_Avg_Scores %>%
+  select(CNTSCHID, starts_with("Avg_Math"), starts_with("Avg_Reading"), starts_with("Avg_Science"),starts_with("Avg_Score"))
+
+School_Avg_Scores_long <- School_Avg_Scores_subjects %>%
+  pivot_longer(cols = -CNTSCHID, names_to = "Subject", values_to = "Score")
+
+```
+
+Now let's remake the plot.
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+ggplot(School_Avg_Scores_long, aes(x = Subject, y = Score, fill = Subject)) +
+  geom_boxplot_interactive(aes(tooltip = CNTSCHID)) +
+  labs(title = "Boxplot of Average Scores for Each Subject", x = "", y = "") +
+  theme_minimal() +
+  theme(text = element_text(size = 10),
+        plot.title = element_text(hjust = 0.5))
+
+```
+
+:::
+
 
 ### 3.4 Student Performance by Musical Instruments
 
