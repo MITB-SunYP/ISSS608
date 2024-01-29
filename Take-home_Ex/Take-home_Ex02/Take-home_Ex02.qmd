@@ -227,15 +227,16 @@ plot1 <- ggplot(data = PV, aes(x = Math_Score, color = Gender)) +
   labs(title = "Math Scores by Gender") +
   theme(legend.position = "none") +
   scale_y_continuous(labels = scales::percent) +
+  coord_cartesian(xlim = c(100, 900)) +
   theme_minimal() +
   theme(text = element_text(size = 8), plot.title = element_text(hjust = 0.5))
 
 plot1_img <- plot1 +
   inset_element(p = img_maths,
-                 left = 0.4,
-                 bottom = 0.15,
-                 right = 0.7,
-                 top = 0.45)
+                 left = 0.1,
+                 bottom = 0.7,
+                 right = 0.3,
+                 top = 0.9)
 
 # Reading: Plot the density curves by gender with reading image
 img_read <- readJPEG("images/Reading.jpg", native = TRUE)
@@ -245,16 +246,17 @@ plot2 <- ggplot(data = PV, aes(x = Reading_Score, color = Gender)) +
   labs(title = "Reading Scores by Gender") +
   theme(legend.position = "none") +
   scale_y_continuous(labels = scales::percent)+
+  coord_cartesian(xlim = c(100, 900)) +
   theme_minimal() +
   theme(text = element_text(size = 8),
         plot.title = element_text(hjust = 0.5))
 
 plot2_img <- plot2 +
   inset_element(p = img_read,
-                 left = 0.5,
-                 bottom = 0.15,
-                 right = 0.7,
-                 top = 0.4)
+                 left = 0.1,
+                 bottom = 0.7,
+                 right = 0.3,
+                 top = 0.9)
 
 # English: Plot the density curves by gender with English image
 img_science <- readJPEG("images/Science.jpg", native = TRUE)
@@ -264,16 +266,17 @@ plot3 <- ggplot(data = PV, aes(x = Science_Score, color = Gender)) +
   labs(title = "Science Scores by Gender") +
   theme(legend.position = "none") +
   scale_y_continuous(labels = scales::percent)+
+  coord_cartesian(xlim = c(100, 900)) +
   theme_minimal() +
   theme(text = element_text(size = 8),
         plot.title = element_text(hjust = 0.5))
 
 plot3_img <- plot3 +
   inset_element(p = img_science,
-                 left = 0.45,
-                 bottom = 0.15,
-                 right = 0.7,
-                 top = 0.45)
+                 left = 0.1,
+                 bottom = 0.7,
+                 right = 0.3,
+                 top = 0.9)
 
 # Total: Plot the density curves by gender with total image
 img_total <- readJPEG("images/Total.jpg", native = TRUE)
@@ -282,16 +285,17 @@ plot4 <- ggplot(data = PV, aes(x = Total_Score, color = Gender)) +
   geom_density(alpha = 0.7, position = "identity", stat = "density", lwd = 0.8) +
   labs(title = "Total Scores by Gender") + 
   scale_y_continuous(labels = scales::percent)+
+  coord_cartesian(xlim = c(200, 2600)) +
   theme_minimal() +
   theme(text = element_text(size = 8),
         plot.title = element_text(hjust = 0.5))
 
 plot4_img <- plot4 +
   inset_element(p = img_total,
-                 left = 0.45,
-                 bottom = 0.05,
-                 right = 0.7,
-                 top = 0.45)
+                 left = 0.1,
+                 bottom = 0.7,
+                 right = 0.3,
+                 top = 0.9)
 
 plot1_img + plot2_img + plot3_img + plot4_img
 
@@ -310,15 +314,16 @@ plot1 <- ggplot(data = PV, aes(x = Math_Score, color = Gender)) +
   labs(title = "Math Scores by Gender") +
   theme(legend.position = "none") +
   scale_y_continuous(labels = scales::percent) +
+  coord_cartesian(xlim = c(100, 900)) +
   theme_minimal() +
   theme(text = element_text(size = 8), plot.title = element_text(hjust = 0.5))
 
 plot1_img <- plot1 +
   inset_element(p = img_maths,
-                 left = 0.4,
-                 bottom = 0.15,
-                 right = 0.7,
-                 top = 0.45)
+                 left = 0.1,
+                 bottom = 0.7,
+                 right = 0.3,
+                 top = 0.9)
 
 # Reading: Plot the density curves by gender with reading image
 img_read <- readJPEG("images/Reading.jpg", native = TRUE)
@@ -328,16 +333,17 @@ plot2 <- ggplot(data = PV, aes(x = Reading_Score, color = Gender)) +
   labs(title = "Reading Scores by Gender") +
   theme(legend.position = "none") +
   scale_y_continuous(labels = scales::percent)+
+  coord_cartesian(xlim = c(100, 900)) +
   theme_minimal() +
   theme(text = element_text(size = 8),
         plot.title = element_text(hjust = 0.5))
 
 plot2_img <- plot2 +
   inset_element(p = img_read,
-                 left = 0.5,
-                 bottom = 0.15,
-                 right = 0.7,
-                 top = 0.4)
+                 left = 0.1,
+                 bottom = 0.7,
+                 right = 0.3,
+                 top = 0.9)
 
 # English: Plot the density curves by gender with English image
 img_science <- readJPEG("images/Science.jpg", native = TRUE)
@@ -347,16 +353,17 @@ plot3 <- ggplot(data = PV, aes(x = Science_Score, color = Gender)) +
   labs(title = "Science Scores by Gender") +
   theme(legend.position = "none") +
   scale_y_continuous(labels = scales::percent)+
+  coord_cartesian(xlim = c(100, 900)) +
   theme_minimal() +
   theme(text = element_text(size = 8),
         plot.title = element_text(hjust = 0.5))
 
 plot3_img <- plot3 +
   inset_element(p = img_science,
-                 left = 0.45,
-                 bottom = 0.15,
-                 right = 0.7,
-                 top = 0.45)
+                 left = 0.1,
+                 bottom = 0.7,
+                 right = 0.3,
+                 top = 0.9)
 
 # Total: Plot the density curves by gender with total image
 img_total <- readJPEG("images/Total.jpg", native = TRUE)
@@ -365,16 +372,17 @@ plot4 <- ggplot(data = PV, aes(x = Total_Score, color = Gender)) +
   geom_density(alpha = 0.7, position = "identity", stat = "density", lwd = 0.8) +
   labs(title = "Total Scores by Gender") + 
   scale_y_continuous(labels = scales::percent)+
+  coord_cartesian(xlim = c(200, 2600)) +
   theme_minimal() +
   theme(text = element_text(size = 8),
         plot.title = element_text(hjust = 0.5))
 
 plot4_img <- plot4 +
   inset_element(p = img_total,
-                 left = 0.45,
-                 bottom = 0.05,
-                 right = 0.7,
-                 top = 0.45)
+                 left = 0.1,
+                 bottom = 0.7,
+                 right = 0.3,
+                 top = 0.9)
 
 plot1_img + plot2_img + plot3_img + plot4_img
 
