@@ -25,7 +25,7 @@ The chunk below is used to install and load the R packages that were used by the
 
 ```{r}
 pacman::p_load(tidyverse, haven, dplyr, plotly, ggrepel, patchwork, 
-               ggthemes, hrbrthemes, ggplot2)
+               ggthemes, hrbrthemes, jpeg)
 
 ```
 
@@ -208,7 +208,179 @@ While comparing the distribution between genders, the author used different colo
 
 -   Although there are supposed to be two colors to represent female students and male students, it seems to be three categories when we first look at the graph because a third color is created at the area where the two distributions overlap. I'd suggest to use density curves without filling color.
 
+-   Since we need to use different colors to represent different categories, we can't use colors to differentiate the subjects as we did in the previous section. An alternative way is to display an icon in the plots so the audience can easily identify the subjects.
+
 **A remake of the plot**
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+# Maths: Plot the density curves by gender with maths image
+img_maths <- readJPEG("images/Maths.jpg", native = TRUE)
+
+plot1 <- ggplot(data = PV, aes(x = Math_Score, color = Gender)) +
+  geom_density(alpha = 0.7, position = "identity", stat = "density",lwd = 0.8) +  
+  labs(title = "Math Scores by Gender") +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(text = element_text(size = 8), plot.title = element_text(hjust = 0.5))
+
+plot1_img <- plot1 +
+  inset_element(p = img_maths,
+                 left = 0.4,
+                 bottom = 0.15,
+                 right = 0.7,
+                 top = 0.45)
+
+# Reading: Plot the density curves by gender with reading image
+img_read <- readJPEG("images/Reading.jpg", native = TRUE)
+
+plot2 <- ggplot(data = PV, aes(x = Reading_Score, color = Gender)) +
+  geom_density(alpha = 0.7, position = "identity", stat = "Density", lwd = 0.8) +
+  labs(title = "Reading Scores by Gender") +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent)+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot2_img <- plot2 +
+  inset_element(p = img_read,
+                 left = 0.5,
+                 bottom = 0.15,
+                 right = 0.7,
+                 top = 0.4)
+
+# English: Plot the density curves by gender with English image
+img_science <- readJPEG("images/Science.jpg", native = TRUE)
+
+plot3 <- ggplot(data = PV, aes(x = Science_Score, color = Gender)) +
+  geom_density(alpha = 0.7, position = "identity", stat = "Density", lwd = 0.8) +
+  labs(title = "Science Scores by Gender") +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent)+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot3_img <- plot3 +
+  inset_element(p = img_science,
+                 left = 0.45,
+                 bottom = 0.15,
+                 right = 0.7,
+                 top = 0.45)
+
+# Total: Plot the density curves by gender with total image
+img_total <- readJPEG("images/Total.jpg", native = TRUE)
+
+plot4 <- ggplot(data = PV, aes(x = Total_Score, color = Gender)) +
+  geom_density(alpha = 0.7, position = "identity", stat = "density", lwd = 0.8) +
+  labs(title = "Total Scores by Gender") + 
+  scale_y_continuous(labels = scales::percent)+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot4_img <- plot4 +
+  inset_element(p = img_total,
+                 left = 0.45,
+                 bottom = 0.05,
+                 right = 0.7,
+                 top = 0.45)
+
+plot1_img + plot2_img + plot3_img + plot4_img
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+# Maths: Plot the density curves by gender with maths image
+img_maths <- readJPEG("images/Maths.jpg", native = TRUE)
+
+plot1 <- ggplot(data = PV, aes(x = Math_Score, color = Gender)) +
+  geom_density(alpha = 0.7, position = "identity", stat = "density",lwd = 0.8) +  
+  labs(title = "Math Scores by Gender") +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(text = element_text(size = 8), plot.title = element_text(hjust = 0.5))
+
+plot1_img <- plot1 +
+  inset_element(p = img_maths,
+                 left = 0.4,
+                 bottom = 0.15,
+                 right = 0.7,
+                 top = 0.45)
+
+# Reading: Plot the density curves by gender with reading image
+img_read <- readJPEG("images/Reading.jpg", native = TRUE)
+
+plot2 <- ggplot(data = PV, aes(x = Reading_Score, color = Gender)) +
+  geom_density(alpha = 0.7, position = "identity", stat = "Density", lwd = 0.8) +
+  labs(title = "Reading Scores by Gender") +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent)+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot2_img <- plot2 +
+  inset_element(p = img_read,
+                 left = 0.5,
+                 bottom = 0.15,
+                 right = 0.7,
+                 top = 0.4)
+
+# English: Plot the density curves by gender with English image
+img_science <- readJPEG("images/Science.jpg", native = TRUE)
+
+plot3 <- ggplot(data = PV, aes(x = Science_Score, color = Gender)) +
+  geom_density(alpha = 0.7, position = "identity", stat = "Density", lwd = 0.8) +
+  labs(title = "Science Scores by Gender") +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent)+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot3_img <- plot3 +
+  inset_element(p = img_science,
+                 left = 0.45,
+                 bottom = 0.15,
+                 right = 0.7,
+                 top = 0.45)
+
+# Total: Plot the density curves by gender with total image
+img_total <- readJPEG("images/Total.jpg", native = TRUE)
+
+plot4 <- ggplot(data = PV, aes(x = Total_Score, color = Gender)) +
+  geom_density(alpha = 0.7, position = "identity", stat = "density", lwd = 0.8) +
+  labs(title = "Total Scores by Gender") + 
+  scale_y_continuous(labels = scales::percent)+
+  theme_minimal() +
+  theme(text = element_text(size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+plot4_img <- plot4 +
+  inset_element(p = img_total,
+                 left = 0.45,
+                 bottom = 0.05,
+                 right = 0.7,
+                 top = 0.45)
+
+plot1_img + plot2_img + plot3_img + plot4_img
+
+```
+
+:::
 
 ### 3.3 Student Performance by School
 

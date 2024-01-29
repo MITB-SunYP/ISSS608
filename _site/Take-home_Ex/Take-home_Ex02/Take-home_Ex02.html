@@ -301,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The chunk below is used to install and load the R packages that were used by the original author.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, haven, dplyr, plotly, ggrepel, patchwork, </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               ggthemes, hrbrthemes, ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               ggthemes, hrbrthemes, jpeg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="import-the-data" class="level3">
@@ -419,9 +419,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>While comparing the distribution between genders, the author used different colors so it’s easy to differentiate the distributions for female students and male students.</p>
 <p><strong>What can be improved?</strong></p>
 <ul>
-<li>Although there are supposed to be two colors to represent female students and male students, it seems to be three categories when we first look at the graph because a third color is created at the area where the two distributions overlap. I’d suggest to use density curves without filling color.</li>
+<li><p>Although there are supposed to be two colors to represent female students and male students, it seems to be three categories when we first look at the graph because a third color is created at the area where the two distributions overlap. I’d suggest to use density curves without filling color.</p></li>
+<li><p>Since we need to use different colors to represent different categories, we can’t use colors to differentiate the subjects as we did in the previous section. An alternative way is to display an icon in the plots so the audience can easily identify the subjects.</p></li>
 </ul>
 <p><strong>A remake of the plot</strong></p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">The plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">The code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Maths: Plot the density curves by gender with maths image</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>img_maths <span class="ot">&lt;-</span> <span class="fu">readJPEG</span>(<span class="st">"images/Maths.jpg"</span>, <span class="at">native =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>plot1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> PV, <span class="fu">aes</span>(<span class="at">x =</span> Math_Score, <span class="at">color =</span> Gender)) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">stat =</span> <span class="st">"density"</span>,<span class="at">lwd =</span> <span class="fl">0.8</span>) <span class="sc">+</span>  </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Math Scores by Gender"</span>) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>), <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>plot1_img <span class="ot">&lt;-</span> plot1 <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inset_element</span>(<span class="at">p =</span> img_maths,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">left =</span> <span class="fl">0.4</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bottom =</span> <span class="fl">0.15</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">right =</span> <span class="fl">0.7</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">top =</span> <span class="fl">0.45</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Reading: Plot the density curves by gender with reading image</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>img_read <span class="ot">&lt;-</span> <span class="fu">readJPEG</span>(<span class="st">"images/Reading.jpg"</span>, <span class="at">native =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>plot2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> PV, <span class="fu">aes</span>(<span class="at">x =</span> Reading_Score, <span class="at">color =</span> Gender)) <span class="sc">+</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">stat =</span> <span class="st">"Density"</span>, <span class="at">lwd =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Reading Scores by Gender"</span>) <span class="sc">+</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent)<span class="sc">+</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>plot2_img <span class="ot">&lt;-</span> plot2 <span class="sc">+</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inset_element</span>(<span class="at">p =</span> img_read,</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>                 <span class="at">left =</span> <span class="fl">0.5</span>,</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bottom =</span> <span class="fl">0.15</span>,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>                 <span class="at">right =</span> <span class="fl">0.7</span>,</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>                 <span class="at">top =</span> <span class="fl">0.4</span>)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co"># English: Plot the density curves by gender with English image</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>img_science <span class="ot">&lt;-</span> <span class="fu">readJPEG</span>(<span class="st">"images/Science.jpg"</span>, <span class="at">native =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>plot3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> PV, <span class="fu">aes</span>(<span class="at">x =</span> Science_Score, <span class="at">color =</span> Gender)) <span class="sc">+</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">stat =</span> <span class="st">"Density"</span>, <span class="at">lwd =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Science Scores by Gender"</span>) <span class="sc">+</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent)<span class="sc">+</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>plot3_img <span class="ot">&lt;-</span> plot3 <span class="sc">+</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inset_element</span>(<span class="at">p =</span> img_science,</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>                 <span class="at">left =</span> <span class="fl">0.45</span>,</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bottom =</span> <span class="fl">0.15</span>,</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>                 <span class="at">right =</span> <span class="fl">0.7</span>,</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>                 <span class="at">top =</span> <span class="fl">0.45</span>)</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Total: Plot the density curves by gender with total image</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>img_total <span class="ot">&lt;-</span> <span class="fu">readJPEG</span>(<span class="st">"images/Total.jpg"</span>, <span class="at">native =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>plot4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> PV, <span class="fu">aes</span>(<span class="at">x =</span> Total_Score, <span class="at">color =</span> Gender)) <span class="sc">+</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">stat =</span> <span class="st">"density"</span>, <span class="at">lwd =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total Scores by Gender"</span>) <span class="sc">+</span> </span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent)<span class="sc">+</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>plot4_img <span class="ot">&lt;-</span> plot4 <span class="sc">+</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inset_element</span>(<span class="at">p =</span> img_total,</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>                 <span class="at">left =</span> <span class="fl">0.45</span>,</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bottom =</span> <span class="fl">0.05</span>,</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>                 <span class="at">right =</span> <span class="fl">0.7</span>,</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>                 <span class="at">top =</span> <span class="fl">0.45</span>)</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>plot1_img <span class="sc">+</span> plot2_img <span class="sc">+</span> plot3_img <span class="sc">+</span> plot4_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="student-performance-by-school" class="level3">
 <h3 class="anchored" data-anchor-id="student-performance-by-school">3.3 Student Performance by School</h3>
