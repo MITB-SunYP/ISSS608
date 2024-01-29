@@ -63,7 +63,7 @@ As described by the original author, we use the code chunk below to convert scho
 ```{r}
 # Convert numerical variables to string variables
 PV$CNTSCHID <- as.character(PV$CNTSCHID)
-PV$CNTSCHID <- as.character(PV$CNTSTUID)
+PV$CNTSTUID <- as.character(PV$CNTSTUID)
 
 # Clear missing values
 PV <- na.omit(PV)
@@ -400,9 +400,11 @@ Boxplot is one of the ways to view the distribution of the performance across sc
 
 **What can be improved?**
 
--   Static boxplot has its limitations when the audience try to draw a story across different subjects, for example, if there is any schools that performed consistently good or bad across all the subjects. Therefore, a coordinated interactive graph would allow the audience to easily see the performance of a selected school across subjects.
+-   Static boxplot has its limitations when the audience try to draw a story across different subjects, for example, if there is any schools that performed consistently good or bad across all the subjects. 
 
 -   I'd also suggest to use different color to represent different subjects for easy identification.
+
+-   Therefore, a coordinated interactive graph would allow the audience to easily see the performance of a selected school across subjects. In my makeover below, I'll choose dot plot to represent the data as it's easier for me to see the schools' performance across subjects.
 
 **A remake of the plot**
 
@@ -433,12 +435,144 @@ Now let's remake the plot.
 ## The plot
 
 ```{r}
-ggplot(School_Avg_Scores_long, aes(x = Subject, y = Score, fill = Subject)) +
-  geom_boxplot_interactive(aes(tooltip = CNTSCHID)) +
-  labs(title = "Boxplot of Average Scores for Each Subject", x = "", y = "") +
-  theme_minimal() +
-  theme(text = element_text(size = 10),
-        plot.title = element_text(hjust = 0.5))
+#| echo: false
+
+# Create dot plot for Maths
+School_Avg_Scores$tooltip_maths <- c(paste0(
+  "School ID = ", School_Avg_Scores$CNTSCHID,
+  "\n Ave Maths Score = ", School_Avg_Scores$Avg_Math_Score
+))
+
+plot1 <- ggplot(data = School_Avg_Scores,
+            aes(x = Avg_Math_Score)) +
+  geom_dotplot_interactive(
+    aes(data_id = CNTSCHID, tooltip = tooltip_maths), # to display ID when mouse over the dots in the graph
+    stackgroups = TRUE,
+    binwidth = 1,
+    dotsize = 8,
+    color = "darkgreen",
+    fill = "chartreuse3",
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+# Create dot plot for Reading
+School_Avg_Scores$tooltip_read <- c(paste0(
+  "School ID = ", School_Avg_Scores$CNTSCHID,
+  "\n Ave Reading Score = ", School_Avg_Scores$Avg_Reading_Score
+))
+
+plot2 <- ggplot(data = School_Avg_Scores,
+            aes(x = Avg_Reading_Score)) +
+  geom_dotplot_interactive(
+    aes(data_id = CNTSCHID, tooltip = tooltip_read), # to display ID when mouse over the dots in the graph
+    stackgroups = TRUE,
+    binwidth = 1,
+    dotsize = 8,
+    color = "blue",
+    fill = "lightblue",
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+# Create dot plot for Science
+School_Avg_Scores$tooltip_science <- c(paste0(
+  "School ID = ", School_Avg_Scores$CNTSCHID,
+  "\n Ave Science Score = ", School_Avg_Scores$Avg_Science_Score
+))
+
+plot3 <- ggplot(data = School_Avg_Scores,
+            aes(x = Avg_Science_Score)) +
+  geom_dotplot_interactive(
+    aes(data_id = CNTSCHID, tooltip = tooltip_science), # to display ID when mouse over the dots in the graph
+    stackgroups = TRUE,
+    binwidth = 1,
+    dotsize = 8,
+    color = "red",
+    fill = "pink",
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+# Combine the three plots
+girafe(
+  code = print(plot1 + plot2 + plot3),
+  width_svg = 6,
+  height_svg = 3,
+  options = list(                        
+    opts_hover(css = "fill: #202020;"),  
+    opts_hover_inv(css = "opacity:0.2;") 
+  )
+)
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+# Create dot plot for Maths
+School_Avg_Scores$tooltip_maths <- c(paste0(
+  "School ID = ", School_Avg_Scores$CNTSCHID,
+  "\n Ave Maths Score = ", School_Avg_Scores$Avg_Math_Score
+))
+
+plot1 <- ggplot(data = School_Avg_Scores,
+            aes(x = Avg_Math_Score)) +
+  geom_dotplot_interactive(
+    aes(data_id = CNTSCHID, tooltip = tooltip_maths), # to display ID when mouse over the dots in the graph
+    stackgroups = TRUE,
+    binwidth = 1,
+    dotsize = 8,
+    color = "darkgreen",
+    fill = "chartreuse3",
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+# Create dot plot for Reading
+School_Avg_Scores$tooltip_read <- c(paste0(
+  "School ID = ", School_Avg_Scores$CNTSCHID,
+  "\n Ave Maths Score = ", School_Avg_Scores$Avg_Reading_Score
+))
+
+plot2 <- ggplot(data = School_Avg_Scores,
+            aes(x = Avg_Reading_Score)) +
+  geom_dotplot_interactive(
+    aes(data_id = CNTSCHID, tooltip = tooltip_read), # to display ID when mouse over the dots in the graph
+    stackgroups = TRUE,
+    binwidth = 1,
+    dotsize = 8,
+    color = "blue",
+    fill = "lightblue",
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+# Create dot plot for Science
+School_Avg_Scores$tooltip_science <- c(paste0(
+  "School ID = ", School_Avg_Scores$CNTSCHID,
+  "\n Ave Maths Score = ", School_Avg_Scores$Avg_Science_Score
+))
+
+plot3 <- ggplot(data = School_Avg_Scores,
+            aes(x = Avg_Science_Score)) +
+  geom_dotplot_interactive(
+    aes(data_id = CNTSCHID, tooltip = tooltip_science), # to display ID when mouse over the dots in the graph
+    stackgroups = TRUE,
+    binwidth = 1,
+    dotsize = 8,
+    color = "red",
+    fill = "pink",
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+# Combine the three plots
+girafe(
+  code = print(plot1 + plot2 + plot3),
+  width_svg = 6,
+  height_svg = 3,
+  options = list(                        
+    opts_hover(css = "fill: #202020;"),  
+    opts_hover_inv(css = "opacity:0.2;") 
+  )
+)
 
 ```
 
