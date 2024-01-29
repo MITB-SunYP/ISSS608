@@ -400,7 +400,7 @@ Boxplot is one of the ways to view the distribution of the performance across sc
 
 **What can be improved?**
 
--   Static boxplot has its limitations when the audience try to draw a story across different subjects, for example, if there is any schools that performed consistently good or bad across all the subjects. 
+-   Static boxplot has its limitations when the audience try to draw a story across different subjects, for example, if there is any schools that performed consistently good or bad across all the subjects.
 
 -   I'd also suggest to use different color to represent different subjects for easy identification.
 
@@ -431,7 +431,6 @@ School_Avg_Scores_long <- School_Avg_Scores_subjects %>%
 Now let's remake the plot.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -575,9 +574,7 @@ girafe(
 )
 
 ```
-
 :::
-
 
 ### 3.4 Student Performance by Musical Instruments
 
@@ -587,11 +584,19 @@ girafe(
 
 **What's good about this plot?**
 
+The intention was good where the author explored the correlation between the performance of the three subjects and the number of musical instruments owned. However, I don't think scatter plot is suitable for this purpose.
+
 **What can be improved?**
+
+-   The number of musical instruments owned are in integer form, where as the scores of the subjects are in continuous form. This leads to the data points are displayed on the vertical line which is hard for any interpretation.
+
+-   Although the author displayed a best fit line in the graphs to show the trend, it's hard to correlate the trend line to the dots.
+
+-   I'd suggest to use one of the following visualizations to represent the data: boxplot, violin plot, or rain cloud plots.
 
 **A remake of the plot**
 
-### 3.5 Student Performance by Own room
+### 3.5 Student Performance by Own Room
 
 **Original plot**
 
@@ -599,6 +604,12 @@ girafe(
 
 **What's good about this plot?**
 
+Box plot is a good choice to compare if there is any differences in the scores between the students who have their own room and those who share room.
+
 **What can be improved?**
+
+-   Everything is in the same color makes it difficult for the audience to differentiate the plots between subjects and categories.
+
+-   The axis values are not synchronized to make cross reference among the subjects.
 
 **A remake of the plot**
