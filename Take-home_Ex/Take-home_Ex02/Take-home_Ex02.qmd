@@ -25,7 +25,7 @@ The chunk below is used to install and load the R packages that were used by the
 
 ```{r}
 pacman::p_load(tidyverse, haven, dplyr, plotly, ggrepel, patchwork, 
-               ggthemes, hrbrthemes, jpeg, ggiraph)
+               ggthemes, hrbrthemes, jpeg, ggiraph, ggdist)
 
 ```
 
@@ -596,6 +596,240 @@ The intention was good where the author explored the correlation between the per
 
 **A remake of the plot**
 
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+PV$mi_num_s <- as.character(PV$mi_num)
+
+plot1 <- ggplot(PV,
+       aes(x = mi_num_s,
+           y = Math_Score)) +
+  xlab("Number of Musical Instruments") +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "chartreuse3",
+               slab_fill = "lightgreen") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkgreen") +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)+
+  coord_flip() +
+  ggtitle("Math Score by Musical instruments") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot2 <- ggplot(PV,
+       aes(x = mi_num_s,
+           y = Reading_Score)) +
+  xlab("Number of Musical Instruments") +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "blue",
+               slab_fill = "lightblue") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkblue") +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)+
+  coord_flip() +
+  ggtitle("Reading Score by Musical instruments") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot3 <- ggplot(PV,
+       aes(x = mi_num_s,
+           y = Science_Score)) +
+  xlab("Number of Musical Instruments") +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "red",
+               slab_fill = "pink") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkred") +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)+
+  coord_flip() +
+  ggtitle("Science Score by Musical instruments") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot4 <- ggplot(PV,
+       aes(x = mi_num_s,
+           y = Total_Score)) +
+  xlab("Number of Musical Instruments") +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "gray25",
+               slab_fill = "gray95") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "gray10") +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)+
+  coord_flip() +
+  ggtitle("Total Score by Musical instruments") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot1 + plot2 + plot3 + plot4
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+PV$mi_num_s <- as.character(PV$mi_num)
+
+plot1 <- ggplot(PV,
+       aes(x = mi_num_s,
+           y = Math_Score)) +
+  xlab("Number of Musical Instruments") +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "chartreuse3",
+               slab_fill = "lightgreen") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkgreen") +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)+
+  coord_flip() +
+  ggtitle("Math Score by Musical instruments") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot2 <- ggplot(PV,
+       aes(x = mi_num_s,
+           y = Reading_Score)) +
+  xlab("Number of Musical Instruments") +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "blue",
+               slab_fill = "lightblue") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkblue") +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)+
+  coord_flip() +
+  ggtitle("Reading Score by Musical instruments") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot3 <- ggplot(PV,
+       aes(x = mi_num_s,
+           y = Science_Score)) +
+  xlab("Number of Musical Instruments") +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "red",
+               slab_fill = "pink") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "darkred") +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)+
+  coord_flip() +
+  ggtitle("Science Score by Musical instruments") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot4 <- ggplot(PV,
+       aes(x = mi_num_s,
+           y = Total_Score)) +
+  xlab("Number of Musical Instruments") +
+  stat_halfeye(position = "dodge",
+               width = 0.5,
+               adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               slab_color = "gray25",
+               slab_fill = "gray95") +
+  geom_boxplot(width = 0.20,
+               outlier.shape = NA,
+               color = "gray10") +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)+
+  coord_flip() +
+  ggtitle("Total Score by Musical instruments") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot1 + plot2 + plot3 + plot4
+
+```
+
+:::
+
 ### 3.5 Student Performance by Own Room
 
 **Original plot**
@@ -612,4 +846,166 @@ Box plot is a good choice to compare if there is any differences in the scores b
 
 -   The axis values are not synchronized to make cross reference among the subjects.
 
+-   Since this is a visualization course, maybe we can try something else.
+
 **A remake of the plot**
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+plot1 <- ggplot(PV,
+       aes(x = Own_Room,
+           y = Math_Score)) +
+  geom_violin(color = "chartreuse3",
+              fill = "lightgreen") +
+  geom_boxplot(width = 0.1, 
+               color = "darkgreen",
+               alpha = 0.2, 
+               outlier.shape = NA) +
+  theme_minimal() +
+  ggtitle("Math Score by Private Space") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+  
+plot2 <- ggplot(PV,
+       aes(x = Own_Room,
+           y = Reading_Score)) +
+  geom_violin(color = "blue",
+              fill = "lightblue") +
+  geom_boxplot(width = 0.1, 
+               color = "darkblue",
+               alpha = 0.2, 
+               outlier.shape = NA) +
+  theme_minimal() +
+  ggtitle("Reading Score by Private Space") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot3 <- ggplot(PV,
+       aes(x = Own_Room,
+           y = Science_Score)) +
+  geom_violin(color = "red",
+              fill = "pink") +
+  geom_boxplot(width = 0.1, 
+               color = "darkred",
+               alpha = 0.2, 
+               outlier.shape = NA) +
+  theme_minimal() +
+  ggtitle("Science Score by Private Space") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot4 <- ggplot(PV,
+       aes(x = Own_Room,
+           y = Total_Score)) +
+  geom_violin(color = "gray25",
+              fill = "gray95") +
+  geom_boxplot(width = 0.1, 
+               color = "gray10",
+               alpha = 0.2, 
+               outlier.shape = NA) +
+  theme_minimal() +
+  ggtitle("Total Score by Private Space") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot1 + plot2 + plot3 + plot4
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+plot1 <- ggplot(PV,
+       aes(x = Own_Room,
+           y = Math_Score)) +
+  geom_violin(color = "chartreuse3",
+              fill = "lightgreen") +
+  geom_boxplot(width = 0.1, 
+               color = "darkgreen",
+               alpha = 0.2, 
+               outlier.shape = NA) +
+  theme_minimal() +
+  ggtitle("Math Score by Private Space") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+  
+plot2 <- ggplot(PV,
+       aes(x = Own_Room,
+           y = Reading_Score)) +
+  geom_violin(color = "blue",
+              fill = "lightblue") +
+  geom_boxplot(width = 0.1, 
+               color = "darkblue",
+               alpha = 0.2, 
+               outlier.shape = NA) +
+  theme_minimal() +
+  ggtitle("Reading Score by Private Space") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot3 <- ggplot(PV,
+       aes(x = Own_Room,
+           y = Science_Score)) +
+  geom_violin(color = "red",
+              fill = "pink") +
+  geom_boxplot(width = 0.1, 
+               color = "darkred",
+               alpha = 0.2, 
+               outlier.shape = NA) +
+  theme_minimal() +
+  ggtitle("Science Score by Private Space") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot4 <- ggplot(PV,
+       aes(x = Own_Room,
+           y = Total_Score)) +
+  geom_violin(color = "gray25",
+              fill = "gray95") +
+  geom_boxplot(width = 0.1, 
+               color = "gray10",
+               alpha = 0.2, 
+               outlier.shape = NA) +
+  theme_minimal() +
+  ggtitle("Total Score by Private Space") +
+  theme(plot.title = element_text(size = 8, hjust = 0.5),
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 8))
+
+plot1 + plot2 + plot3 + plot4
+
+```
+
+:::
+
+This comes to the end of my take-home exercise 2. Hope you enjoyed reading my work. See you in the next take-home exercise 🥰
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
