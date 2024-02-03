@@ -337,7 +337,8 @@ In addition to display the tooltip when we mouse over a data point, we can also 
 p <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
   geom_dotplot_interactive(           
-    aes(data_id = CLASS), # to highlight the data points from the same class when mouse over            
+    aes(data_id = CLASS,
+        tooltip = ID), # to highlight the data points from the same class when mouse over            
     stackgroups = TRUE,               
     binwidth = 1,                        
     method = "histodot") +               
@@ -357,7 +358,8 @@ girafe(
 p <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
   geom_dotplot_interactive(           
-    aes(data_id = CLASS), # to highlight the data points from the same class when mouse over            
+    aes(data_id = CLASS,
+        tooltip = ID), # to highlight the data points from the same class when mouse over            
     stackgroups = TRUE,               
     binwidth = 1,                        
     method = "histodot") +               
