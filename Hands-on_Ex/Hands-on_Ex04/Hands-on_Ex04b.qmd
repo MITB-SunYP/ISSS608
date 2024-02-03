@@ -1,0 +1,197 @@
+---
+title: "Visual Statistical Analysis"
+author: "Sun Yiping"
+date: "January 31, 2024"
+date-modified: "Febrary 2, 2024"
+execute: 
+  warning: false
+---
+
+## 1. Learning Outcome
+
+In this hands-on exercise, we will learn the following:
+
+-   *ggstatsplot* package to create visual graphics with rich statistical information,
+
+-   performance package to visualise model diagnostics, and
+
+-   parameters package to visualise model parameters
+
+## 2. Getting Started
+
+### 2.1 Installing and loading the required libraries
+
+Firstly, let's install and load the required packages:
+
+-   [tidyverse](https://www.tidyverse.org/): an opinionated collection of R packages designed for data import, data wrangling and data exploration
+
+-   [ggstatsplot](https://cran.r-project.org/web/packages/ggstatsplot/index.html): an extension of ggplot2 package for creating graphics with details from statistical tests included in the information-rich plots themselves
+
+```{r}
+pacman::p_load(tidyverse, ggstatsplot)
+
+```
+
+### 2.2 Importing the data
+
+Similar to the previous hands-on exercises, we'll still use Exam_data for this exercise. The data file contains year end examination grades of a cohort of primary 3 students from a local school, and it's in csv format.
+
+Let's start by importing the data.
+
+```{r}
+exam <- read_csv("../../Data/Exam_data.csv")
+
+```
+
+## 3. One-sample test: gghistostats() method
+
+In the code chunk below, *gghistostats()* is used to to build an visual of one-sample test on English scores.
+
+```{r}
+set.seed(1234)
+
+gghistostats(
+  data = exam,
+  x = ENGLISH,
+  type = "bayes",
+  test.value = 60,
+  xlab = "English scores"
+)
+
+```
+Default information: - statistical details - Bayes Factor - sample sizes - distribution summary
+
+### 3.1 Unpacking the Bayes Factor
+
+-   A Bayes factor is the ratio of the likelihood of one particular hypothesis to the likelihood of another. It can be interpreted as a measure of the strength of evidence in favor of one theory among two competing theories.
+
+-   That’s because the Bayes factor gives us a way to evaluate the data in favor of a null hypothesis, and to use external information to do so. It tells us what the weight of the evidence is in favor of a given hypothesis.
+
+-   When we are comparing two hypotheses, H1 (the alternate hypothesis) and H0 (the null hypothesis), the Bayes Factor is often written as B10.
+
+-   The [Schwarz criterion](https://www.statisticshowto.com/bayesian-information-criterion/) is one of the easiest ways to calculate rough approximation of the Bayes Factor.
+
+### 3.2 How to interpret Bayes Factor
+
+A Bayes Factor can be any positive number. One of the most common interpretations is this one—first proposed by Harold Jeffereys (1961) and slightly modified by [Lee and Wagenmakers](https://www-tandfonline-com.libproxy.smu.edu.sg/doi/pdf/10.1080/00031305.1999.10474443?needAccess=true) in 2013.
+
+## 4. Two-sample mean test: ggbetweenstats()
+
+In the code chunk below, *ggbetweenstats()* is used to build a visual for two-sample mean test of Maths scores by gender.
+
+```{r}
+ggbetweenstats(
+  data = exam,
+  x = GENDER, 
+  y = MATHS,
+  type = "np",
+  messages = FALSE
+)
+
+```
+
+Default information: - statistical details - Bayes Factor - sample sizes - distribution summary
+
+::: callout-tip
+
+## Try it out
+
+The Mann-Whitney statistic is displayed on the plot to tell if the two distributions are significantly different. Since the p-value is larger than 0.05, we can conclude that the maths scores between female students and male students are not significantly different at 5% significance level.
+
+:::
+
+## 5. Oneway ANOVA Test: ggbetweenstats() method
+
+In the code chunk below, *ggbetweenstats()* is used to build a visual for One-way ANOVA test on English score by race.
+
+```{r}
+ggbetweenstats(
+  data = exam,
+  x = RACE, 
+  y = ENGLISH,
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE
+)
+
+```
+
+A few values that we can choose for pairwise.display:
+-   “ns” → only non-significant
+-   “s” → only significant
+-   “all” → everything
+
+::: callout-tip
+
+## Try it out
+
+Welch test is performed to check if the English scores varies among different races significantly. Since the p-value is less than 0.05, we can conclude that the English scores distributed significantly different among races at 5% significance level.
+
+:::
+
+## 6. Significant Test of Correlation: ggscatterstats()
+
+In the code chunk below, *ggscatterstats()* is used to build a visual for Significant Test of Correlation between Maths scores and English scores.
+
+```{r}
+ggscatterstats(
+  data = exam,
+  x = MATHS,
+  y = ENGLISH,
+  marginal = FALSE,
+  )
+
+```
+
+::: callout-tip
+
+## Try it out
+
+The plot above shows that there is a strong positive correlation between English scores and Maths scores, as the Pearson correlation coefficient is 0.83.
+
+:::
+
+## 7. Significant Test of Association (Depedence) : ggbarstats() methods
+
+In the code chunk below, the Maths scores is binned into a 4-class variable by using *cut()*.
+
+```{r}
+exam1 <- exam %>% 
+  mutate(MATHS_bins = 
+           cut(MATHS, 
+               breaks = c(0,60,75,85,100))
+)
+
+```
+
+In this code chunk below *ggbarstats()* is used to build a visual for Significant Test of Association.
+
+```{r}
+ggbarstats(exam1, 
+           x = MATHS_bins, 
+           y = GENDER)
+
+```
+
+## 8. Visualising Models
+
+In this section, we will learn how to visualise model diagnostic and model parameters by using *parameters* package.
+
+-   Toyota Corolla case study will be used. The purpose of study is to build a model to discover factors affecting prices of used-cars by taking into consideration a set of explanatory variables.
+
+### 8.1 Installing and loading the required libraries
+
+```{r}
+pacman::p_load(readxl, performance, parameters, see)
+
+```
+
+
+
+
+
+
+

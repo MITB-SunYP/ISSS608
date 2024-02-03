@@ -362,5 +362,68 @@
     "title": "Visualizing Distribution",
     "section": "The code",
     "text": "The code\n\nggplot(exam, \n       aes(x = RACE, \n           y = ENGLISH)) +\n  stat_halfeye(adjust = 0.5,\n               justification = -0.2,\n               .width = 0,\n               point_colour = NA)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html",
+    "title": "Visual Statistical Analysis",
+    "section": "",
+    "text": "In this hands-on exercise, we will learn the following:\n\nggstatsplot package to create visual graphics with rich statistical information,\nperformance package to visualise model diagnostics, and\nparameters package to visualise model parameters"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#learning-outcome",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#learning-outcome",
+    "title": "Visual Statistical Analysis",
+    "section": "",
+    "text": "In this hands-on exercise, we will learn the following:\n\nggstatsplot package to create visual graphics with rich statistical information,\nperformance package to visualise model diagnostics, and\nparameters package to visualise model parameters"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#getting-started",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#getting-started",
+    "title": "Visual Statistical Analysis",
+    "section": "2. Getting Started",
+    "text": "2. Getting Started\n\n2.1 Installing and loading the required libraries\nFirstly, let’s install and load the required packages:\n\ntidyverse: an opinionated collection of R packages designed for data import, data wrangling and data exploration\nggstatsplot: an extension of ggplot2 package for creating graphics with details from statistical tests included in the information-rich plots themselves\n\n\npacman::p_load(tidyverse, ggstatsplot)\n\n\n\n2.2 Importing the data\nSimilar to the previous hands-on exercises, we’ll still use Exam_data for this exercise. The data file contains year end examination grades of a cohort of primary 3 students from a local school, and it’s in csv format.\nLet’s start by importing the data.\n\nexam &lt;- read_csv(\"../../Data/Exam_data.csv\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#one-sample-test-gghistostats-method",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#one-sample-test-gghistostats-method",
+    "title": "Visual Statistical Analysis",
+    "section": "3. One-sample test: gghistostats() method",
+    "text": "3. One-sample test: gghistostats() method\nIn the code chunk below, gghistostats() is used to to build an visual of one-sample test on English scores.\n\nset.seed(1234)\n\ngghistostats(\n  data = exam,\n  x = ENGLISH,\n  type = \"bayes\",\n  test.value = 60,\n  xlab = \"English scores\"\n)\n\n\n\n\nDefault information: - statistical details - Bayes Factor - sample sizes - distribution summary\n\n3.1 Unpacking the Bayes Factor\n\nA Bayes factor is the ratio of the likelihood of one particular hypothesis to the likelihood of another. It can be interpreted as a measure of the strength of evidence in favor of one theory among two competing theories.\nThat’s because the Bayes factor gives us a way to evaluate the data in favor of a null hypothesis, and to use external information to do so. It tells us what the weight of the evidence is in favor of a given hypothesis.\nWhen we are comparing two hypotheses, H1 (the alternate hypothesis) and H0 (the null hypothesis), the Bayes Factor is often written as B10.\nThe Schwarz criterion is one of the easiest ways to calculate rough approximation of the Bayes Factor.\n\n\n\n3.2 How to interpret Bayes Factor\nA Bayes Factor can be any positive number. One of the most common interpretations is this one—first proposed by Harold Jeffereys (1961) and slightly modified by Lee and Wagenmakers in 2013."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#two-sample-mean-test-ggbetweenstats",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#two-sample-mean-test-ggbetweenstats",
+    "title": "Visual Statistical Analysis",
+    "section": "4. Two-sample mean test: ggbetweenstats()",
+    "text": "4. Two-sample mean test: ggbetweenstats()\nIn the code chunk below, ggbetweenstats() is used to build a visual for two-sample mean test of Maths scores by gender.\n\nggbetweenstats(\n  data = exam,\n  x = GENDER, \n  y = MATHS,\n  type = \"np\",\n  messages = FALSE\n)\n\n\n\n\nDefault information: - statistical details - Bayes Factor - sample sizes - distribution summary\n\n\n\n\n\n\nTry it out\n\n\n\nThe Mann-Whitney statistic is displayed on the plot to tell if the two distributions are significantly different. Since the p-value is larger than 0.05, we can conclude that the maths scores between female students and male students are not significantly different at 5% significance level."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#oneway-anova-test-ggbetweenstats-method",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#oneway-anova-test-ggbetweenstats-method",
+    "title": "Visual Statistical Analysis",
+    "section": "5. Oneway ANOVA Test: ggbetweenstats() method",
+    "text": "5. Oneway ANOVA Test: ggbetweenstats() method\nIn the code chunk below, ggbetweenstats() is used to build a visual for One-way ANOVA test on English score by race.\n\nggbetweenstats(\n  data = exam,\n  x = RACE, \n  y = ENGLISH,\n  type = \"p\",\n  mean.ci = TRUE, \n  pairwise.comparisons = TRUE, \n  pairwise.display = \"s\",\n  p.adjust.method = \"fdr\",\n  messages = FALSE\n)\n\n\n\n\nA few values that we can choose for pairwise.display: - “ns” → only non-significant - “s” → only significant - “all” → everything\n\n\n\n\n\n\nTry it out\n\n\n\nWelch test is performed to check if the English scores varies among different races significantly. Since the p-value is less than 0.05, we can conclude that the English scores distributed significantly different among races at 5% significance level."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#significant-test-of-correlation-ggscatterstats",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#significant-test-of-correlation-ggscatterstats",
+    "title": "Visual Statistical Analysis",
+    "section": "6. Significant Test of Correlation: ggscatterstats()",
+    "text": "6. Significant Test of Correlation: ggscatterstats()\nIn the code chunk below, ggscatterstats() is used to build a visual for Significant Test of Correlation between Maths scores and English scores.\n\nggscatterstats(\n  data = exam,\n  x = MATHS,\n  y = ENGLISH,\n  marginal = FALSE,\n  )\n\n\n\n\n\n\n\n\n\n\nTry it out\n\n\n\nThe plot above shows that there is a strong positive correlation between English scores and Maths scores, as the Pearson correlation coefficient is 0.83."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#significant-test-of-association-depedence-ggbarstats-methods",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#significant-test-of-association-depedence-ggbarstats-methods",
+    "title": "Visual Statistical Analysis",
+    "section": "7. Significant Test of Association (Depedence) : ggbarstats() methods",
+    "text": "7. Significant Test of Association (Depedence) : ggbarstats() methods\nIn the code chunk below, the Maths scores is binned into a 4-class variable by using cut().\n\nexam1 &lt;- exam %&gt;% \n  mutate(MATHS_bins = \n           cut(MATHS, \n               breaks = c(0,60,75,85,100))\n)\n\nIn this code chunk below ggbarstats() is used to build a visual for Significant Test of Association.\n\nggbarstats(exam1, \n           x = MATHS_bins, \n           y = GENDER)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#visualising-models",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html#visualising-models",
+    "title": "Visual Statistical Analysis",
+    "section": "8. Visualising Models",
+    "text": "8. Visualising Models\nIn this section, we will learn how to visualise model diagnostic and model parameters by using parameters package.\n\nToyota Corolla case study will be used. The purpose of study is to build a model to discover factors affecting prices of used-cars by taking into consideration a set of explanatory variables.\n\n\n8.1 Installing and loading the required libraries\n\npacman::p_load(readxl, performance, parameters, see)"
   }
 ]
