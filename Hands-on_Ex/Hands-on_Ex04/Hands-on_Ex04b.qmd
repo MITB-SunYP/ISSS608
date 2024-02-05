@@ -184,12 +184,170 @@ In this section, we will learn how to visualise model diagnostic and model param
 
 ### 8.1 Installing and loading the required libraries
 
+In this exercise, ggstatsplot and tidyverse will be used.
+
 ```{r}
-pacman::p_load(readxl, performance, parameters, see)
+pacman::p_load(readxl, performance, parameters, see, ggstatsplot, tidyverse)
+
+```
+
+### 8.2 Importing Excel file: readxl methods
+
+Let's first import the data using *read_xls()* function from **readxl** package. In this exercise, we'll use the *data* worksheet of *ToyotaCorolla.xls* workbook.
+
+```{r}
+car_resale <- read_xls("../../Data/ToyotaCorolla.xls", "data")
+
+car_resale
+
+```
+
+::: callout-tip
+## Try it out
+
+The data is imported as a tibble table in R. There are 1,436 rows, and 38 columns in the dataset.
+
+-   5 categorical variables
+-   33 numerical variables
+:::
+
+### 8.3 Multiple Regression Model using lm()
+
+The code chunk below is used to calibrate a **multiple linear regression model** by using *lm()* of Base Stats of R.
+
+```{r}
+model <- lm(Price ~ Age_08_04 + Mfg_Year + KM + Weight + Guarantee_Period, 
+            data = car_resale)
+
+model
+
+```
+
+::: callout-tip
+## Try it out
+
+The results above provides the intercept of the model and the coefficients of the factors.
+
+-   intercept: -2.637e+06
+-   Age_08_04: -1.409e+01
+-   Mfg_Year: 1.315e+03
+-   KM: -2.323e-02
+-   Weight: 1.903e+01
+-   Guarantee_Period: 2.770e+01
+:::
+
+### 8.4 Model Diagnostic: checking for multicolinearity:
+
+In the code chunk, *check_collinearity()* of **performance** package is used to check if multicolinearity exists in the model.
+
+```{r}
+check_collinearity(model)
+
+```
+
+::: callout-tip
+## Try it out
+
+The results above shows that Age_08_04 and Mfg_Year is highly correlated as the VIF value is larger than 10.
+
+In this case, we shall remove one of them and retrain the model.
+:::
+
+```{r}
+check_c <- check_collinearity(model)
+plot(check_c)
+
+```
+
+### 8.5 Model Diagnostic: checking normality assumption
+
+Let's remove the manufacturing year and retrain the model.
+
+```{r}
+model1 <- lm(Price ~ Age_08_04 + KM + Weight + Guarantee_Period, 
+             data = car_resale)
+
+```
+
+In the code chunk, *check_normality()* of **performance** package is used to check if the residuals of the model follows the normal distribution.
+
+```{r}
+check_n <- check_normality(model1)
+
+```
+
+```{r}
+plot(check_n)
+
+```
+
+::: callout-tip
+## Try it out
+
+The plot above shows that some residuals are not along the 0 reference line, which indicates that the residuals are not normally distributed.
+:::
+
+### 8.6 Model Diagnostic: Check model for homogeneity of variances
+
+In the code chunk, *check_heteroscedasticity()* of **performance** package is used to check for homogeneity of variance.
+
+```{r}
+check_h <- check_heteroscedasticity(model1)
+
+```
+
+```{r}
+plot(check_h)
+
+```
+
+::: callout-tip
+## Try it out
+
+As the reference line shows an upward trend, it indicates that heterogeneity exists in the residuals.
+:::
+
+### 8.7 Model Diagnostic: Complete check
+
+We can also perform the complete checkings by using *check_model()* function.
+
+```{r fig.height=10}
+check_model(model1)
+
+```
+
+### 8.8 Visualising Regression Parameters: see methods
+
+In the code below, *plot()* of **see** package and *parameters()* of **parameters** package is used to visualise the parameters of a regression model.
+
+```{r}
+plot(parameters(model1))
+
+```
+
+::: callout-tip
+## Try it out
+
+It's clear from the plot above that Age_08_04 and KM have negative impact on the price, whereas weight and guarantee period have positive impact on the price.
+
+A factor with a negative impact indicates that the higher the value is, the lower the price is. On the other hand, a factor with a postive impact indicates that the higher the values is, the higher the price is.
+:::
+
+### 8.9 Visualising Regression Parameters: ggcoefstats() methods
+
+In the code below, *ggcoefstats()* of **ggstatsplot** package to visualise the parameters of a regression model.
+
+```{r}
+ggcoefstats(model1, 
+            output = "plot")
 
 ```
 
 
+
+This comes to the end of this hands-on exercise. Hope you enjoyed it, too!
+
+See you in the next hands-on exercise 🥰
 
 
 
