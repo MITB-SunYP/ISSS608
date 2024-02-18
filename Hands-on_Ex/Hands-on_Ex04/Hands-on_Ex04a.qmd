@@ -57,7 +57,6 @@ In this section, we'll learn to plot ridgeline plot using ggridges package. We'l
 Let's look at an example below:
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -105,7 +104,6 @@ ggplot(exam,
   theme_ridges()
 
 ```
-
 :::
 
 ### 3.2 Varying fill colors along the x axis
@@ -115,7 +113,6 @@ The R package also enables us to change the color in the ridgeline plots, by usi
 Let's look at an example below:
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -161,7 +158,6 @@ ggplot(exam,
   theme_ridges()
 
 ```
-
 :::
 
 ### 3.3 Mapping the probabilities directly onto colour
@@ -171,7 +167,6 @@ Beside providing additional geom objects to support the need to plot ridgeline p
 Figure below is plotted by mapping the probabilities calculated by using *stat(ecdf)* which represent the empirical cumulative density function for the distribution of English score.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -205,7 +200,6 @@ ggplot(exam,
   theme_ridges()
 
 ```
-
 :::
 
 ### 3.4 Ridgeline plots with quantile lines
@@ -213,7 +207,6 @@ ggplot(exam,
 By using *geom_density_ridges_gradient()*, we can colour the ridgeline plot by quantile, via the calculated *stat(quantile)* aesthetic as shown in the figure below.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -253,13 +246,11 @@ ggplot(exam,
   theme_ridges()
 
 ```
-
 :::
 
 Instead of using number to define the quantiles, we can also specify quantiles by cut points such as 2.5% and 97.5% tails to colour the ridgeline plot as shown in the figure below.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -307,7 +298,6 @@ ggplot(exam,
   theme_ridges()
 
 ```
-
 :::
 
 ## 4. Visualising Distribution with Raincloud Plot
@@ -321,7 +311,6 @@ First, we will plot a Half-Eye graph by using *stat_halfeye()* of *ggdist* packa
 This produces a Half Eye visualization, which is contains a half-density and a slab-interval.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -351,7 +340,6 @@ ggplot(exam,
                point_colour = NA)
 
 ```
-
 :::
 
 ### 4.2 Adding the boxplot with geom_boxplot()
@@ -359,7 +347,6 @@ ggplot(exam,
 Next, we will add the second geometry layer using *geom_boxplot()* of *ggplot2*. This produces a narrow boxplot. We reduce the width and adjust the opacity.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -393,7 +380,6 @@ ggplot(exam,
                outlier.shape = NA)
 
 ```
-
 :::
 
 ### 4.3 Adding the Dot Plots with stat_dots()
@@ -401,7 +387,6 @@ ggplot(exam,
 Next, we will add the third geometry layer using *stat_dots()* of *ggdist* package. This produces a half-dotplot, which is similar to a histogram that indicates the number of samples (number of dots) in each bin. We select side = “left” to indicate we want it on the left-hand side.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -443,7 +428,6 @@ ggplot(exam,
             dotsize = 2)
 
 ```
-
 :::
 
 ### 4.4 Finishing touch
@@ -451,7 +435,6 @@ ggplot(exam,
 Lastly, *coord_flip()* of ggplot2 package will be used to flip the raincloud chart horizontally to give it the raincloud appearance. At the same time, *theme_economist()* of *ggthemes* package is used to give the raincloud chart a professional publishing standard look.
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -497,10 +480,8 @@ ggplot(exam,
   theme_economist()
 
 ```
-
 :::
 
 This comes to the end of this hands-on exercise. I have learned to create ridgeline plots and raincloud plots in R. Hope you enjoyed it, too!
 
 See you in the next hands-on exercise 🥰
-

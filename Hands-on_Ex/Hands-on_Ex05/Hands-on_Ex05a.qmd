@@ -1,0 +1,146 @@
+---
+title: "Creating Ternary Plot with R"
+author: "Sun Yiping"
+date: "Febrary 6, 2024"
+date-modified: "Febrary 6, 2024"
+execute: 
+  warning: false
+---
+
+## 1. Learning Outcome
+
+In this hands-on exercise, we will learn how to build ternary plot programmatically using R for visualising and analysing population structure of Singapore.
+
+## 2. Getting Started
+
+### 2.1 Installing and loading the required libraries
+
+Firstly, let's install and load the required packages:
+
+-   [tidyverse](https://www.tidyverse.org/): an opinionated collection of R packages designed for data import, data wrangling and data exploration
+
+-   [ggtern](http://www.ggtern.com/d/2.2.0/): a ggplot extension specially designed to plot ternary diagrams. The package will be used to plot static ternary plots.
+
+-   [plotly](https://plotly.com/r/): an R package for creating interactive web-based graphs via plotly’s JavaScript graphing library, plotly.js . The plotly R libary contains the ggplotly function, which will convert ggplot2 figures into a Plotly object.
+
+```{r}
+pacman::p_load(tidyverse, ggtern, plotly)
+
+```
+
+### 2.2 Importing the data
+
+We'll use Singapore population data downloaded from Singapore Department of Statistics for this hands-on exercise. It contains data of Singapore population by age group and planning area from June 2000 to 2018. The data file is in csv format.
+
+Let's start by importing the data.
+
+```{r}
+pop_data  <- read_csv("../../Data/respopagsex2000to2018_tidy.csv")
+
+```
+The data contains 108,126 rows and 5 columns:
+
+-   3 character variables: planning area, subzone, age group
+-   2 numerical variables: year, population
+
+### 2.3 Preparing the data
+
+Next, let's create 3 new variables: young, active and old using age groups.
+
+```{r}
+agpop_mutated <- pop_data %>%
+  mutate(`Year` = as.character(Year))%>%
+  spread(AG, Population) %>%
+  mutate(YOUNG = rowSums(.[4:8]))%>%
+  mutate(ACTIVE = rowSums(.[9:16]))  %>%
+  mutate(OLD = rowSums(.[17:21])) %>%
+  mutate(TOTAL = rowSums(.[22:24])) %>%
+  filter(Year == 2018)%>%
+  filter(TOTAL > 0)
+
+```
+
+In the new dataset, age groups has been transformed into columns. The 3 new columns are created in the last 3 colnumns.
+
+## 3. Plotting Ternary Diagram with R
+
+### 3.1 Plotting a static ternary diagram
+
+Let's create a simple static ternary diagram to visualize the 3 new columns we just created.
+
+```{r}
+ggtern(data = agpop_mutated,
+       aes(x = YOUNG, 
+           y = ACTIVE, 
+           z = OLD)) +
+  geom_point()
+
+```
+
+Let's make the plot easier to interpret.
+
+```{r}
+ggtern(data = agpop_mutated,
+       aes(x = YOUNG, 
+           y = ACTIVE, 
+           z = OLD)) +
+  geom_point() +
+  labs(title = "Population structure, 2015") +
+  theme_rgbw()
+
+```
+
+### 3.2 Plotting an interative ternary diagram
+
+Now, let's plot an interactive ternary plot
+
+```{r}
+label <- function(txt) {
+  list(
+    text = txt, 
+    x = 0.1, y = 1,
+    ax = 0, ay = 0,
+    xref = "paper", yref = "paper", 
+    align = "center",
+    font = list(family = "serif", size = 15, color = "white"),
+    bgcolor = "#b3b3b3", bordercolor = "black", borderwidth = 2
+  )
+}
+
+# reusable function for axis formatting
+axis <- function(txt) {
+  list(
+    title = txt, tickformat = ".0%", tickfont = list(size = 10)
+  )
+}
+
+ternaryAxes <- list(
+  aaxis = axis("Young"), 
+  baxis = axis("Active"), 
+  caxis = axis("Old")
+)
+
+# Initiating a plotly visualization 
+plot_ly(
+  agpop_mutated, 
+  a = ~YOUNG, 
+  b = ~ACTIVE, 
+  c = ~OLD, 
+  color = I("black"), 
+  type = "scatterternary"
+) %>%
+  layout(
+    annotations = label("Ternary Markers"), 
+    ternary = ternaryAxes
+  )
+
+```
+
+
+
+
+
+
+
+
+

@@ -509,5 +509,47 @@
     "title": "Hands-on_Ex04c Visualising Uncertainty",
     "section": "6. Visualising Uncertainty with Hypothetical Outcome Plots (HOPs)",
     "text": "6. Visualising Uncertainty with Hypothetical Outcome Plots (HOPs)\n\nggplot(data = exam, \n       (aes(x = factor(RACE), \n            y = MATHS))) +\n  geom_point(position = position_jitter(\n    height = 0.3, \n    width = 0.05), \n    size = 0.4, \n    color = \"#0072B2\", \n    alpha = 1/2) +\n  geom_hpline(data = sampler(25, \n                             group = RACE), \n              height = 0.6, \n              color = \"#D55E00\") +\n  theme_bw() + \n  transition_states(.draw, 1, 3)\n\n\n\n\nThis comes to the end of this hands-on exercise. Hope you enjoyed it, too!\nSee you in the next hands-on exercise 🥰"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05a.html",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05a.html",
+    "title": "Creating Ternary Plot with R",
+    "section": "",
+    "text": "In this hands-on exercise, we will learn how to build ternary plot programmatically using R for visualising and analysing population structure of Singapore."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05a.html#learning-outcome",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05a.html#learning-outcome",
+    "title": "Creating Ternary Plot with R",
+    "section": "",
+    "text": "In this hands-on exercise, we will learn how to build ternary plot programmatically using R for visualising and analysing population structure of Singapore."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05a.html#getting-started",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05a.html#getting-started",
+    "title": "Creating Ternary Plot with R",
+    "section": "2. Getting Started",
+    "text": "2. Getting Started\n\n2.1 Installing and loading the required libraries\nFirstly, let’s install and load the required packages:\n\ntidyverse: an opinionated collection of R packages designed for data import, data wrangling and data exploration\nggtern: a ggplot extension specially designed to plot ternary diagrams. The package will be used to plot static ternary plots.\nplotly: an R package for creating interactive web-based graphs via plotly’s JavaScript graphing library, plotly.js . The plotly R libary contains the ggplotly function, which will convert ggplot2 figures into a Plotly object.\n\n\npacman::p_load(tidyverse, ggtern, plotly)\n\n\n\n2.2 Importing the data\nWe’ll use Singapore population data downloaded from Singapore Department of Statistics for this hands-on exercise. It contains data of Singapore population by age group and planning area from June 2000 to 2018. The data file is in csv format.\nLet’s start by importing the data.\n\npop_data  &lt;- read_csv(\"../../Data/respopagsex2000to2018_tidy.csv\")\n\nThe data contains 108,126 rows and 5 columns:\n\n3 character variables: planning area, subzone, age group\n2 numerical variables: year, population\n\n\n\n2.3 Preparing the data\nNext, let’s create 3 new variables: young, active and old using age groups.\n\nagpop_mutated &lt;- pop_data %&gt;%\n  mutate(`Year` = as.character(Year))%&gt;%\n  spread(AG, Population) %&gt;%\n  mutate(YOUNG = rowSums(.[4:8]))%&gt;%\n  mutate(ACTIVE = rowSums(.[9:16]))  %&gt;%\n  mutate(OLD = rowSums(.[17:21])) %&gt;%\n  mutate(TOTAL = rowSums(.[22:24])) %&gt;%\n  filter(Year == 2018)%&gt;%\n  filter(TOTAL &gt; 0)\n\nIn the new dataset, age groups has been transformed into columns. The 3 new columns are created in the last 3 colnumns."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05a.html#plotting-ternary-diagram-with-r",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05a.html#plotting-ternary-diagram-with-r",
+    "title": "Creating Ternary Plot with R",
+    "section": "3. Plotting Ternary Diagram with R",
+    "text": "3. Plotting Ternary Diagram with R\n\n3.1 Plotting a static ternary diagram\nLet’s create a simple static ternary diagram to visualize the 3 new columns we just created.\n\nggtern(data = agpop_mutated,\n       aes(x = YOUNG, \n           y = ACTIVE, \n           z = OLD)) +\n  geom_point()\n\n\n\n\nLet’s make the plot easier to interpret.\n\nggtern(data = agpop_mutated,\n       aes(x = YOUNG, \n           y = ACTIVE, \n           z = OLD)) +\n  geom_point() +\n  labs(title = \"Population structure, 2015\") +\n  theme_rgbw()\n\n\n\n\n\n\n3.2 Plotting an interative ternary diagram\nNow, let’s plot an interactive ternary plot\n\nlabel &lt;- function(txt) {\n  list(\n    text = txt, \n    x = 0.1, y = 1,\n    ax = 0, ay = 0,\n    xref = \"paper\", yref = \"paper\", \n    align = \"center\",\n    font = list(family = \"serif\", size = 15, color = \"white\"),\n    bgcolor = \"#b3b3b3\", bordercolor = \"black\", borderwidth = 2\n  )\n}\n\n# reusable function for axis formatting\naxis &lt;- function(txt) {\n  list(\n    title = txt, tickformat = \".0%\", tickfont = list(size = 10)\n  )\n}\n\nternaryAxes &lt;- list(\n  aaxis = axis(\"Young\"), \n  baxis = axis(\"Active\"), \n  caxis = axis(\"Old\")\n)\n\n# Initiating a plotly visualization \nplot_ly(\n  agpop_mutated, \n  a = ~YOUNG, \n  b = ~ACTIVE, \n  c = ~OLD, \n  color = I(\"black\"), \n  type = \"scatterternary\"\n) %&gt;%\n  layout(\n    annotations = label(\"Ternary Markers\"), \n    ternary = ternaryAxes\n  )"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05b.html",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05b.html",
+    "title": "Visual Correlation Analysis",
+    "section": "",
+    "text": "In this hands-on exercise, we will learn how to plot data visualisation for visualising correlation matrix with R."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05b.html#learning-outcome",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05b.html#learning-outcome",
+    "title": "Visual Correlation Analysis",
+    "section": "",
+    "text": "In this hands-on exercise, we will learn how to plot data visualisation for visualising correlation matrix with R."
   }
 ]
