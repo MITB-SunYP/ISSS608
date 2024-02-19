@@ -136,7 +136,9 @@ plot_ly(
 
 ```
 
+This comes to the end of this hands-on exercise. I have learned to create ternary plots in R. Hope you enjoyed it, too!
 
+See you in the next hands-on exercise 🥰
 
 
 

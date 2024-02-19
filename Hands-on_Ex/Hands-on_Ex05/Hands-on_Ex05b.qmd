@@ -311,7 +311,9 @@ corrplot(wine.cor,
 
 ```
 
+This comes to the end of this hands-on exercise. I have learned to different ways to visualize correlation matrix in R. Hope you enjoyed it, too!
 
+See you in the next hands-on exercise 🥰
 
 
 
