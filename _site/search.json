@@ -649,5 +649,40 @@
     "title": "Heatmap for Visualising and Analysing Multivariate Data",
     "section": "9. The finishing touch",
     "text": "9. The finishing touch\nWe can further customize the heatmap like the example below.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          Colv = NA,\n          seriate = \"none\",\n          colors = Blues,\n          k_row = 5,\n          margins = c(NA,200,60,NA),\n          fontsize_row = 4,\n          fontsize_col = 5,\n          main=\"World Happiness Score and Variables by Country, 2018 \\nDataTransformation using Normalise Method\",\n          xlab = \"World Happiness Indicators\",\n          ylab = \"World Countries\"\n          )\n\n\n\n\n\nThis comes to the end of this hands-on exercise. I have learned to different ways to create heatmap in R. Hope you enjoyed it, too!\nSee you in the next hands-on exercise 🥰"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html",
+    "title": "Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "",
+    "text": "In this hands-on exercise, we will learn how to make parallel coordinates plot."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html#learning-outcome",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html#learning-outcome",
+    "title": "Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "",
+    "text": "In this hands-on exercise, we will learn how to make parallel coordinates plot."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html#getting-started",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html#getting-started",
+    "title": "Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "2. Getting Started",
+    "text": "2. Getting Started\n\n2.1 Installing and loading the required libraries\nFirstly, let’s install and load the required packages:\n\ntidyverse: an opinionated collection of R packages designed for data import, data wrangling and data exploration\nGGally: extends ‘ggplot2’ by adding several functions to reduce the complexity of combining geometric objects with transformed data.\nparallelPlot: Constructs a parallel coordinate plot for a data set with classes in last column.\n\n\npacman::p_load(tidyverse, GGally, parallelPlot)\n\n\n\n2.2 Importing the data\nWe’ll use the data of World Happines 2018 report for this hands-on exercise. The original data is stored in an excel file, and it’s been converted to a csv file for easy importing.\nLet’s start by importing the data.\n\nwh  &lt;- read_csv(\"../../Data/WHData-2018.csv\")\n\nThe data contains 156 rows and 12 columns:\n\n2 character variables:\n\nCountry\nRegion\n\n10 numerical variables:\n\nHappiness score\nWhisker-high\nWhisker-low\nDystopia\nGDP per capita\nSocial support\nHealthy life expectancy\nFreedom to make life choices\nGenerosity\nPerceptions of corruption"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html#plotting-static-parallel-coordinates-plot",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html#plotting-static-parallel-coordinates-plot",
+    "title": "Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "3. Plotting Static Parallel Coordinates Plot",
+    "text": "3. Plotting Static Parallel Coordinates Plot\nn this section, we will learn how to plot static parallel coordinates plot by using ggparcoord() of GGally package.\n\n3.1 Plotting a simple parallel coordinates\n\nggparcoord(data = wh, \n           columns = c(7:12))\n\n\n\n\nIt’s quite obvious to see that there are some outliers in the following columns:\n\nSocial support\nFreedom to make life choices\nGenerosity\nPercveptions of corruption\n\n\n\n3.2 Plotting a parallel coordinates with boxplot\nHowever, it’s quite difficult understand the distribution of the columns. We can overcome this by adding boxplots.\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Parallel Coordinates Plot of World Happines Variables\")\n\n\n\n\nWe can now make more statistical inference from the plot.\n\n\n3.3 Parallel coordinates with facet\nWe can further break it down by facet to visualize the differences among different categories.\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Multiple Parallel Coordinates Plots of World Happines Variables by Region\") +\n  facet_wrap(~ Region)\n\n\n\n\nNow we have made the parallel coordinates plots for each region.\n\n\n3.4 Rotating x-axis text label\nLet’s now customize the plots a bit to make the x-axis labels easier to be read.\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Multiple Parallel Coordinates Plots of World Happines Variables by Region\") +\n  facet_wrap(~ Region) + \n  theme(axis.text.x = element_text(angle = 30))\n\n\n\n\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Multiple Parallel Coordinates Plots of World Happines Variables by Region\") +\n  facet_wrap(~ Region) + \n  theme(axis.text.x = element_text(angle = 30, hjust=1))"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html#plotting-interactive-parallel-coordinates-plot-parallelplot-methods",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05d.html#plotting-interactive-parallel-coordinates-plot-parallelplot-methods",
+    "title": "Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "4. Plotting Interactive Parallel Coordinates Plot: parallelPlot methods",
+    "text": "4. Plotting Interactive Parallel Coordinates Plot: parallelPlot methods\nIn this section, we will learn how to use functions provided in parallelPlot package to build interactive parallel coordinates plot.\n\n4.1 The basic plot\nThe code chunk below plot an interactive parallel coordinates plot by using parallelPlot().\n\nwh &lt;- wh %&gt;%\n  select(\"Happiness score\", c(7:12))\nparallelPlot(wh,\n             width = 320,\n             height = 250)\n\n\n\n\n\nWhen we click on any data point, the data from the same row is high lighted.\n\n\n4.2 Changing the colour scheme\nLet’s change the looks of the plot such as rotating the x-axis labels:\n\nparallelPlot(wh,\n             continuousCS = \"YlOrRd\",\n             rotateTitle = TRUE)\n\n\n\n\n\n\n\n4.3 Parallel coordinates plot with histogram\nSimilarly, we can add histograms on the chart to view the distributions.\n\nhistoVisibility &lt;- rep(TRUE, ncol(wh))\nparallelPlot(wh,\n             rotateTitle = TRUE,\n             histoVisibility = histoVisibility)\n\n\n\n\n\nThis comes to the end of this hands-on exercise. I have learned to make static and interactive parallel coordicates plots in R. Hope you enjoyed it, too!\nSee you in the next hands-on exercise 🥰"
   }
 ]
