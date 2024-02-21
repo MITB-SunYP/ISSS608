@@ -38,6 +38,7 @@ Let's start by importing the data.
 pop_data  <- read_csv("../../Data/respopagsex2000to2018_tidy.csv")
 
 ```
+
 The data contains 108,126 rows and 5 columns:
 
 -   3 character variables: planning area, subzone, age group
@@ -139,10 +140,3 @@ plot_ly(
 This comes to the end of this hands-on exercise. I have learned to create ternary plots in R. Hope you enjoyed it, too!
 
 See you in the next hands-on exercise 🥰
-
-
-
-
-
-
-

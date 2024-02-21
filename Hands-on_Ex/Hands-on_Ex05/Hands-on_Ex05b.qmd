@@ -87,12 +87,14 @@ We noticed that the upper half of the correlation matrix provides the same infor
 pairs(wine[ , 2:12], upper.panel = NULL)
 
 ```
+
 of course, we can also choose to show the upper half of the matrix.
 
 ```{r}
 pairs(wine[ , 2:12], lower.panel = NULL)
 
 ```
+
 ### 3.3 Including with correlation coefficients
 
 We can also show the correlation coefficients in the matrix to allows us to make better judgement.
@@ -132,6 +134,7 @@ ggstatsplot::ggcorrmat(
 )
 
 ```
+
 The plot tells us which pairs have insignificant correlation by marking a cross in the respective boxes.
 
 We can add a title and subtitle in the plot to make it more informative.
@@ -148,6 +151,7 @@ ggstatsplot::ggcorrmat(
 )
 
 ```
+
 In addition, we can also customize the font size of the title and x / y axis labels.
 
 ```{r}
@@ -211,6 +215,7 @@ Now, we can make the plot using the correlation matrix just created.
 corrplot(wine.cor)
 
 ```
+
 Both the intensity of the colors and the size of the circles indicate the strength of the pairwise correlation.
 
 ### 5.2 Working with visual geometrics
@@ -235,6 +240,7 @@ corrplot(wine.cor,
          type = "lower")
 
 ```
+
 We can remove the diagonal by setting diag = FALSE.
 
 ```{r}
@@ -314,12 +320,3 @@ corrplot(wine.cor,
 This comes to the end of this hands-on exercise. I have learned to different ways to visualize correlation matrix in R. Hope you enjoyed it, too!
 
 See you in the next hands-on exercise 🥰
-
-
-
-
-
-
-
-
-
