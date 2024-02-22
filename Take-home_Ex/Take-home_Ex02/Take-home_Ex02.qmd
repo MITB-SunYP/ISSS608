@@ -597,7 +597,6 @@ The intention was good where the author explored the correlation between the per
 **A remake of the plot**
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -827,7 +826,6 @@ plot4 <- ggplot(PV,
 plot1 + plot2 + plot3 + plot4
 
 ```
-
 :::
 
 ### 3.5 Student Performance by Own Room
@@ -851,7 +849,6 @@ Box plot is a good choice to compare if there is any differences in the scores b
 **A remake of the plot**
 
 ::: panel-tabset
-
 ## The plot
 
 ```{r}
@@ -989,23 +986,6 @@ plot4 <- ggplot(PV,
 plot1 + plot2 + plot3 + plot4
 
 ```
-
 :::
 
 This comes to the end of my take-home exercise 2. Hope you enjoyed reading my work. See you in the next take-home exercise 🥰
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
