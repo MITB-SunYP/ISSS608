@@ -29,7 +29,7 @@ For the interest of this exercise, we'll focus on the daily rainfall column, and
 
 ### 1.2 Data
 
-[Meteorological Service Singapore](http://www.weather.gov.sg/climate-historical-daily/) website allows us to download the data in csv format by year and month. In each csv file, there are daily records of the above mentioned weather information. To keep the scope of this exercise simpler, we downloaded the data for the following time periods:
+[Meteorological Service Singapore](http://www.weather.gov.sg/climate-historical-daily/) website allows us to download the data in csv format by year and month. In each csv file, there are daily records of the above mentioned weather information. To keep the scope of this exercise simpler, we downloaded the data from **Sentosa Island station** for the following time periods:
 
 -   Year 1983: January to December 
 -   Year 1993: January to December
@@ -58,6 +58,8 @@ pacman::p_load(tidyverse, ggstatsplot, ggridges, ggdist)
 Since the data is distributed in different files, let's first create a program to loop through all the csv files, and combine the rainfall data into one dataframe.
 
 ```{r}
+#| eval: false
+
 # Set folder path
 folder_path <- "../../Data/Weather_Sentosa"
 
@@ -85,6 +87,16 @@ for (file in csv_files) {
 
 # Combine all the data into one dataframe
 RF_data <- bind_rows(data_list)
+
+# Save the dataframe into a csv file
+write_csv(RF_data, "../../Data/Weather_Sentosa/Weather_Sentosa_RF.csv")
+
+```
+
+Then, let's import the rainfall data from the csv file.
+
+```{r}
+RF_data <- read_csv("../../Data/Weather_Sentosa/Weather_Sentosa_RF.csv")
 
 ```
 
@@ -117,7 +129,7 @@ RF_data$Day <- factor(RF_data$Day, levels = c("1", "2", "3", "4", "5", "6", "7",
 
 In this section, we'll make use of the visualization techniques learned in class to study the trend of rainfall in Singapore.
 
-### 3.1 Rainfall Trend Over The Years
+### 3.1 Rainfall trend over the years
 
 Since we have the rainfall data for 5 years which are 1983, 1993, 2003, 2013 and 2023. It'd be interesting to see if there is any temporal trend from 1983 to 2023.
 
@@ -183,7 +195,7 @@ The plot shows that there are some differences across the years in terms of the 
 
 ### 3.2 Breaking down by month
 
-
+Next, let's study the data pattern for each month to see if there is really no significant trend across years.
 
 ::: panel-tabset
 
@@ -200,9 +212,9 @@ ggplot() +
             colour="darkgreen") +
   facet_grid(~Month) +
   labs(axis.text.x = element_blank(),
-       title = "Average Monthly Rainfall (mm) from 1983 to 2023") +
+       title = "Average Daily Rainfall (mm) by Month from 1983 to 2023") +
   xlab("") +
-  ylab("Monthly Rainfall (mm)") +
+  ylab("Average Daily Rainfall (mm)") +
   theme(axis.text.x = element_text(angle = 90))
 
 ```
@@ -220,9 +232,9 @@ ggplot() +
             colour="darkgreen") +
   facet_grid(~Month) +
   labs(axis.text.x = element_blank(),
-       title = "Average Monthly Rainfall (mm) from 1983 to 2023") +
+       title = "Average Daily Rainfall (mm) by Month from 1983 to 2023") +
   xlab("") +
-  ylab("Monthly Rainfall (mm)") +
+  ylab("Average Daily Rainfall (mm)") +
   theme(axis.text.x = element_text(angle = 90))
 
 ```
@@ -231,15 +243,77 @@ ggplot() +
 ::: callout-tip
 ## Interpretation
 
-The plot echoed the observation we made in the previous section that there isn't significant trend in the rainfall amount from 1983 to 2023, even after breaking down by month.
-
-However, it seems that there is a seasonal trend across different months in a year. In general, the rainfall amount decreases in the first half of the year from January to June. There is a spike in July before a dip in August. After that, the rainfall displays an upward trend until December.
-
-
+The plot echoed the observation we made in the previous section that there isn't significant trend in the rainfall amount from 1983 to 2023, even after breaking down by month except February. The rainfall amount in February displayed an upward trend from 1983 to 2023.
 
 :::
 
+### 3.3 Seasonal trend of rainfall
 
+In this section, we'll investigate if there is any seasonal trend exhibited in the data.
+
+::: panel-tabset
+
+## The plot
+
+```{r}
+#| echo: false
+
+ggplot(RF_data_monthly, 
+       aes(Month, 
+           Year, 
+           fill = `Daily Rainfall Total (mm)`)) +
+  geom_tile(color = "white", 
+          size = 0.1) +
+  coord_equal() +
+  scale_fill_gradient(name = "Average Daily Rainfall (mm)",
+                    low = "sky blue", 
+                    high = "dark blue") +
+  labs(x = NULL,
+       y = NULL,
+       title = "Average Daily Rainfall (mm) by Month") +
+  theme(axis.ticks = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 6) ) +
+  scale_y_discrete(limits = rev(levels(as.factor(RF_data_monthly$Year))))
+
+```
+
+## The code
+
+```{r}
+#| eval: false
+
+ggplot(RF_data_monthly, 
+       aes(Month, 
+           Year, 
+           fill = `Daily Rainfall Total (mm)`)) +
+  geom_tile(color = "white", 
+          size = 0.1) +
+  coord_equal() +
+  scale_fill_gradient(name = "Average Daily Rainfall (mm)",
+                    low = "sky blue", 
+                    high = "dark blue") +
+  labs(x = NULL,
+       y = NULL,
+       title = "Average Daily Rainfall (mm) by Month") +
+  theme(axis.ticks = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 6) ) +
+  scale_y_discrete(limits = rev(levels(as.factor(RF_data_monthly$Year))))
+
+```
+:::
+
+::: callout-tip
+## Interpretation
+
+Contradicts to what we hypothesized, there is no clear cut of wet months and dry months from the data collected at Sentosa Island station. Although there is generally more rainfall in year end than in the middle of the year, we can't see a clear seasonality pattern across the years.
+
+For example, the raining season seems to start from July in 1983, October in 1993, December in 2003, September in 2013 and November in 2023. It could be due to the weather station I have chosen for this exercise. Sentosa Island is closer to the sea, and it's probably more influenced by the sea wind.
+
+:::
 
 
 
