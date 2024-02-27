@@ -317,7 +317,13 @@ For example, the raining season seems to start from July in 1983, October in 199
 
 ## 4. Conclusion
 
-Through the study of the 
+Through the study of the historical rainfall data collected at Sentosa Island station across 5 years from 1983 to 2023, it's interesting to see that
+
+-   It seems that the rainfall amount increased across the years, but the increment is not statistically significant. We have investigated the differences both by year and by month, the same observations were made.
+
+-   Contradicts to what we hypothesized, the rainfall amount didn't display a clear seasonal trend. Although it seems that it rains more at the end of the year than the middle of the year.
+
+This comes to the end of my take-home exercise 3. Hope you enjoyed reading my explorations and findings. See you in the next take-home exercise 🥰
 
 
 
