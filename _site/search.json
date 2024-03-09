@@ -761,5 +761,33 @@
     "title": "Be Weatherwise or Otherwise",
     "section": "4. Conclusion",
     "text": "4. Conclusion\nThrough the study of the historical rainfall data collected at Sentosa Island station across 5 years from 1983 to 2023, it’s interesting to see that\n\nIt seems that the rainfall amount increased across the years, but the increment is not statistically significant. We have investigated the differences both by year and by month, the same observations were made.\nContradicts to what we hypothesized, the rainfall amount didn’t display a clear seasonal trend. Although it seems that it rains more at the end of the year than the middle of the year.\n\nThis comes to the end of my take-home exercise 3. Hope you enjoyed reading my explorations and findings. See you in the next take-home exercise 🥰"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html",
+    "title": "In-class_Ex07",
+    "section": "",
+    "text": "pacman::p_load(sf, terra, gstat, tmap, viridis, tidyverse)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#loading-r-packages",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#loading-r-packages",
+    "title": "In-class_Ex07",
+    "section": "",
+    "text": "pacman::p_load(sf, terra, gstat, tmap, viridis, tidyverse)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#importing-data",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#importing-data",
+    "title": "In-class_Ex07",
+    "section": "Importing data",
+    "text": "Importing data\nFirstly, we import the data which includes the longitude and latitude of the rainfall stations.\n\nrfstation &lt;- read_csv(\"../../Data/aspatial/RainfallStation.csv\")\n\nNext, we import the data which includes the daily rainfall amount collected from all the rainfall stations. For the interest of this exercise, we are interested in the monthly total rainfall at different stations. Therefore, we summarize the rainfall amount at each station while importing the data.\n\nrfdata &lt;- read_csv(\"../../Data/aspatial/DAILYDATA_202402.csv\") %&gt;%\n  select(c(1, 5)) %&gt;%\n  group_by(Station) %&gt;%\n  summarise(MONTHSUM = sum(`Daily Rainfall Total (mm)`)) %&gt;%\n  ungroup()\n\n\nrfdata &lt;- rfdata %&gt;%\n  left_join(rfstation)\n\nConvert the geometry from decimal degree (crs = 4326) into meters (crs = 3414)\n\nrfdata_sf &lt;- st_as_sf(rfdata,\n                      coords = c(\"Longitude\",\n                                 \"Latitude\"),\n                      crs = 4326) %&gt;%\n  st_transform(crs = 3414)\n\nImport map boundary data.\n\nmpsz2019 &lt;- st_read(dsn = \"../../Data/geospatial\",\n                    layer = \"MPSZ-2019\") %&gt;%\n  st_transform(crs = 3414)\n\nReading layer `MPSZ-2019' from data source `D:\\MITB_SunYP\\ISSS608\\Data\\geospatial' using driver `ESRI Shapefile'\nSimple feature collection with 332 features and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775\nGeodetic CRS:  WGS 84\n\n\n\ntmap_options(check.and.fix = TRUE)\ntmap_mode(\"view\")\ntm_shape(mpsz2019) +\n  tm_borders() +\ntm_shape(rfdata_sf) +\n  tm_dots(col = \"MONTHSUM\")\n\n\n\n\n\ntmap_mode(\"plot\")\n\n\nmpsz2019\n\nSimple feature collection with 332 features and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21 / Singapore TM\nFirst 10 features:\n                 SUBZONE_N SUBZONE_C       PLN_AREA_N PLN_AREA_C       REGION_N\n1              MARINA EAST    MESZ01      MARINA EAST         ME CENTRAL REGION\n2         INSTITUTION HILL    RVSZ05     RIVER VALLEY         RV CENTRAL REGION\n3           ROBERTSON QUAY    SRSZ01  SINGAPORE RIVER         SR CENTRAL REGION\n4  JURONG ISLAND AND BUKOM    WISZ01  WESTERN ISLANDS         WI    WEST REGION\n5             FORT CANNING    MUSZ02           MUSEUM         MU CENTRAL REGION\n6         MARINA EAST (MP)    MPSZ05    MARINE PARADE         MP CENTRAL REGION\n7                   SUDONG    WISZ03  WESTERN ISLANDS         WI    WEST REGION\n8                  SEMAKAU    WISZ02  WESTERN ISLANDS         WI    WEST REGION\n9           SOUTHERN GROUP    SISZ02 SOUTHERN ISLANDS         SI CENTRAL REGION\n10                 SENTOSA    SISZ01 SOUTHERN ISLANDS         SI CENTRAL REGION\n   REGION_C                       geometry\n1        CR MULTIPOLYGON (((33222.98 29...\n2        CR MULTIPOLYGON (((28481.45 30...\n3        CR MULTIPOLYGON (((28087.34 30...\n4        WR MULTIPOLYGON (((14557.7 304...\n5        CR MULTIPOLYGON (((29542.53 31...\n6        CR MULTIPOLYGON (((35279.55 30...\n7        WR MULTIPOLYGON (((15772.59 21...\n8        WR MULTIPOLYGON (((19843.41 21...\n9        CR MULTIPOLYGON (((30870.53 22...\n10       CR MULTIPOLYGON (((26879.04 26...\n\n\n(ymin - xmin)/50 –&gt; prefer 50x50 meter grid or 100x100 meter grid?\n\ngrid &lt;- terra::rast(mpsz2019,\n                    nrows = 690,\n                    ncols = 1075)\n\n# xy &lt;- terra::xyFromCell()"
+  },
+  {
+    "objectID": "Data/geospatial/MPSZ-2019.html",
+    "href": "Data/geospatial/MPSZ-2019.html",
+    "title": "ISSS608",
+    "section": "",
+    "text": "&lt;!DOCTYPE qgis PUBLIC ‘http://mrcc.com/qgis.dtd’ ‘SYSTEM’&gt;     dataset\n\n\n        0 0     false"
   }
 ]

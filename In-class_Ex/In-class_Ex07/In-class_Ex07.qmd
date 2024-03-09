@@ -1,0 +1,100 @@
+---
+title: "In-class_Ex07"
+author: "Sun Yiping"
+date: "March 9, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  message: false
+  warning: false
+editor: visual
+---
+
+## Loading R packages
+
+```{r}
+pacman::p_load(sf, terra, gstat, tmap, viridis, tidyverse)
+
+```
+
+## Importing data
+
+Firstly, we import the data which includes the longitude and latitude of the rainfall stations.
+
+```{r}
+rfstation <- read_csv("../../Data/aspatial/RainfallStation.csv")
+
+```
+Next, we import the data which includes the daily rainfall amount collected from all the rainfall stations. For the interest of this exercise, we are interested in the monthly total rainfall at different stations. Therefore, we summarize the rainfall amount at each station while importing the data.
+
+```{r}
+rfdata <- read_csv("../../Data/aspatial/DAILYDATA_202402.csv") %>%
+  select(c(1, 5)) %>%
+  group_by(Station) %>%
+  summarise(MONTHSUM = sum(`Daily Rainfall Total (mm)`)) %>%
+  ungroup()
+
+```
+
+```{r}
+rfdata <- rfdata %>%
+  left_join(rfstation)
+
+```
+Convert the geometry from decimal degree (crs = 4326) into meters (crs = 3414)
+
+```{r}
+rfdata_sf <- st_as_sf(rfdata,
+                      coords = c("Longitude",
+                                 "Latitude"),
+                      crs = 4326) %>%
+  st_transform(crs = 3414)
+
+```
+
+Import map boundary data.
+
+```{r}
+mpsz2019 <- st_read(dsn = "../../Data/geospatial",
+                    layer = "MPSZ-2019") %>%
+  st_transform(crs = 3414)
+
+```
+
+```{r}
+tmap_options(check.and.fix = TRUE)
+tmap_mode("view")
+tm_shape(mpsz2019) +
+  tm_borders() +
+tm_shape(rfdata_sf) +
+  tm_dots(col = "MONTHSUM")
+tmap_mode("plot")
+
+```
+
+```{r}
+mpsz2019
+
+```
+
+(ymin - xmin)/50 --> prefer 50x50 meter grid or 100x100 meter grid?
+
+```{r}
+grid <- terra::rast(mpsz2019,
+                    nrows = 690,
+                    ncols = 1075)
+
+# xy <- terra::xyFromCell()
+
+```
+
+```{r}
+
+
+```
+
+```{r}
+
+
+```

@@ -18,7 +18,7 @@ In this in-class exercise, two R packages will be used. They are:
 
 -   [haven](https://haven.tidyverse.org/index.html)
 
-The code chunk used is as follows: 
+The code chunk used is as follows:
 
 ```{r}
 pacman::p_load(tidyverse, haven)
@@ -55,5 +55,3 @@ The code chunk below is used to import the rds data.
 ```{r}
 stu_qqq_sg <- read_rds("../../Data/stu_qqq_sg.rds")
 ```
-
-
