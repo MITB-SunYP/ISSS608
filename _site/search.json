@@ -789,5 +789,12 @@
     "title": "ISSS608",
     "section": "",
     "text": "&lt;!DOCTYPE qgis PUBLIC ‘http://mrcc.com/qgis.dtd’ ‘SYSTEM’&gt;     dataset\n\n\n        0 0     false"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex04/Take-home_Ex04.html",
+    "href": "Take-home_Ex/Take-home_Ex04/Take-home_Ex04.html",
+    "title": "Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "",
+    "text": "pacman::p_load(tidyverse, lubridate)\n\n\ndengue &lt;- read_csv(\"../../Data/weekly_dengue_cases.csv\")\n\nweather &lt;- read_csv(\"../../Data/clean_climate_data.csv\", na = \".\")\n\n\nweather &lt;- weather %&gt;%\n  mutate('date' = make_date(year = Year, month = Month, day = Day)) %&gt;%\n  mutate('wk_no' = isoweek(ymd(date)))"
   }
 ]

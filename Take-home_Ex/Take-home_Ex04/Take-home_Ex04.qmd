@@ -7,6 +7,37 @@ execute:
   warning: false
 ---
 
+
+
+```{r}
+pacman::p_load(tidyverse, lubridate)
+
+```
+
+```{r}
+dengue <- read_csv("../../Data/weekly_dengue_cases.csv")
+
+weather <- read_csv("../../Data/clean_climate_data.csv", na = ".")
+
+```
+
+```{r}
+weather <- weather %>%
+  mutate('date' = make_date(year = Year, month = Month, day = Day)) %>%
+  mutate('wk_no' = isoweek(ymd(date)))
+
+```
+
+```{r}
+
+
+```
+
+```{r}
+
+
+```
+
 ```{r}
 
 
