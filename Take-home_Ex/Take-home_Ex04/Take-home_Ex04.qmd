@@ -22,23 +22,46 @@ weather <- read_csv("../../Data/clean_climate_data.csv", na = ".")
 ```
 
 ```{r}
-weather <- weather %>%
+weather_group <- weather %>%
+  group_by(Year, Month, Day) %>%
+  summarise(avg_daily_rainfall = mean(daily_rainfall, na.rm = TRUE),
+            max_highest_30m_rainfall = max(highest_30m_rainfall, na.rm = TRUE),
+            max_highest_60m_rainfall = max(highest_60m_rainfall, na.rm = TRUE),
+            max_highest_120m_rainfall = max(highest_120m_rainfall, na.rm = TRUE),
+            avg_mean_temp = mean(mean_temp, na.rm = TRUE),
+            max_max_temp = max(max_temp, na.rm = TRUE),
+            min_min_temp = min(min_temp, na.rm = TRUE),
+            avg_mean_wind = mean(mean_wind, na.rm = TRUE),
+            max_max_wind = max(max_wind, na.rm = TRUE))
+
+```
+
+```{r}
+weather_group <- weather_group %>%
   mutate('date' = make_date(year = Year, month = Month, day = Day)) %>%
   mutate('wk_no' = isoweek(ymd(date)))
 
 ```
 
-```{r}
 
+```{r}
+weather_group_wk <- weather_group %>%
+  group_by(Year, wk_no) %>%
+  summarise(avg_daily_rainfall = mean(avg_daily_rainfall, na.rm = TRUE),
+            tot_daily_rainfall = sum(avg_daily_rainfall, na.rm = TRUE),
+            max_highest_30m_rainfall = max(max_highest_30m_rainfall, na.rm = TRUE),
+            max_highest_60m_rainfall = max(max_highest_60m_rainfall, na.rm = TRUE),
+            max_highest_120m_rainfall = max(max_highest_120m_rainfall, na.rm = TRUE),
+            avg_mean_temp = mean(avg_mean_temp, na.rm = TRUE),
+            max_max_temp = max(max_max_temp, na.rm = TRUE),
+            min_min_temp = min(min_min_temp, na.rm = TRUE),
+            avg_mean_wind = mean(avg_mean_wind, na.rm = TRUE),
+            max_max_wind = max(max_max_wind, na.rm = TRUE))
 
 ```
 
 ```{r}
-
-
-```
-
-```{r}
-
+dengue_weather_wk <- dengue %>%
+  left_join(weather_group_wk, by = join_by(Year == Year, WkNo == wk_no))
 
 ```
