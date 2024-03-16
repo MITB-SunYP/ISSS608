@@ -10,7 +10,7 @@ execute:
 
 
 ```{r}
-pacman::p_load(tidyverse, lubridate)
+pacman::p_load(tidyverse, lubridate, caret)
 
 ```
 
@@ -65,3 +65,94 @@ dengue_weather_wk <- dengue %>%
   left_join(weather_group_wk, by = join_by(Year == Year, WkNo == wk_no))
 
 ```
+
+```{r}
+# Remove the records with NA
+
+dengue_weather_wk <- dengue_weather_wk[complete.cases(dengue_weather_wk),]
+
+summary(dengue_weather_wk)
+
+```
+
+```{r}
+# Fit linear regression model using all the data without normalization
+
+model_lm1 <- lm(Cases ~ tot_daily_rainfall + avg_mean_temp + avg_mean_wind, data = dengue_weather_wk)
+
+summary(model_lm1)
+
+```
+
+```{r}
+plot(model_lm1$residuals, pch = 16, col = "blue")
+
+```
+
+```{r}
+# Fit linear regression model using all the data with log transformation on X
+
+model_lm2 <- lm(Cases ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + log1p(avg_mean_wind), data = dengue_weather_wk)
+
+summary(model_lm2)
+
+```
+
+```{r}
+plot(model_lm2$residuals, pch = 16, col = "blue")
+
+```
+
+```{r}
+# Fit linear regression model using all the data with log transformation on X and Y
+
+model_lm3 <- lm(log1p(Cases) ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + log1p(avg_mean_wind), data = dengue_weather_wk)
+
+summary(model_lm3)
+
+```
+
+```{r}
+model_lm3.1 <- lm(log1p(Cases) ~ log1p(avg_mean_temp) + log1p(avg_mean_wind), data = dengue_weather_wk)
+
+summary(model_lm3.1)
+
+```
+
+```{r}
+model_lm3.2 <- lm(log1p(Cases) ~ log1p(avg_mean_temp), data = dengue_weather_wk)
+
+summary(model_lm3.2)
+
+```
+
+```{r}
+plot(model_lm3.2$residuals, pch = 16, col = "blue")
+
+```
+
+```{r}
+# Fit linear regression model using all the data with min-max transformation on X
+
+minmax_process <- preProcess(dengue_weather_wk, method = c("range"))
+
+dengue_weather_wk_mm <- predict(minmax_process, dengue_weather_wk)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

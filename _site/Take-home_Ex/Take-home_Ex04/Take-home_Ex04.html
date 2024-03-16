@@ -209,6 +209,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex07/In-class_Ex07.html" rel="" target="">
  <span class="dropdown-text">In-class Exercise 7</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex07/In-class_Ex09.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 9</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -283,7 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 12, 2024</p>
+      <p class="date-modified">March 15, 2024</p>
     </div>
   </div>
     
@@ -293,7 +297,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, lubridate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, lubridate, caret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dengue <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../../Data/weekly_dengue_cases.csv"</span>)</span>
@@ -335,6 +339,210 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dengue_weather_wk <span class="ot">&lt;-</span> dengue <span class="sc">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(weather_group_wk, <span class="at">by =</span> <span class="fu">join_by</span>(Year <span class="sc">==</span> Year, WkNo <span class="sc">==</span> wk_no))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove the records with NA</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>dengue_weather_wk <span class="ot">&lt;-</span> dengue_weather_wk[<span class="fu">complete.cases</span>(dengue_weather_wk),]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dengue_weather_wk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Year           WkNo           Cases         avg_daily_rainfall
+ Min.   :2013   Min.   : 1.00   Min.   :  24.00   Min.   : 0.000    
+ 1st Qu.:2015   1st Qu.:14.75   1st Qu.:  77.75   1st Qu.: 2.720    
+ Median :2017   Median :27.00   Median : 229.50   Median : 5.148    
+ Mean   :2017   Mean   :27.00   Mean   : 291.68   Mean   : 5.976    
+ 3rd Qu.:2019   3rd Qu.:40.00   3rd Qu.: 378.50   3rd Qu.: 8.486    
+ Max.   :2020   Max.   :52.00   Max.   :1792.00   Max.   :27.621    
+ tot_daily_rainfall max_highest_30m_rainfall max_highest_60m_rainfall
+ Min.   : 0.000     Min.   : -Inf            Min.   :  -Inf          
+ 1st Qu.: 2.720     1st Qu.:20.55            1st Qu.: 24.15          
+ Median : 5.148     Median :32.40            Median : 41.60          
+ Mean   : 5.976     Mean   : -Inf            Mean   :  -Inf          
+ 3rd Qu.: 8.486     3rd Qu.:40.00            3rd Qu.: 55.85          
+ Max.   :27.621     Max.   :65.20            Max.   :102.60          
+ max_highest_120m_rainfall avg_mean_temp    max_max_temp   min_min_temp  
+ Min.   : -Inf             Min.   :24.56   Min.   :31.0   Min.   : 0.00  
+ 1st Qu.: 26.2             1st Qu.:27.53   1st Qu.:34.1   1st Qu.:22.10  
+ Median : 46.4             Median :28.09   Median :34.7   Median :22.60  
+ Mean   : -Inf             Mean   :28.07   Mean   :34.6   Mean   :22.41  
+ 3rd Qu.: 64.0             3rd Qu.:28.68   3rd Qu.:35.2   3rd Qu.:23.10  
+ Max.   :122.8             Max.   :30.09   Max.   :37.5   Max.   :24.80  
+ avg_mean_wind     max_max_wind   
+ Min.   : 5.442   Min.   : 35.30  
+ 1st Qu.: 7.070   1st Qu.: 55.40  
+ Median : 8.057   Median : 63.40  
+ Mean   : 8.348   Mean   : 66.63  
+ 3rd Qu.: 9.255   3rd Qu.: 73.17  
+ Max.   :14.846   Max.   :138.60  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit linear regression model using all the data without normalization</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>model_lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Cases <span class="sc">~</span> tot_daily_rainfall <span class="sc">+</span> avg_mean_temp <span class="sc">+</span> avg_mean_wind, <span class="at">data =</span> dengue_weather_wk)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Cases ~ tot_daily_rainfall + avg_mean_temp + avg_mean_wind, 
+    data = dengue_weather_wk)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-346.09 -182.45  -63.62   89.17 1482.23 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)        -1966.268    619.150  -3.176 0.001614 ** 
+tot_daily_rainfall    11.034      4.436   2.487 0.013298 *  
+avg_mean_temp         70.887     20.370   3.480 0.000559 ***
+avg_mean_wind         24.191      9.785   2.472 0.013855 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 279.6 on 388 degrees of freedom
+Multiple R-squared:  0.03536,   Adjusted R-squared:  0.0279 
+F-statistic: 4.741 on 3 and 388 DF,  p-value: 0.002925</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_lm1<span class="sc">$</span>residuals, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex04_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit linear regression model using all the data with log transformation on X</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>model_lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Cases <span class="sc">~</span> <span class="fu">log1p</span>(tot_daily_rainfall) <span class="sc">+</span> <span class="fu">log1p</span>(avg_mean_temp) <span class="sc">+</span> <span class="fu">log1p</span>(avg_mean_wind), <span class="at">data =</span> dengue_weather_wk)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Cases ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + 
+    log1p(avg_mean_wind), data = dengue_weather_wk)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-333.47 -186.03  -57.03   91.56 1463.74 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)               -6736.23    1933.09  -3.485 0.000549 ***
+log1p(tot_daily_rainfall)    70.50      26.61   2.649 0.008399 ** 
+log1p(avg_mean_temp)       1865.22     545.64   3.418 0.000697 ***
+log1p(avg_mean_wind)        280.52     101.07   2.776 0.005778 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 279.1 on 388 degrees of freedom
+Multiple R-squared:  0.0384,    Adjusted R-squared:  0.03097 
+F-statistic: 5.165 on 3 and 388 DF,  p-value: 0.001643</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_lm2<span class="sc">$</span>residuals, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex04_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit linear regression model using all the data with log transformation on X and Y</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>model_lm3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log1p</span>(Cases) <span class="sc">~</span> <span class="fu">log1p</span>(tot_daily_rainfall) <span class="sc">+</span> <span class="fu">log1p</span>(avg_mean_temp) <span class="sc">+</span> <span class="fu">log1p</span>(avg_mean_wind), <span class="at">data =</span> dengue_weather_wk)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log1p(Cases) ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + 
+    log1p(avg_mean_wind), data = dengue_weather_wk)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.8333 -0.7985  0.1532  0.6327  2.2185 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)               -17.51166    6.43010  -2.723 0.006753 ** 
+log1p(tot_daily_rainfall)   0.12567    0.08852   1.420 0.156485    
+log1p(avg_mean_temp)        6.22667    1.81497   3.431 0.000667 ***
+log1p(avg_mean_wind)        0.71565    0.33618   2.129 0.033905 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9284 on 388 degrees of freedom
+Multiple R-squared:  0.0362,    Adjusted R-squared:  0.02874 
+F-statistic: 4.857 on 3 and 388 DF,  p-value: 0.002497</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model_lm3<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log1p</span>(Cases) <span class="sc">~</span> <span class="fu">log1p</span>(avg_mean_temp) <span class="sc">+</span> <span class="fu">log1p</span>(avg_mean_wind), <span class="at">data =</span> dengue_weather_wk)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_lm3<span class="fl">.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log1p(Cases) ~ log1p(avg_mean_temp) + log1p(avg_mean_wind), 
+    data = dengue_weather_wk)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.8905 -0.7700  0.1463  0.6686  2.2269 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)          -12.7343     5.4865  -2.321  0.02080 * 
+log1p(avg_mean_temp)   5.0680     1.6232   3.122  0.00193 **
+log1p(avg_mean_wind)   0.4191     0.2638   1.589  0.11289   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9296 on 389 degrees of freedom
+Multiple R-squared:  0.03119,   Adjusted R-squared:  0.02621 
+F-statistic: 6.262 on 2 and 389 DF,  p-value: 0.002106</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model_lm3<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log1p</span>(Cases) <span class="sc">~</span> <span class="fu">log1p</span>(avg_mean_temp), <span class="at">data =</span> dengue_weather_wk)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_lm3<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log1p(Cases) ~ log1p(avg_mean_temp), data = dengue_weather_wk)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.8814 -0.7820  0.1538  0.7157  2.2359 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)           -12.018      5.479  -2.194  0.02886 * 
+log1p(avg_mean_temp)    5.131      1.626   3.156  0.00172 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9315 on 390 degrees of freedom
+Multiple R-squared:  0.0249,    Adjusted R-squared:  0.0224 
+F-statistic:  9.96 on 1 and 390 DF,  p-value: 0.001724</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_lm3<span class="fl">.2</span><span class="sc">$</span>residuals, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex04_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit linear regression model using all the data with min-max transformation on X</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>minmax_process <span class="ot">&lt;-</span> <span class="fu">preProcess</span>(dengue_weather_wk, <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"range"</span>))</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>dengue_weather_wk_mm <span class="ot">&lt;-</span> <span class="fu">predict</span>(minmax_process, dengue_weather_wk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

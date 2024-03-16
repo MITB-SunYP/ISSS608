@@ -795,6 +795,104 @@
     "href": "Take-home_Ex/Take-home_Ex04/Take-home_Ex04.html",
     "title": "Prototyping Modules for Visual Analytics Shiny Application",
     "section": "",
-    "text": "pacman::p_load(tidyverse, lubridate)\n\n\ndengue &lt;- read_csv(\"../../Data/weekly_dengue_cases.csv\")\n\nweather &lt;- read_csv(\"../../Data/clean_climate_data.csv\", na = \".\")\n\n\nweather_group &lt;- weather %&gt;%\n  group_by(Year, Month, Day) %&gt;%\n  summarise(avg_daily_rainfall = mean(daily_rainfall, na.rm = TRUE),\n            max_highest_30m_rainfall = max(highest_30m_rainfall, na.rm = TRUE),\n            max_highest_60m_rainfall = max(highest_60m_rainfall, na.rm = TRUE),\n            max_highest_120m_rainfall = max(highest_120m_rainfall, na.rm = TRUE),\n            avg_mean_temp = mean(mean_temp, na.rm = TRUE),\n            max_max_temp = max(max_temp, na.rm = TRUE),\n            min_min_temp = min(min_temp, na.rm = TRUE),\n            avg_mean_wind = mean(mean_wind, na.rm = TRUE),\n            max_max_wind = max(max_wind, na.rm = TRUE))\n\n\nweather_group &lt;- weather_group %&gt;%\n  mutate('date' = make_date(year = Year, month = Month, day = Day)) %&gt;%\n  mutate('wk_no' = isoweek(ymd(date)))\n\n\nweather_group_wk &lt;- weather_group %&gt;%\n  group_by(Year, wk_no) %&gt;%\n  summarise(avg_daily_rainfall = mean(avg_daily_rainfall, na.rm = TRUE),\n            tot_daily_rainfall = sum(avg_daily_rainfall, na.rm = TRUE),\n            max_highest_30m_rainfall = max(max_highest_30m_rainfall, na.rm = TRUE),\n            max_highest_60m_rainfall = max(max_highest_60m_rainfall, na.rm = TRUE),\n            max_highest_120m_rainfall = max(max_highest_120m_rainfall, na.rm = TRUE),\n            avg_mean_temp = mean(avg_mean_temp, na.rm = TRUE),\n            max_max_temp = max(max_max_temp, na.rm = TRUE),\n            min_min_temp = min(min_min_temp, na.rm = TRUE),\n            avg_mean_wind = mean(avg_mean_wind, na.rm = TRUE),\n            max_max_wind = max(max_max_wind, na.rm = TRUE))\n\n\ndengue_weather_wk &lt;- dengue %&gt;%\n  left_join(weather_group_wk, by = join_by(Year == Year, WkNo == wk_no))"
+    "text": "pacman::p_load(tidyverse, lubridate, caret)\n\n\ndengue &lt;- read_csv(\"../../Data/weekly_dengue_cases.csv\")\n\nweather &lt;- read_csv(\"../../Data/clean_climate_data.csv\", na = \".\")\n\n\nweather_group &lt;- weather %&gt;%\n  group_by(Year, Month, Day) %&gt;%\n  summarise(avg_daily_rainfall = mean(daily_rainfall, na.rm = TRUE),\n            max_highest_30m_rainfall = max(highest_30m_rainfall, na.rm = TRUE),\n            max_highest_60m_rainfall = max(highest_60m_rainfall, na.rm = TRUE),\n            max_highest_120m_rainfall = max(highest_120m_rainfall, na.rm = TRUE),\n            avg_mean_temp = mean(mean_temp, na.rm = TRUE),\n            max_max_temp = max(max_temp, na.rm = TRUE),\n            min_min_temp = min(min_temp, na.rm = TRUE),\n            avg_mean_wind = mean(mean_wind, na.rm = TRUE),\n            max_max_wind = max(max_wind, na.rm = TRUE))\n\n\nweather_group &lt;- weather_group %&gt;%\n  mutate('date' = make_date(year = Year, month = Month, day = Day)) %&gt;%\n  mutate('wk_no' = isoweek(ymd(date)))\n\n\nweather_group_wk &lt;- weather_group %&gt;%\n  group_by(Year, wk_no) %&gt;%\n  summarise(avg_daily_rainfall = mean(avg_daily_rainfall, na.rm = TRUE),\n            tot_daily_rainfall = sum(avg_daily_rainfall, na.rm = TRUE),\n            max_highest_30m_rainfall = max(max_highest_30m_rainfall, na.rm = TRUE),\n            max_highest_60m_rainfall = max(max_highest_60m_rainfall, na.rm = TRUE),\n            max_highest_120m_rainfall = max(max_highest_120m_rainfall, na.rm = TRUE),\n            avg_mean_temp = mean(avg_mean_temp, na.rm = TRUE),\n            max_max_temp = max(max_max_temp, na.rm = TRUE),\n            min_min_temp = min(min_min_temp, na.rm = TRUE),\n            avg_mean_wind = mean(avg_mean_wind, na.rm = TRUE),\n            max_max_wind = max(max_max_wind, na.rm = TRUE))\n\n\ndengue_weather_wk &lt;- dengue %&gt;%\n  left_join(weather_group_wk, by = join_by(Year == Year, WkNo == wk_no))\n\n\n# Remove the records with NA\n\ndengue_weather_wk &lt;- dengue_weather_wk[complete.cases(dengue_weather_wk),]\n\nsummary(dengue_weather_wk)\n\n      Year           WkNo           Cases         avg_daily_rainfall\n Min.   :2013   Min.   : 1.00   Min.   :  24.00   Min.   : 0.000    \n 1st Qu.:2015   1st Qu.:14.75   1st Qu.:  77.75   1st Qu.: 2.720    \n Median :2017   Median :27.00   Median : 229.50   Median : 5.148    \n Mean   :2017   Mean   :27.00   Mean   : 291.68   Mean   : 5.976    \n 3rd Qu.:2019   3rd Qu.:40.00   3rd Qu.: 378.50   3rd Qu.: 8.486    \n Max.   :2020   Max.   :52.00   Max.   :1792.00   Max.   :27.621    \n tot_daily_rainfall max_highest_30m_rainfall max_highest_60m_rainfall\n Min.   : 0.000     Min.   : -Inf            Min.   :  -Inf          \n 1st Qu.: 2.720     1st Qu.:20.55            1st Qu.: 24.15          \n Median : 5.148     Median :32.40            Median : 41.60          \n Mean   : 5.976     Mean   : -Inf            Mean   :  -Inf          \n 3rd Qu.: 8.486     3rd Qu.:40.00            3rd Qu.: 55.85          \n Max.   :27.621     Max.   :65.20            Max.   :102.60          \n max_highest_120m_rainfall avg_mean_temp    max_max_temp   min_min_temp  \n Min.   : -Inf             Min.   :24.56   Min.   :31.0   Min.   : 0.00  \n 1st Qu.: 26.2             1st Qu.:27.53   1st Qu.:34.1   1st Qu.:22.10  \n Median : 46.4             Median :28.09   Median :34.7   Median :22.60  \n Mean   : -Inf             Mean   :28.07   Mean   :34.6   Mean   :22.41  \n 3rd Qu.: 64.0             3rd Qu.:28.68   3rd Qu.:35.2   3rd Qu.:23.10  \n Max.   :122.8             Max.   :30.09   Max.   :37.5   Max.   :24.80  \n avg_mean_wind     max_max_wind   \n Min.   : 5.442   Min.   : 35.30  \n 1st Qu.: 7.070   1st Qu.: 55.40  \n Median : 8.057   Median : 63.40  \n Mean   : 8.348   Mean   : 66.63  \n 3rd Qu.: 9.255   3rd Qu.: 73.17  \n Max.   :14.846   Max.   :138.60  \n\n\n\n# Fit linear regression model using all the data without normalization\n\nmodel_lm1 &lt;- lm(Cases ~ tot_daily_rainfall + avg_mean_temp + avg_mean_wind, data = dengue_weather_wk)\n\nsummary(model_lm1)\n\n\nCall:\nlm(formula = Cases ~ tot_daily_rainfall + avg_mean_temp + avg_mean_wind, \n    data = dengue_weather_wk)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-346.09 -182.45  -63.62   89.17 1482.23 \n\nCoefficients:\n                    Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)        -1966.268    619.150  -3.176 0.001614 ** \ntot_daily_rainfall    11.034      4.436   2.487 0.013298 *  \navg_mean_temp         70.887     20.370   3.480 0.000559 ***\navg_mean_wind         24.191      9.785   2.472 0.013855 *  \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 279.6 on 388 degrees of freedom\nMultiple R-squared:  0.03536,   Adjusted R-squared:  0.0279 \nF-statistic: 4.741 on 3 and 388 DF,  p-value: 0.002925\n\n\n\nplot(model_lm1$residuals, pch = 16, col = \"blue\")\n\n\n\n\n\n# Fit linear regression model using all the data with log transformation on X\n\nmodel_lm2 &lt;- lm(Cases ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + log1p(avg_mean_wind), data = dengue_weather_wk)\n\nsummary(model_lm2)\n\n\nCall:\nlm(formula = Cases ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + \n    log1p(avg_mean_wind), data = dengue_weather_wk)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-333.47 -186.03  -57.03   91.56 1463.74 \n\nCoefficients:\n                          Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)               -6736.23    1933.09  -3.485 0.000549 ***\nlog1p(tot_daily_rainfall)    70.50      26.61   2.649 0.008399 ** \nlog1p(avg_mean_temp)       1865.22     545.64   3.418 0.000697 ***\nlog1p(avg_mean_wind)        280.52     101.07   2.776 0.005778 ** \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 279.1 on 388 degrees of freedom\nMultiple R-squared:  0.0384,    Adjusted R-squared:  0.03097 \nF-statistic: 5.165 on 3 and 388 DF,  p-value: 0.001643\n\n\n\nplot(model_lm2$residuals, pch = 16, col = \"blue\")\n\n\n\n\n\n# Fit linear regression model using all the data with log transformation on X and Y\n\nmodel_lm3 &lt;- lm(log1p(Cases) ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + log1p(avg_mean_wind), data = dengue_weather_wk)\n\nsummary(model_lm3)\n\n\nCall:\nlm(formula = log1p(Cases) ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + \n    log1p(avg_mean_wind), data = dengue_weather_wk)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-1.8333 -0.7985  0.1532  0.6327  2.2185 \n\nCoefficients:\n                           Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)               -17.51166    6.43010  -2.723 0.006753 ** \nlog1p(tot_daily_rainfall)   0.12567    0.08852   1.420 0.156485    \nlog1p(avg_mean_temp)        6.22667    1.81497   3.431 0.000667 ***\nlog1p(avg_mean_wind)        0.71565    0.33618   2.129 0.033905 *  \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.9284 on 388 degrees of freedom\nMultiple R-squared:  0.0362,    Adjusted R-squared:  0.02874 \nF-statistic: 4.857 on 3 and 388 DF,  p-value: 0.002497\n\n\n\nmodel_lm3.1 &lt;- lm(log1p(Cases) ~ log1p(avg_mean_temp) + log1p(avg_mean_wind), data = dengue_weather_wk)\n\nsummary(model_lm3.1)\n\n\nCall:\nlm(formula = log1p(Cases) ~ log1p(avg_mean_temp) + log1p(avg_mean_wind), \n    data = dengue_weather_wk)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-1.8905 -0.7700  0.1463  0.6686  2.2269 \n\nCoefficients:\n                     Estimate Std. Error t value Pr(&gt;|t|)   \n(Intercept)          -12.7343     5.4865  -2.321  0.02080 * \nlog1p(avg_mean_temp)   5.0680     1.6232   3.122  0.00193 **\nlog1p(avg_mean_wind)   0.4191     0.2638   1.589  0.11289   \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.9296 on 389 degrees of freedom\nMultiple R-squared:  0.03119,   Adjusted R-squared:  0.02621 \nF-statistic: 6.262 on 2 and 389 DF,  p-value: 0.002106\n\n\n\nmodel_lm3.2 &lt;- lm(log1p(Cases) ~ log1p(avg_mean_temp), data = dengue_weather_wk)\n\nsummary(model_lm3.2)\n\n\nCall:\nlm(formula = log1p(Cases) ~ log1p(avg_mean_temp), data = dengue_weather_wk)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-1.8814 -0.7820  0.1538  0.7157  2.2359 \n\nCoefficients:\n                     Estimate Std. Error t value Pr(&gt;|t|)   \n(Intercept)           -12.018      5.479  -2.194  0.02886 * \nlog1p(avg_mean_temp)    5.131      1.626   3.156  0.00172 **\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.9315 on 390 degrees of freedom\nMultiple R-squared:  0.0249,    Adjusted R-squared:  0.0224 \nF-statistic:  9.96 on 1 and 390 DF,  p-value: 0.001724\n\n\n\nplot(model_lm3.2$residuals, pch = 16, col = \"blue\")\n\n\n\n\n\n# Fit linear regression model using all the data with min-max transformation on X\n\nminmax_process &lt;- preProcess(dengue_weather_wk, method = c(\"range\"))\n\ndengue_weather_wk_mm &lt;- predict(minmax_process, dengue_weather_wk)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html",
+    "title": "In-class_Ex09",
+    "section": "",
+    "text": "pacman::p_load(igraph, tidygraph, ggraph, \n               visNetwork, lubridate, clock,\n               tidyverse, graphlayouts)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#loading-r-packages",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#loading-r-packages",
+    "title": "In-class_Ex09",
+    "section": "",
+    "text": "pacman::p_load(igraph, tidygraph, ggraph, \n               visNetwork, lubridate, clock,\n               tidyverse, graphlayouts)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#importing-network-data-from-files",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#importing-network-data-from-files",
+    "title": "In-class_Ex09",
+    "section": "Importing network data from files",
+    "text": "Importing network data from files\n\nGAStech_nodes &lt;- read_csv(\"../../Data/GAStech_email_node.csv\")\nGAStech_edges &lt;- read_csv(\"../../Data/GAStech_email_edge-v2.csv\")"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#preparing-the-data",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#preparing-the-data",
+    "title": "In-class_Ex09",
+    "section": "Preparing the data",
+    "text": "Preparing the data\nCreate two new columns:\n\nconvert SentDate to a date variable, and store in a new variable called SendDate\nCreate Weekday from SendDate\n\n\nGAStech_edges &lt;- GAStech_edges %&gt;%\n  mutate(SendDate = dmy(SentDate)) %&gt;%\n  mutate(Weekday = wday(SentDate,\n                        label = TRUE,\n                        abbr = FALSE))\n\nFilter the edge data for work related emails, and aggregate the data by source, target, and weekday.\n\nGAStech_edges_aggregated &lt;- GAStech_edges %&gt;%\n  filter(MainSubject == \"Work related\") %&gt;%\n  group_by(source, target, Weekday) %&gt;%\n    summarise(Weight = n()) %&gt;%\n  filter(source!=target) %&gt;%\n  filter(Weight &gt; 1) %&gt;%\n  ungroup()"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#using-tbl_graph-to-build-tidygraph-data-model",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#using-tbl_graph-to-build-tidygraph-data-model",
+    "title": "In-class_Ex09",
+    "section": "Using tbl_graph() to build tidygraph data model",
+    "text": "Using tbl_graph() to build tidygraph data model\nArrange the data in tibble format.\n\nGAStech_graph &lt;- tbl_graph(nodes = GAStech_nodes,\n                           edges = GAStech_edges_aggregated, \n                           directed = TRUE)\n\nTo check the data structure.\n\nGAStech_graph \n\n# A tbl_graph: 54 nodes and 1372 edges\n#\n# A directed multigraph with 1 component\n#\n# Node Data: 54 × 4 (active)\n      id label               Department     Title                               \n   &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;          &lt;chr&gt;                               \n 1     1 Mat.Bramar          Administration Assistant to CEO                    \n 2     2 Anda.Ribera         Administration Assistant to CFO                    \n 3     3 Rachel.Pantanal     Administration Assistant to CIO                    \n 4     4 Linda.Lagos         Administration Assistant to COO                    \n 5     5 Ruscella.Mies.Haber Administration Assistant to Engineering Group Mana…\n 6     6 Carla.Forluniau     Administration Assistant to IT Group Manager       \n 7     7 Cornelia.Lais       Administration Assistant to Security Group Manager \n 8    44 Kanon.Herrero       Security       Badging Office                      \n 9    45 Varja.Lagos         Security       Badging Office                      \n10    46 Stenig.Fusil        Security       Building Control                    \n# ℹ 44 more rows\n#\n# Edge Data: 1,372 × 4\n   from    to Weekday Weight\n  &lt;int&gt; &lt;int&gt; &lt;ord&gt;    &lt;int&gt;\n1     1     2 Sunday       5\n2     1     2 Monday       2\n3     1     2 Tuesday      3\n# ℹ 1,369 more rows"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#plotting-a-basic-network-graph",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#plotting-a-basic-network-graph",
+    "title": "In-class_Ex09",
+    "section": "Plotting a basic network graph",
+    "text": "Plotting a basic network graph\n\nggraph(GAStech_graph) +\n  geom_edge_link() +\n  geom_node_point()"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#changing-the-default-network-graph-theme",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#changing-the-default-network-graph-theme",
+    "title": "In-class_Ex09",
+    "section": "Changing the default network graph theme",
+    "text": "Changing the default network graph theme\n\ng &lt;- ggraph(GAStech_graph) + \n  geom_edge_link(aes()) +\n  geom_node_point(aes())\n\ng + theme_graph()"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#changing-the-coloring-of-the-plot",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#changing-the-coloring-of-the-plot",
+    "title": "In-class_Ex09",
+    "section": "Changing the coloring of the plot",
+    "text": "Changing the coloring of the plot\n\ng &lt;- ggraph(GAStech_graph) + \n  geom_edge_link(aes(colour = 'grey50')) +\n  geom_node_point(aes(colour = 'grey40'))\n\ng + theme_graph(background = 'grey10',\n                text_colour = 'white')"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#fruchterman-and-reingold-layout",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#fruchterman-and-reingold-layout",
+    "title": "In-class_Ex09",
+    "section": "Fruchterman and Reingold layout",
+    "text": "Fruchterman and Reingold layout\n\ng &lt;- ggraph(GAStech_graph, \n            layout = \"fr\") +\n  geom_edge_link(aes()) +\n  geom_node_point(aes())\n\ng + theme_graph()"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#modifying-network-nodes",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#modifying-network-nodes",
+    "title": "In-class_Ex09",
+    "section": "Modifying network nodes",
+    "text": "Modifying network nodes\n\ng &lt;- ggraph(GAStech_graph, \n            layout = \"nicely\") + \n  geom_edge_link(aes()) +\n  geom_node_point(aes(colour = Department, \n                      size = 3))\n\ng + theme_graph()"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#modifying-edges",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#modifying-edges",
+    "title": "In-class_Ex09",
+    "section": "Modifying edges",
+    "text": "Modifying edges\n\ng &lt;- ggraph(GAStech_graph, \n            layout = \"nicely\") +\n  geom_edge_link(aes(width = Weight), \n                 alpha = 0.2) +\n  scale_edge_width(range = c(0.1, 5)) +\n  geom_node_point(aes(colour = Department), \n                  size = 3)\n\ng + theme_graph()"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#working-with-facet_edges",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#working-with-facet_edges",
+    "title": "In-class_Ex09",
+    "section": "Working with facet_edges()",
+    "text": "Working with facet_edges()\n\nset_graph_style()\n\ng &lt;- ggraph(GAStech_graph, \n            layout = \"nicely\") + \n  geom_edge_link(aes(width = Weight), \n                 alpha = 0.2) +\n  scale_edge_width(range = c(0.1, 5)) +\n  geom_node_point(aes(colour = Department), \n                  size = 2)\n\ng + facet_edges(~Weekday)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#working-with-facet_nodes",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#working-with-facet_nodes",
+    "title": "In-class_Ex09",
+    "section": "Working with facet_nodes()",
+    "text": "Working with facet_nodes()\n\nset_graph_style()\n\ng &lt;- ggraph(GAStech_graph, \n            layout = \"nicely\") + \n  geom_edge_link(aes(width = Weight), \n                 alpha = 0.2) +\n  scale_edge_width(range = c(0.1, 5)) +\n  geom_node_point(aes(colour = Department), \n                  size = 2)\n  \ng + facet_nodes(~Department)+\n  th_foreground(foreground = \"grey80\",  \n                border = TRUE) +\n  theme(legend.position = 'bottom')"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#computing-centrality-indices",
+    "href": "In-class_Ex/In-class_Ex09/In-class_Ex09.html#computing-centrality-indices",
+    "title": "In-class_Ex09",
+    "section": "Computing centrality indices",
+    "text": "Computing centrality indices\n\ng &lt;- GAStech_graph %&gt;%\n  mutate(betweenness_centrality = centrality_betweenness()) %&gt;%\n  ggraph(layout = \"fr\") + \n  geom_edge_link(aes(width = Weight), \n                 alpha = 0.2) +\n  scale_edge_width(range = c(0.1, 5)) +\n  geom_node_point(aes(colour = Department,\n            size = betweenness_centrality))\ng + theme_graph()"
   }
 ]
