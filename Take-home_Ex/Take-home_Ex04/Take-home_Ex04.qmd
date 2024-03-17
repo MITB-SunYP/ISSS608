@@ -7,19 +7,63 @@ execute:
   warning: false
 ---
 
+## 1. Setting the Scene
 
+### 1.1 Background
+
+This is the **take home exercise 4 of ISSS608 Visual Analytics and Applications**. In this exercise, we are instructed to develop the prototype for our group Shiny app. Each member of our team needs to pick a module in our Shiny app, and work out the prototype for that module.
+
+Our team chose the topic to study the climate impact in Singapore using the weather data downloaded from [Meteorological Service Singapore](http://www.weather.gov.sg/climate-historical-daily/) website and the weekly dengue cases from [SGCharts: Outbreak](https://outbreak.sgcharts.com/data). 
+
+The module I have chosen for this take home exercise is to develop an explanatory model to test the impact of the weather data (i.e., temperature, rainfall and wind) on the occurrence of dengue cases in Singapore.
+
+For the interest of this project, we are going to explore the data on a weekly basis at the national level.
+
+## 2. Understanding the Data
+
+### 2.1 Installing and loading the required libraries
 
 ```{r}
-pacman::p_load(tidyverse, lubridate, caret)
+pacman::p_load(tidyverse, lubridate, caret, performance, ggstatsplot)
 
 ```
+
+### 2.2 Importing the data
+
+#### 2.2.1 Weather data
+
+```{r}
+weather <- read_csv("../../Data/clean_climate_data.csv", na = ".")
+
+head(weather, n=10)
+
+```
+
+#### 2.2.2 Dengue data
 
 ```{r}
 dengue <- read_csv("../../Data/weekly_dengue_cases.csv")
 
-weather <- read_csv("../../Data/clean_climate_data.csv", na = ".")
+head(dengue, n=10)
 
 ```
+
+### 2.3 Preparing the data
+
+#### 2.3.1 Weather Data
+
+The weather data downloaded from [Meteorological Service Singapore](http://www.weather.gov.sg/climate-historical-daily/) website contains the weather information at each weather station. Hence, we use the code chunk below to aggregate the data at national level
+
+-   **avg_daily_rainfall**: average daily rainfall among all stations
+-   **max_highest_30m_rainfall**: maximum highest 30m rainfall among all stations
+-   **max_highest_60m_rainfall**: maximum highest 60m rainfall among all stations
+-   **max_highest_120m_rainfall**: maximum highest 120m rainfall among all stations
+-   **avg_mean_temp**: average temperature among all stations
+-   **max_max_temp**: maximum of highest temperature among all stations
+-   **min_min_temp**: minimum of lowest temperature among all stations
+-   **avg_mean_wind**: average wind among all stations
+-   **max_max_wind**: maximum of maximum wind among all stations
+
 
 ```{r}
 weather_group <- weather %>%
@@ -32,9 +76,17 @@ weather_group <- weather %>%
             max_max_temp = max(max_temp, na.rm = TRUE),
             min_min_temp = min(min_temp, na.rm = TRUE),
             avg_mean_wind = mean(mean_wind, na.rm = TRUE),
-            max_max_wind = max(max_wind, na.rm = TRUE))
+            max_max_wind = max(max_wind, na.rm = TRUE)) %>%
+  ungroup()
+
+summary(weather_group)
 
 ```
+
+Two new columns need to be created before we can aggregate the data at week level:
+
+-   **date**: a date variable created from Year, Month and Day columns
+-   **wk_no**: calculate the week number using the date column
 
 ```{r}
 weather_group <- weather_group %>%
@@ -43,116 +95,313 @@ weather_group <- weather_group %>%
 
 ```
 
+We can now aggregate the data by week:
+
+-   **avg_daily_rainfall**: average rainfall in a week. For some reasons, average and sum can't be calculated under one group_by() command. Hence, the calculation of average rainfall and total rainfall have been divided in two steps.
+-   **tot_daily_rainfall**: total rainfall in a week
+-   **max_highest_30m_rainfall**: maximum highest 30m rainfall in a week
+-   **max_highest_60m_rainfall**: maximum highest 60m rainfall in a week
+-   **max_highest_120m_rainfall**: maximum highest 120m rainfall in a week
+-   **avg_mean_temp**: average temperature in a week
+-   **max_max_temp**: maximum of highest daily temperature in a week
+-   **min_min_temp**: minimum of lowest daily temperature in a week
+-   **avg_mean_wind**: average wind in a week
+-   **max_max_wind**: maximum of maximum daily wind in a week
 
 ```{r}
 weather_group_wk <- weather_group %>%
   group_by(Year, wk_no) %>%
-  summarise(avg_daily_rainfall = mean(avg_daily_rainfall, na.rm = TRUE),
-            tot_daily_rainfall = sum(avg_daily_rainfall, na.rm = TRUE),
-            max_highest_30m_rainfall = max(max_highest_30m_rainfall, na.rm = TRUE),
-            max_highest_60m_rainfall = max(max_highest_60m_rainfall, na.rm = TRUE),
-            max_highest_120m_rainfall = max(max_highest_120m_rainfall, na.rm = TRUE),
-            avg_mean_temp = mean(avg_mean_temp, na.rm = TRUE),
-            max_max_temp = max(max_max_temp, na.rm = TRUE),
-            min_min_temp = min(min_min_temp, na.rm = TRUE),
-            avg_mean_wind = mean(avg_mean_wind, na.rm = TRUE),
-            max_max_wind = max(max_max_wind, na.rm = TRUE))
+  summarise(tot_daily_rainfall = sum(avg_daily_rainfall),
+            max_highest_30m_rainfall = max(max_highest_30m_rainfall),
+            max_highest_60m_rainfall = max(max_highest_60m_rainfall),
+            max_highest_120m_rainfall = max(max_highest_120m_rainfall),
+            avg_mean_temp = mean(avg_mean_temp),
+            max_max_temp = max(max_max_temp),
+            min_min_temp = min(min_min_temp),
+            avg_mean_wind = mean(avg_mean_wind),
+            max_max_wind = max(max_max_wind)) %>%
+  ungroup()
+
+weather_group_wk <- weather_group %>%
+  group_by(Year, wk_no) %>%
+  summarise(avg_daily_rainfall = mean(avg_daily_rainfall)) %>%
+  left_join(weather_group_wk, by = join_by(Year, wk_no)) %>%
+  ungroup()
+
+summary(weather_group_wk)
 
 ```
+
+We can save the weekly weather data in csv file format for future reference.
+
+```{r}
+#| eval: false
+write_csv(weather_group_wk, "../../Data/clean_climate_data_by_week.csv")
+
+```
+
+#### 2.3.2 Join Dengue Data with Weekly Weather Data
+
+As there are more records in weather data, we will perform a left join using dengue data.
 
 ```{r}
 dengue_weather_wk <- dengue %>%
   left_join(weather_group_wk, by = join_by(Year == Year, WkNo == wk_no))
 
+summary(dengue_weather_wk)
+
 ```
 
-```{r}
-# Remove the records with NA
+Remove the rows with no weather data.
 
+```{r}
 dengue_weather_wk <- dengue_weather_wk[complete.cases(dengue_weather_wk),]
 
 summary(dengue_weather_wk)
 
 ```
 
+We can save the joined data in csv file format for future reference.
+
+```{r}
+#| eval: false
+write_csv(dengue_weather_wk, "../../Data/dengue_climate_joined_by_week.csv")
+
+```
+
+#### 2.3.3 Data Transformation
+
+We'll then perform the following transformations and add the corresponding transformed columns in the dataset:
+
+-   **log transformation**: log1p() is used instead of log() is to deal with rows having value of 0
+-   **standardization**
+
+```{r}
+dengue_weather_wk_tf <- dengue_weather_wk %>%
+  mutate(log_cases = log1p(Cases),
+         log_avg_daily_rainfall = log1p(avg_daily_rainfall),
+         log_tot_daily_rainfall = log1p(tot_daily_rainfall),
+         log_max_highest_30m_rainfall = log1p(max_highest_30m_rainfall),
+         log_max_highest_60m_rainfall = log1p(max_highest_60m_rainfall),
+         log_max_highest_120m_rainfall = log1p(max_highest_120m_rainfall),
+         log_avg_mean_temp = log1p(avg_mean_temp),
+         log_max_max_temp = log1p(max_max_temp),
+         log_min_min_temp = log1p(min_min_temp),
+         log_avg_mean_wind = log1p(avg_mean_wind),
+         log_max_max_wind = log1p(max_max_wind),
+         z_cases = scale(Cases),
+         z_avg_daily_rainfall = scale(avg_daily_rainfall),
+         z_tot_daily_rainfall = scale(tot_daily_rainfall),
+         z_avg_mean_temp = scale(avg_mean_temp),
+         z_max_max_temp = scale(max_max_temp),
+         z_min_min_temp = scale(min_min_temp),
+         z_avg_mean_wind = scale(avg_mean_wind),
+         z_max_max_wind = scale(max_max_wind))
+
+```
+Next we use the preprocess() function from caret package to perform min-max transformation on the data.
+
+```{r}
+minmax_data <- dengue_weather_wk %>%
+  select(-c("max_highest_30m_rainfall", "max_highest_60m_rainfall", "max_highest_120m_rainfall"))
+
+#minmax_preprocess <- preProcess(minmax_data, method = c("range"))
+
+minmax_preprocess <- preProcess(minmax_data, method = list(range = names(minmax_data)[3:10]))
+
+minmax_result <- predict(minmax_preprocess, minmax_data)
+
+colnames(minmax_result) <- c("Year",
+                             "WkNo",
+                             "mm_Cases",
+                             "mm_avg_daily_rainfall",
+                             "mm_tot_daily_rainfall",
+                             "mm_avg_mean_temp",
+                             "mm_max_max_temp",
+                             "mm_min_min_temp",
+                             "mm_avg_mean_wind",
+                             "mm_max_max_wind")
+
+```
+
+We then add the min-max transformed columns to the main dataset.
+
+```{r}
+dengue_weather_wk_tf <- dengue_weather_wk_tf %>%
+  left_join(minmax_result, by = join_by(Year, WkNo))
+
+summary(dengue_weather_wk_tf)
+
+```
+
+We can save the data with transformation in csv file format for future reference.
+
+```{r}
+#| eval: false
+write.csv(dengue_weather_wk_tf, "../../Data/dengue_climate_joined_by_week_transformed.csv")
+
+```
+
+## 3. Explanatory Model
+
+### 3.1 Linear Regression Model without Transformation
+
 ```{r}
 # Fit linear regression model using all the data without normalization
 
-model_lm1 <- lm(Cases ~ tot_daily_rainfall + avg_mean_temp + avg_mean_wind, data = dengue_weather_wk)
+lm_nf_m1 <- lm(Cases ~ avg_daily_rainfall + 
+                  tot_daily_rainfall +
+                  avg_mean_temp + 
+                  max_max_temp +
+                  min_min_temp +
+                  avg_mean_wind +
+                  max_max_wind, data = dengue_weather_wk_tf)
 
-summary(model_lm1)
+summary(lm_nf_m1)
 
 ```
+
+Check the model statistics.
+
+```{r fig.height = 10, fig.width = 15}
+check_model(lm_nf_m1)
+
+```
+
+Average daily rainfall and total rain fall are highly correlated. We shall retain the total rainfall variable.
 
 ```{r}
-plot(model_lm1$residuals, pch = 16, col = "blue")
+lm_nf_m2 <- lm(Cases ~ tot_daily_rainfall +
+                  avg_mean_temp + 
+                  max_max_temp +
+                  min_min_temp +
+                  avg_mean_wind +
+                  max_max_wind, data = dengue_weather_wk_tf)
+
+# Backward stepwise regression
+lm_nf_m2_bw <- step(lm_nf_m2, direction = "backward")
+
+summary(lm_nf_m2_bw)
 
 ```
+
+Check the model statistics.
+
+```{r fig.height = 10, fig.width = 15}
+check_model(lm_nf_m2_bw)
+
+```
+
+### 3.2 Linear Regression with log transformation
 
 ```{r}
-# Fit linear regression model using all the data with log transformation on X
+# Fit linear regression model using all the data with log transformation
 
-model_lm2 <- lm(Cases ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + log1p(avg_mean_wind), data = dengue_weather_wk)
+lm_log_m1 <- lm(log_cases ~ log_tot_daily_rainfall +
+                  log_avg_mean_temp + 
+                  log_max_max_temp +
+                  log_min_min_temp +
+                  log_avg_mean_wind +
+                  log_max_max_wind, data = dengue_weather_wk_tf)
 
-summary(model_lm2)
+summary(lm_log_m1)
 
 ```
+Backward stepwise regression.
 
 ```{r}
-plot(model_lm2$residuals, pch = 16, col = "blue")
+lm_log_m1_bw <- step(lm_log_m1, direction = "backward")
+
+summary(lm_log_m1_bw)
+
 
 ```
+
+
+Check the model statistics.
+
+```{r fig.height = 10, fig.width = 15}
+check_model(lm_log_m1_bw)
+
+```
+
+### 3.3 Linear Regression with standardization transformation
 
 ```{r}
-# Fit linear regression model using all the data with log transformation on X and Y
+# Fit linear regression model using all the data with standardization transformation
 
-model_lm3 <- lm(log1p(Cases) ~ log1p(tot_daily_rainfall) + log1p(avg_mean_temp) + log1p(avg_mean_wind), data = dengue_weather_wk)
+lm_z_m1 <- lm(z_cases ~ z_tot_daily_rainfall +
+                  z_avg_mean_temp + 
+                  z_max_max_temp +
+                  z_min_min_temp +
+                  z_avg_mean_wind +
+                  z_max_max_wind, data = dengue_weather_wk_tf)
 
-summary(model_lm3)
+summary(lm_z_m1)
 
 ```
+
+Backward stepwise regression.
 
 ```{r}
-model_lm3.1 <- lm(log1p(Cases) ~ log1p(avg_mean_temp) + log1p(avg_mean_wind), data = dengue_weather_wk)
+lm_z_m1_bw <- step(lm_z_m1, direction = "backward")
 
-summary(model_lm3.1)
+summary(lm_z_m1_bw)
 
 ```
+
+Check the model statistics.
+
+```{r fig.height = 10, fig.width = 15}
+check_model(lm_z_m1_bw)
+
+```
+
+### 3.3 Linear Regression with min-max transformation
 
 ```{r}
-model_lm3.2 <- lm(log1p(Cases) ~ log1p(avg_mean_temp), data = dengue_weather_wk)
+# Fit linear regression model using all the data with min-max transformation
 
-summary(model_lm3.2)
+lm_mm_m1 <- lm(mm_Cases ~ mm_tot_daily_rainfall +
+                  mm_avg_mean_temp + 
+                  mm_max_max_temp +
+                  mm_min_min_temp +
+                  mm_avg_mean_wind +
+                  mm_max_max_wind, data = dengue_weather_wk_tf)
+
+summary(lm_mm_m1)
 
 ```
+
+Backward stepwise regression.
 
 ```{r}
-plot(model_lm3.2$residuals, pch = 16, col = "blue")
+lm_mm_m1_bw <- step(lm_mm_m1, direction = "backward")
+
+summary(lm_mm_m1_bw)
 
 ```
+
+Check the model statistics.
+
+```{r fig.height = 10, fig.width = 15}
+check_model(lm_mm_m1_bw)
+
+```
+
+### 3.4 Compare Multiple Models
 
 ```{r}
-# Fit linear regression model using all the data with min-max transformation on X
-
-minmax_process <- preProcess(dengue_weather_wk, method = c("range"))
-
-dengue_weather_wk_mm <- predict(minmax_process, dengue_weather_wk)
+compare_performance(lm_nf_m2_bw, lm_log_m1_bw, lm_z_m1_bw, lm_mm_m1_bw, rank = TRUE)
 
 ```
 
+From the comparison table above, the linear regression model with min-max transformation has the highest R^2. Therefore, this model would be chosen as the best model among the four models calibrated.  
 
+Let's visualize the coefficients.
 
+```{r}
+ggcoefstats(lm_mm_m1_bw, 
+            output = "plot")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
