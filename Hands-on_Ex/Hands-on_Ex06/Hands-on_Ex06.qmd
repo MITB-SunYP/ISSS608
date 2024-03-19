@@ -306,7 +306,7 @@ rice %>%
 
 This comes to the end of this hands-on exercise. I have learned to make static and interactive treemaps plots in R. Hope you enjoyed it, too!
 
-See you in the next hands-on exercise 🥰
+See you in the next hands-on exercisese 🥰
 
 
 
