@@ -1,0 +1,110 @@
+---
+title: "Project Data subset 2014 onwards"
+---
+
+```{r}
+pacman::p_load(tidyverse, lubridate, caret, performance, ggstatsplot, forecast)
+
+```
+
+```{r}
+dengue_weather_wk <- read_csv("D:/MITB_SunYP/ISSS608/Data/dengue_climate_joined_by_week.csv")
+
+```
+
+```{r}
+dengue_weather_wk_2014 <- subset(dengue_weather_wk, Year >= 2014)
+
+summary(dengue_weather_wk_2014)
+
+```
+
+```{r}
+dengue_weather_wk_2014_tf <- dengue_weather_wk_2014 %>%
+  mutate(log_cases = log1p(Cases),
+         log_avg_daily_rainfall = log1p(avg_daily_rainfall),
+         log_tot_daily_rainfall = log1p(tot_daily_rainfall),
+         log_max_highest_30m_rainfall = log1p(max_highest_30m_rainfall),
+         log_max_highest_60m_rainfall = log1p(max_highest_60m_rainfall),
+         log_max_highest_120m_rainfall = log1p(max_highest_120m_rainfall),
+         log_avg_mean_temp = log1p(avg_mean_temp),
+         log_max_max_temp = log1p(max_max_temp),
+         log_min_min_temp = log1p(min_min_temp),
+         log_avg_mean_wind = log1p(avg_mean_wind),
+         log_max_max_wind = log1p(max_max_wind),
+         z_cases = scale(Cases),
+         z_avg_daily_rainfall = scale(avg_daily_rainfall),
+         z_tot_daily_rainfall = scale(tot_daily_rainfall),
+         z_max_highest_30m_rainfall = scale(max_highest_30m_rainfall),
+         z_max_highest_60m_rainfall = scale(max_highest_60m_rainfall),
+         z_max_highest_120m_rainfall = scale(max_highest_120m_rainfall),
+         z_avg_mean_temp = scale(avg_mean_temp),
+         z_max_max_temp = scale(max_max_temp),
+         z_min_min_temp = scale(min_min_temp),
+         z_avg_mean_wind = scale(avg_mean_wind),
+         z_max_max_wind = scale(max_max_wind))
+
+```
+
+```{r}
+minmax_preprocess <- preProcess(dengue_weather_wk_2014, method = list(range = names(dengue_weather_wk_2014)[3:13]))
+
+minmax_result <- predict(minmax_preprocess, dengue_weather_wk_2014)
+
+colnames(minmax_result) <- c("Year",
+                             "WkNo",
+                             "mm_Cases",
+                             "mm_avg_daily_rainfall",
+                             "mm_tot_daily_rainfall",
+                             "mm_max_highest_30m_rainfall",
+                             "mm_max_highest_60m_rainfall",
+                             "mm_max_highest_120m_rainfall",
+                             "mm_avg_mean_temp",
+                             "mm_max_max_temp",
+                             "mm_min_min_temp",
+                             "mm_avg_mean_wind",
+                             "mm_max_max_wind")
+
+dengue_weather_wk_2014_tf <- dengue_weather_wk_2014_tf %>%
+  left_join(minmax_result, by = join_by(Year, WkNo))
+
+summary(dengue_weather_wk_2014_tf)
+
+```
+
+```{r}
+write.csv(dengue_weather_wk_2014_tf, "D:/MITB_SunYP/ISSS608/Data/dengue_climate_joined_by_week_2014_transformed.csv")
+
+```
+
+```{r}
+pacman::p_load(tsibbledata, fable, feasts)
+
+```
+
+```{r}
+dengue_weather_wk_2014_tf <- dengue_weather_wk_2014_tf %>%
+  mutate('Date' = make_date(year = Year) + weeks(WkNo))
+
+```
+
+```{r}
+dengue_weather_tsreg <- as_tsibble(dengue_weather_wk_2014_tf, index = Date)
+
+```
+
+```{r}
+ts_nf_m1 <- dengue_weather_tsreg %>%
+  model(TSLM(Cases ~ avg_daily_rainfall + 
+                  tot_daily_rainfall +
+                  avg_mean_temp + 
+                  max_max_temp +
+                  min_min_temp +
+                  avg_mean_wind +
+                  max_max_wind))
+
+report(ts_nf_m1)
+
+```
+
+

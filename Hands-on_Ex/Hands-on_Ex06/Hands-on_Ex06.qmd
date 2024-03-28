@@ -17,9 +17,25 @@ Firstly, let's install and load the required packages:
 
 -   [tidyverse](https://www.tidyverse.org/): an opinionated collection of R packages designed for data import, data wrangling and data exploration
 
--   [treemap](https://cran.r-project.org/web/packages/treemap/index.html): offers great flexibility to draw treemaps.
+-   [scales](https://scales.r-lib.org/): provides the internal scaling infrastructure used by ggplot2, and provides tools to override the default breaks, labels, transformations and palettes.
 
--   [treemapify](https://cran.r-project.org/web/packages/treemapify/index.html): a ggplot2 extension to draw treemaps.
+-   [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html): provide a series of color maps that are designed to improve graph readability for readers with common forms of color blindness and/or color vision deficiency.
+
+-   [lubridate](https://lubridate.tidyverse.org/): makes it easier to handle date and time data in R
+
+-   [ggthemes](https://cran.r-project.org/web/packages/ggthemes/index.html): provides 'ggplot2' themes.
+
+-   [gridExtra](https://cran.r-project.org/web/packages/gridExtra/index.html): provides a number of user-level functions to work with "grid" graphics, notably to arrange multiple grid-based plots on a page, and draw tables.
+
+-   [readxl](https://readxl.tidyverse.org/): makes it easy to get data out of Excel and into R.
+
+-   [knitr](https://cran.r-project.org/web/packages/knitr/index.html): provides a general-purpose tool for dynamic report generation in R using Literate Programming techniques.
+
+-   [data.table](https://cran.r-project.org/web/packages/data.table/index.html): makes it faster to aggregate and modify large data.
+
+-   [CGPfunctions](https://cran.r-project.org/web/packages/CGPfunctions/index.html): miscellaneous functions useful for teaching statistics as well as actually practicing the art.
+
+-   [ggHoriPlot](https://cran.r-project.org/web/packages/ggHoriPlot/vignettes/ggHoriPlot.html): makes it easy to build horizon plots in ggplot2.
 
 ```{r}
 pacman::p_load(tidyverse, scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot)
@@ -45,6 +61,7 @@ In this section, we'll use *kable()* to review the structure of the data.
 kable(head(attacks))
 
 ```
+
 There data frame contains three columns:
 
 -   **timestamp**: stores date-time values in POSIXct format.
@@ -91,6 +108,7 @@ attacks <- attacks %>%
       hour, levels = 0:23))
 
 ```
+
 Check the resulting data frame.
 
 ```{r}
@@ -287,6 +305,7 @@ We'll use *rice.csv* file in this section.
 rice <- read_csv("../../Data/rice.csv")
 
 ```
+
 The data set contains 550 rows and 4 columns.
 
 ### 5.3 Plotting the slopegraph
@@ -307,13 +326,3 @@ rice %>%
 This comes to the end of this hands-on exercise. I have learned to make static and interactive treemaps plots in R. Hope you enjoyed it, too!
 
 See you in the next hands-on exercise 🥰
-
-
-
-
-
-
-
-
-
-

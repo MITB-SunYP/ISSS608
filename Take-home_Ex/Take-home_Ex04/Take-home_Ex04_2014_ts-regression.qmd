@@ -1,0 +1,69 @@
+---
+title: "Take-home_Ex04_ts-regression"
+---
+
+```{r}
+pacman::p_load(tidyverse, tsibbledata, fable, feasts, tsibble, ggstatsplot, performance)
+
+```
+
+```{r}
+dengue_weather_wk_2014_tf <- read_csv("../../Data/dengue_climate_joined_by_week_2014_transformed.csv")
+
+```
+
+The dataframe needs to be converted to a tsibble object before running TSLM model.
+
+```{r}
+# Create a date column which will be used to convert to a yearweek object in the next step
+
+dengue_weather_wk_2014_tf <- dengue_weather_wk_2014_tf %>%
+  mutate('Date' = make_date(year = Year) + weeks(WkNo))
+
+```
+
+```{r}
+# Convert the tibble dataframe to a tsibble dataframe
+
+dengue_weather_tsreg <- dengue_weather_wk_2014_tf %>%
+  mutate(Week = yearweek(Date)) %>%
+  as_tsibble(index = Week) %>%
+  fill_gaps(.full = TRUE)
+
+```
+
+```{r}
+ts_log_m1 <- dengue_weather_tsreg %>%
+  model(TSLM(log_cases ~ log_tot_daily_rainfall + 
+                  log_tot_daily_rainfall +
+                  log_avg_mean_temp + 
+                  log_max_max_temp +
+                  log_min_min_temp +
+                  log_avg_mean_wind +
+                  log_max_max_wind))
+
+report(ts_log_m1)
+
+```
+
+```{r}
+gg_tsresiduals(ts_log_m1)
+
+```
+
+```{r}
+augment(ts_log_m1) %>%
+  ggplot(aes(x = .fitted, y = .resid)) +
+  geom_point() +
+  labs(title = "Relationship between residuals and fitted values.",
+       subtitle = "if a relationship exists, then response variable may require transformation.",
+       y = "Residuals", x = "Fitted") +
+  theme_light()
+
+```
+
+```{r}
+ggcoefstats(ts_log_m1 %>% tidy(), 
+            output = "plot")
+
+```

@@ -179,8 +179,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Hands-on Exercise 6</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html" rel="" target="">
- <span class="dropdown-text">Hands-on Exercise 7</span></a>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07a.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 7a</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07b.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 7b</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07c.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 7c</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html" rel="" target="">
@@ -341,8 +349,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Firstly, let’s install and load the required packages:</p>
 <ul>
 <li><p><a href="https://www.tidyverse.org/">tidyverse</a>: an opinionated collection of R packages designed for data import, data wrangling and data exploration</p></li>
-<li><p><a href="https://cran.r-project.org/web/packages/treemap/index.html">treemap</a>: offers great flexibility to draw treemaps.</p></li>
-<li><p><a href="https://cran.r-project.org/web/packages/treemapify/index.html">treemapify</a>: a ggplot2 extension to draw treemaps.</p></li>
+<li><p><a href="https://scales.r-lib.org/">scales</a>: provides the internal scaling infrastructure used by ggplot2, and provides tools to override the default breaks, labels, transformations and palettes.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html">viridis</a>: provide a series of color maps that are designed to improve graph readability for readers with common forms of color blindness and/or color vision deficiency.</p></li>
+<li><p><a href="https://lubridate.tidyverse.org/">lubridate</a>: makes it easier to handle date and time data in R</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/ggthemes/index.html">ggthemes</a>: provides ‘ggplot2’ themes.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/gridExtra/index.html">gridExtra</a>: provides a number of user-level functions to work with “grid” graphics, notably to arrange multiple grid-based plots on a page, and draw tables.</p></li>
+<li><p><a href="https://readxl.tidyverse.org/">readxl</a>: makes it easy to get data out of Excel and into R.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/knitr/index.html">knitr</a>: provides a general-purpose tool for dynamic report generation in R using Literate Programming techniques.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/data.table/index.html">data.table</a>: makes it faster to aggregate and modify large data.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/CGPfunctions/index.html">CGPfunctions</a>: miscellaneous functions useful for teaching statistics as well as actually practicing the art.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/ggHoriPlot/vignettes/ggHoriPlot.html">ggHoriPlot</a>: makes it easy to build horizon plots in ggplot2.</p></li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
