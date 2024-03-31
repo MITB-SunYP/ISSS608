@@ -433,19 +433,3 @@ tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N == "CENTRAL REGION", ])+
 This comes to the end of this hands-on exercise. I have learned to plot choropleth maps using geospatial and attribute data in R. Hope you enjoyed it, too!
 
 See you in the next hands-on exercise 🥰
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
