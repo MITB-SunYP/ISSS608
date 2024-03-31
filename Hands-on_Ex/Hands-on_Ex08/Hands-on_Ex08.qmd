@@ -3,6 +3,8 @@ title: "Modelling, Visualising and Analysing Network Data with R"
 author: "Sun Yiping"
 date: "March 4, 2024"
 date-modified: "March 6, 2024"
+execute: 
+  warning: false
 ---
 
 ## 1. Learning Outcome
