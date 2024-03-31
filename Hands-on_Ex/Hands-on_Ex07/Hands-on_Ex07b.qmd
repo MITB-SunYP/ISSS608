@@ -141,7 +141,7 @@ tmap_mode("plot")
 
 ```
 
-This comes to the end of this hands-on exercise. I have learned to plot proportional symbol map using in R. Hope you enjoyed it, too!
+This comes to the end of this hands-on exercise. I have learned to plot proportional symbol map using R. Hope you enjoyed it, too!
 
 See you in the next hands-on exercise 🥰
 
